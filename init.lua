@@ -1,0 +1,5 @@
+require("plugins")
+require("ui")
+require("gadgets")
+require("lsp")
+require("cmpinit")
