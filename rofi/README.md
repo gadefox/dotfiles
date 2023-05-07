@@ -1,1 +1,1 @@
-<img src="rofi/screenshot.jpeg">
+<img src="screenshot.jpeg">
