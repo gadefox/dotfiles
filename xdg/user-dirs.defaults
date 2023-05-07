@@ -1,6 +1,6 @@
 DESKTOP=.config/desktop
 DOCUMENTS=documents
-DOWNLOAD=.config/downloads
+DOWNLOAD=downloads
 MUSIC=music
 PICTURES=pictures
 PUBLICSHARE=.config/public
