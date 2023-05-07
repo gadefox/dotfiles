@@ -1,0 +1,15 @@
+second-column = no
+timedisplay-type = none
+set-xterm-title = no
+colordef blue = 0, 0, 0
+color title = 246
+color title-bold = 246
+color list = 246
+color list-bold = 248 
+color browser-directory = 12
+color browser-playlist = 13
+color progressbar = 12
+color status-state = green
+color status-song = 246
+#color status-time = 12 
+color alert = green
