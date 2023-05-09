@@ -42,7 +42,7 @@ local function lock_animate(fail, back)
   arc.bg = length == 0 and "#00000000" or (back and "#888a85a0" or theme.colors[(length % #theme.colors) + 1])
 
   local icon = wilock:get_children_by_id("icon")[1]
-  icon.markup = fail and color_text("󱗑", theme.colors[4]) or "󰍁"
+  icon.markup = fail and color_text("󱗑", theme.colors[5]) or "󰍁"
 end
 
 local function lock_show(show)
@@ -146,17 +146,17 @@ function theme.tags_create(s)
     screen = s,
     filter = awful.widget.taglist.filter.all,
     buttons = {
-      awful.button({ }, 1, function(t)
+      awful.button({}, awful.button.names.LEFT, function(t)
         if t == t.screen.selected_tag then
           awful.tag.history.restore()
         else
           t:view_only()
         end
       end),
-      awful.button({ }, 4, function(t)
+      awful.button({}, awful.button.names.SCROLL_UP, function(t)
         awful.tag.viewprev(t.screen)
       end),
-      awful.button({ }, 5, function(t)
+      awful.button({}, awful.button.names.SCROLL_DOWN, function(t)
         awful.tag.viewnext(t.screen)
       end)
     },
@@ -258,6 +258,7 @@ naughty.connect_signal("request::display", function(n)
   naughty.layout.box {
     notification = n,
     position = "top_right",
+    border_width = 0,
     shape = function(cr, width, height) gears.shape.partially_rounded_rect(cr, width, height, true, false, true, false, dpi(20)) end,
     widget_template = {
       {
@@ -336,6 +337,7 @@ end
 -- launcher wibox
 local wibtns = {}
 local wicount, wicur, wisignal
+local wileft = nil
 
 local function btn_update(wibtn, hover)
   local frame = wibtn:get_children_by_id("frame")[1]
@@ -348,7 +350,13 @@ end
 
 local function btns_hide()
   keygrabber.stop()
-  mousegrabber.stop()
+
+  root._buttons({})
+  awful.mouse.remove_client_mousebinding(wileft)
+
+  for s in screen do
+    s.wibar:_buttons({})
+  end
 
   btn_update(wibtns[wicur], false)
 
@@ -362,9 +370,20 @@ local function btn_signal()
   awesome.emit_signal("launch::" .. wisignal, wicur)
 end
 
+local function btn_hilight(w)
+  if w.idx == wicur then return end
+
+  btn_update(wibtns[wicur], false)
+  btn_update(w, true)
+  wicur = w.idx
+
+  w.cursor = "hand1"
+end
+
 local function btn_create(idx, color)
   local wibtn = wibox {
     ontop = true,
+    type = "menu",
     shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(25)) end,
   }
   wibtn:setup {
@@ -384,28 +403,10 @@ local function btn_create(idx, color)
     layout = wibox.layout.stack
   }
 
-  wibtn:connect_signal("mouse::enter", function(w)
-    if w.idx == wicur then return end
+  wibtn:connect_signal("mouse::enter", btn_hilight)
+  wibtn:connect_signal("mouse::move", btn_hilight)
 
-    btn_update(wibtns[wicur], false)
-    btn_update(w, true)
-    wicur = w.idx
-    w.cursor = "hand1"
-  end)
-
-  wibtn:connect_signal("mouse::move", function(w)
-    if w.idx == wicur then return end
-
-    btn_update(wibtns[wicur], false)
-    btn_update(w, true)
-    wicur = w.idx
-  end)
-
-  wibtn:buttons(gears.table.join(
-    awful.button({ }, 1, function() btn_signal() end),
-    awful.button({ }, 2, function() btn_signal() end),
-    awful.button({ }, 3, function() btn_signal() end)
-  ))
+  wibtn:buttons(awful.button({}, awful.button.names.LEFT, btn_signal))
 
   wibtn.idx = idx
   wibtn.color = color
@@ -458,38 +459,9 @@ local function btn_key_loop()
     elseif key == "Escape" or key == "Menu" then
       btns_hide()
     elseif key == "Return" then
-      btns_hide()
       btn_signal()
     end
   end)
-end
-
-local function btn_mouse_loop()
-  mousegrabber.run(function(mouse)
-    for i = 1, wicount do
-      wibtns[i].screen = mouse.screen
-    end
-
-
-
-
-
-
-    gears.debug.print_warning(mouse.x)
-    gears.debug.print_warning(mouse.y)
-
---    gears.debug.print_warning(mouse.buttons)
---    gears.debug.print_warning(type(mouse.buttons))
-
-    if not mouse.buttons[1] then return true end
-
-    gears.debug.print_warning("mouse")
-    gears.debug.print_warning(mouse)
-    gears.debug.print_warning(type(mouse))
-    gears.debug.print_warning(#mouse)
-
-    return true
- end, "arrow")
 end
 
 function theme.launch(signal, symbols, urgent)
@@ -510,24 +482,32 @@ function theme.launch(signal, symbols, urgent)
     wibtns[i].symbol = symbols[i]
     wibtns[i].urgent = false
     wibtns[i]:geometry(geo_w)
-    geo_w.x = geo_w.x + dpi(135)  -- space = dpi(25)
+    geo_w.x = geo_w.x + dpi(135)
   end
 
   if urgent then  -- optional parameter
     for _, v in ipairs(urgent) do
-      if v <= #wibtns then
-        wibtns[v].urgent = true
-      end
+      wibtns[v].urgent = true
     end
   end
 
   for i = 1, wicount do
-    btn_update(wibtns[i], i == 1)  -- wicur == 1
+    btn_update(wibtns[i], i == 1)  -- select first wibox (wicur == 1)
     wibtns[i].visible = true
   end
 
+  if not wileft then
+    wileft = awful.button({}, awful.button.names.LEFT, btns_hide)
+  end
+
+  root.buttons(wileft)
+  awful.mouse.append_client_mousebinding(wileft)
+
+  for s in screen do
+    s.wibar:buttons(wileft)
+  end
+
   btn_key_loop()
-  btn_mouse_loop()
 end
 
 return theme
