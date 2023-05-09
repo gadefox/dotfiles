@@ -1,434 +1,513 @@
-local autofocus = require("awful.autofocus")
-
--- focus and swap
-local focus = require("focus")
-focus.init()
-
--- wallpaper
 local awful = require("awful")
+local dpi = require("beautiful.xresources").apply_dpi
+local gears = require("gears")
 local wibox = require("wibox")
 
-screen.connect_signal("request::wallpaper", function(s)
-  awful.wallpaper {
-    screen = s,
-    widget = {
-      image = "/usr/local/share/images/wallpaper.jpg",
-      widget = wibox.widget.imagebox
-    }
-  }
-end)
+local theme = {}
 
-local theme = require("theme")
-theme.init()
-
-awful.screen.connect_for_each_screen(function(s)
-  awful.tag(
-    { "1", "2", "3", "4", "5", "6", "7", "8" },
-    s,
-    awful.layout.suit.fair)
-
-  theme.lock_create(s)
-  theme.tags_create(s)
-end)
-
-tag.connect_signal("request::default_layouts", function()
-  awful.layout.append_default_layouts {
-    awful.layout.suit.fair
-  }
-end)
-
-client.connect_signal("mouse::enter", function(c)
-  c:activate {
-    context = "mouse_enter",
-    raise = false
-  }
-end)
-
--- custom notifications
-local kb_notif, notif_v, notif_m
-
-local function png(img)
-  return debug.getinfo(1).source:match("@?(.*/)") .. "icons/" .. img .. ".png"
-end
-
-local function bold(s)
-  return "<b>" .. s .. "</b>"
-end
-
-local kb_layout = awful.widget.keyboardlayout()
-
-kb_layout:connect_signal("widget::redraw_needed", function ()
-  kb_notif = theme.notify({
-      title = bold("Keyboard layout:"),
-      message = kb_layout.widget.text,
-      icon = png("keyboard"),
-    }, kb_notif)
-end)
-
-local function msg_volume(icon)
-  awful.spawn.easy_async_with_shell("pactl list sinks | grep '^[[:space:]]Volume:' | awk '{print $5}'", function(out)
-    notif_v = theme.notify({
-      title = bold("Volume:"),
-      message = string.gsub(out, "\n", ""),
-      icon = png("volume" .. icon),
-    }, notif_v)
-  end)
-end
-
-local function msg_muted()
-  awful.spawn.easy_async_with_shell("pactl list sinks | grep 'Mute:' | awk '{print $2}'", function(out)
-    local message, icon
-
-    if out == "no\n" then
-      message = "unmuted"
-      icon = "volume"
-    else
-      message = "muted"
-      icon = message
-    end
-
-    notif_v = theme.notify({
-      title = bold("Volume:"),
-      message = message,
-      icon = png(icon),
-    }, notif_v)
-  end)
-end
-
-local function msg_mpd_stop(msg)
-  notif_m = theme.notify({
-    title = bold("Music player:"),
-    message = msg,
-    icon = png("playerctl_toggle")
-  }, notif_m)
-end
-
-local function msg_mpd(out, icon)
-  local status = out:match("%[(.*)%]")
-
-  if status == "playing" then
-    local artist = out:match("^(.*) %- ")
-    if not artist or not #artist then
-      artist = "N/A"
-    end
-
-    local song = out:match(" %- (.*)\n%[")
-    if not song or not #song then
-      song = "N/A"
-    end
-
-    notif_m = theme.notify({
-      title = bold(artist),
-      message = song,
-      icon = png(icon),
-    }, notif_m)
-  else
-    msg_mpd_stop(status == "paused" and status or "stopped")
-  end
-end
-
-local function msg_now()
-  theme.notify({
-    title = bold("Now:"),
-    message = os.date("%a %d %b, %H:%M"),
-    icon = png("alarm"),
-  })
-end
-
--- rules
-local ruled = require("ruled")
-
-ruled.client.connect_signal("request::rules", function()
-  ruled.client.append_rule {
-    rule = { },
-    properties = {
-      focus = awful.client.focus.filter,
-      raise = true,
-      screen = awful.screen.preferred,
-      placement = awful.placement.no_overlap + awful.placement.no_offscreen
-    }
-  }
-end)
-
--- key bindings
-local function term(cmd)
-  return "kitty -1 -e " .. cmd
-end
-
-awesome.connect_signal("launch::dev", function(option)
-  if option == 1 then
-    awful.spawn("nemiver")
-  end
-end)
-
-awesome.connect_signal("launch::file", function(option)
-  if option == 1 then
-    awful.spawn(term("nnn"))
-  elseif option == 2 then
-    awful.spawn("xarchiver")
-  end
-end)
-
-awesome.connect_signal("launch::image", function(option)
-  if option == 1 then
-    awful.spawn("gpick")
-  elseif option == 2 then
-    awful.spawn("gimp")
-  end
-end)
-
-awesome.connect_signal("launch::light", function(option)
-  local light, bright, contrast
-
-  if option == 1 then
-    light = 0
-    bright = 0
-    contrast = 0
-  elseif option == 2 then
-    light = 30
-    bright = 20
-    contrast = 20
-  elseif option == 3 then
-    light = 50
-    bright = 40
-    contrast = 40
-  elseif option == 4 then
-    light = 70
-    bright = 60
-    contrast = 60
-  elseif option == 5 then
-    light = 90
-    bright = 80
-    contrast = 70
-  elseif option == 6 then
-    light = 100
-    bright = 100
-    contrast = 80
-  end
-
-  awful.spawn("light -S " .. light)
-  awful.spawn("ddcutil setvcp 10 " .. bright)
-  awful.spawn("ddcutil setvcp 12 " .. contrast)
-end)
-
-awesome.connect_signal("launch::office", function(option)
-  if option == 1 then
-    awful.spawn(term("nvim"))
-  elseif option == 2 then
-    awful.spawn.with_shell("swrite")
-  elseif option == 3 then
-    awful.spawn.with_shell("scalc")
-  elseif option == 4 then
-    awful.spawn.with_shell("sbase")
-  end
-end)
-
-awesome.connect_signal("launch::scrot", function(option)
-  if option == 1 then
-    awful.spawn("scrot")
-  elseif option == 2 then
-    awful.spawn("scrot -s")
-  elseif option == 3 then
-    awful.spawn("scrot -u")
-  end
-end)
-
-awesome.connect_signal("launch::settings", function(option)
-  if option == 1 then
-    awful.spawn.easy_async_with_shell("ddcutil getvcp 10 | awk '{print $9}'", function(out)
-      local vcp = tonumber(string.sub(out, 1, -3))
-      local urgent = {}
-
-      if vcp < 10 then
-        urgent[1] = 1
-      elseif vcp < 30 then
-        urgent[1] = 2
-      elseif vcp < 50 then
-        urgent[1] = 3
-      elseif vcp < 70 then
-        urgent[1] = 4
-      elseif vcp < 90 then
-        urgent[1] = 5
-      else
-        urgent[1] = 6
-      end
-
-      theme.launch("light", { "󱩍", "󱩐", "󱩑", "󱩓", "󱩕", "󰛨" }, urgent)
-    end)
-  elseif option == 2 then
-    awful.spawn("lxrandr")
-  elseif option == 3 then
-    awful.spawn("dconf-editor")
-  end
-end)
-
-awesome.connect_signal("launch::tool", function(option)
-  if option == 1 then
-    theme.launch("scrot", { "", "󰩭", "" })
-  elseif option == 2 then
-    awful.spawn.with_shell(term("calc"))
-  elseif option == 3 then
-    awful.spawn.with_shell("jmtpfs /media/mtp")
- elseif option == 4 then
-    awful.spawn(term("htop"))
-  end
-end)
-
-awesome.connect_signal("launch::web", function(option)
-  if option == 1 then
-    awful.spawn("firefox")
-  elseif option == 2 then
-    awful.spawn.with_shell("xdg-open 'https://mail.google.com'")
-  elseif option == 3 then
-    awful.spawn("transmission-gtk")
-  end
-end)
-
-awesome.connect_signal("launch::app", function(option)
-  if option == 1 then
-    awful.spawn("kitty -1")
-  elseif option == 2 then
-    theme.launch("file", { "", "" })  -- 
-  elseif option == 3 then
-    theme.launch("office", { "", "󱎒", "󱎏", "󱘲" })
-  elseif option == 4 then
-    theme.launch("image", { "󰈋", "󱇤" })  -- 
-  elseif option == 5 then
-    theme.launch("dev", { "" })  -- 
-  elseif option == 6 then
-    theme.launch("web", { "󰈹", "", "󰄠" })
-  elseif option == 7 then
-    awful.spawn(term("ncmpc"))
-  elseif option == 8 then
-    theme.launch("tool", { "󰭪", "󱖦", "", "" })  -- 
-  elseif option == 9 then
-    theme.launch("settings", { "󰃟", "󰍺", "󱘫" })
-  elseif option == 10 then
-    msg_now()
-  end
-end)
-
-awesome.connect_signal("launch::sys", function(option)
-  if option == 1 then
-    awful.spawn.with_shell("systemctl poweroff")
-  elseif option == 2 then
-    awful.spawn.with_shell("systemctl reboot")
-  elseif option == 3 then
-    theme.lock()
-    awful.spawn.with_shell("systemctl suspend")
-  elseif option == 4 then
-    theme.lock()
-  elseif option == 5 then
-    awesome.quit()
-  elseif option == 6 then
-    awesome.restart()
-  end
-end)
-
-awful.keyboard.append_global_keybindings {
-  awful.key({ }, "XF86PowerOff", function() theme.launch("sys", { "󰐥", "󰜉", "󰒲", "󰍁", "󰗽", "󱣲" }) end,
-    { description = "quit", group = "awesome" }),
-  awful.key({ "Mod4" }, "Escape", theme.lock,
-    { description = "quit", group = "awesome" }),
-
-  awful.key({ "Mod4" }, "Up", function() awful.screen.focus_relative(1) end,
-    { description = "next", group = "screen" }),
-  awful.key({ "Mod4" }, "Down", function() awful.screen.focus_relative(-1) end,
-    { description = "previous", group = "screen" }),
-
-  awful.key({ "Mod4" }, "Left", awful.tag.viewprev,
-    { description = "previous", group = "tag" }),
-  awful.key({ "Mod4" }, "Right", awful.tag.viewnext,
-    { description = "next", group = "tag" }),
-  awful.key({ "Mod4" }, "Home", function() awful.screen.focused().tags[1]:view_only() end,
-    { description = "first", group = "tag" }),
-  awful.key({ "Mod4" }, "End", function()
-    local tags = awful.screen.focused().tags
-    tags[#tags]:view_only()
-  end,
-    { description = "last", group = "tag" }),
-  awful.key({ "Mod4" }, "BackSpace", awful.tag.history.restore,
-    { description = "back & forth", group = "tag" }),
---  awful.key({ "Mod4", "Shift" }, "minus", function () awful.tag.incgap(-1, nil) end,
---    {description = "decrement gap", group = "tags" }),
---  awful.key({ "Mod4" }, "minus", function () awful.tag.incgap(1, nil) end,
---    {description = "increment gaps", group = "tags" }),
-  awful.key({ "Mod4" }, "space", awful.client.urgent.jumpto,
-    { description = "jump to urgent client", group = "client" }),
-
-  awful.key({ "Mod4" }, "Return", function() awful.spawn("kitty -1") end,
-    { description = "open a terminal", group = "launch" }),
-  awful.key({ }, "Menu", function() theme.launch("app", { "", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "", "󱑒" }) end,
-    { description = "show the menubar", group = "launch" }),
-  awful.key({ }, "Print", function()
-    theme.notify({
-      title = bold("Screenshot:"),
-      message = "select a window or rectangle",
-      icon = png("screenshot"),
-      timeout = 2
-    })
-    awful.spawn("scrot -s")
-  end,
-    { description = "scrot", group = "launch" }),
-
-  awful.key({ }, "XF86Mail", function() awful.spawn.with_shell("xdg-open 'https://mail.google.com'", { switch_to_tags = true }) end,
-    { description = "email", group = "launch" }),
-  awful.key({ }, "XF86HomePage", function() awful.spawn("firefox") end,
-    { description = "browser", group = "launch" }),
-  awful.key({ }, "XF86Tools", function() awful.spawn(term("ncmpc")) end,
-    { description = "browser", group = "launch" }),
-  awful.key({ }, "XF86Launch5", function() awful.spawn(term("nnn")) end,
-    { description = "nnn fm", group = "launch" }),
-  awful.key({ }, "XF86Launch6", function() awful.spawn("pcmanfm") end,
-    { description = "pcmanfm", group = "launch" }),
-  awful.key({ }, "XF86Launch9", function() awful.spawn(term("htop")) end,
-    { description = "process monitor", group = "launch" }),
-  awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
-    { description = "neovim", group = "launch" }),
-  awful.key({ }, "XF86Calculator", function() awful.spawm(term("calc")) end,
-    { description = "calc", group = "launch" }),
-
-  awful.key({ }, "XF86AudioLowerVolume", function()
-    awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%")
-    msg_volume("1")
-  end,
-    { description = "lower", group = "volume" }),
-  awful.key({ }, "XF86AudioRaiseVolume", function()
-    awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%")
-    msg_volume("")
- end,
-    { description = "raise", group = "volume" }),
-  awful.key({ }, "XF86AudioMute", function()
-    awful.spawn("pactl set-sink-mute @DEFAULT_SINK@ toggle")
-    msg_muted()
-  end,
-    { description = "(un)mute", group = "volume" }),
-
-  awful.key({ }, "XF86AudioPlay", function()
-    awful.spawn.easy_async_with_shell("mpc toggle", function(out)
-      msg_mpd(out, "playerctl_toggle")
-    end)
-  end,
-    { description = "play", group = "music" }),
-  awful.key({ }, "XF86AudioPrev", function()
-    awful.spawn.easy_async_with_shell("mpc prev", function(out)
-      msg_mpd(out, "playerctl_prev")
-    end)
-  end,
-    { description = "previous", group = "music" }),
-  awful.key({ }, "XF86AudioNext", function()
-    awful.spawn.easy_async_with_shell("mpc next", function(out)
-      msg_mpd(out, "playerctl_next")
-    end)
-  end,
-    { description = "next", group = "music" }),
-  awful.key({ }, "XF86AudioStop", function()
-    awful.spawn("mpc stop")
-    msg_mpd_stop("stopped")
-  end,
-    { description = "stop", group = "music" })
+theme.colors = {
+  "#8ecb15",
+  "#cb9a15",
+  "#d75f00",
+  "#ff0000",
+  "#cb15c9",
+  "#6f15cb",
+  "#15b4cb",
+  "#5edcb4"
 }
 
--- start
-msg_now()
-awful.spawn("dex -a")
+-- beautiful
+local beautiful = require("beautiful")
+
+beautiful.init {
+  useless_gap = 1,
+  notification_font = "monospace 12" }
+
+-- lock screen
+local dirs = { "north", "west", "south", "east" }
+local pwd
+
+local function color_text(text, color)
+  return "<span foreground='" .. color .. "'>" .. text .. "</span>"
+end
+
+local function lock_animate(fail, back)
+  local length = #pwd
+  local wilock = screen.primary.wilock
+
+  local rotate = wilock:get_children_by_id("rotate")[1]
+  rotate.direction = dirs[(length % 4) + 1]
+
+  local arc = wilock:get_children_by_id("arc")[1]
+  arc.bg = length == 0 and "#00000000" or (back and "#888a85a0" or theme.colors[(length % #theme.colors) + 1])
+
+  local icon = wilock:get_children_by_id("icon")[1]
+  icon.markup = fail and color_text("󱗑", theme.colors[5]) or "󰍁"
+end
+
+local function lock_show(show)
+  for s in screen do
+    s.wilock.visible = show
+    awful.placement.maximize(s.wilock)
+  end
+end
+
+local function lock_loop()
+  keygrabber.run(function(_, key, event)
+    if event == "release" then return end
+
+    if key == "Escape" then
+      if #pwd > 0 then
+        pwd = ""
+        lock_animate(false, false)
+      end
+    elseif key == "BackSpace" then
+      if #pwd > 0 then
+        pwd = string.sub(pwd, 1, -2)
+        lock_animate(false, true)
+      end
+    elseif key == "Return" then
+      local pam = require("libpam")
+
+      if pam.auth(pwd) then
+        lock_show(false)
+        keygrabber.stop()
+      else
+        pwd = ""
+        lock_animate(true, false)
+      end
+    elseif #key == 1 then
+      pwd = pwd .. key
+      lock_animate(false, false)
+    end
+  end)
+end
+
+function theme.lock()
+  pwd = ""
+  lock_animate(false)
+  lock_show(true)
+  lock_loop()
+end
+
+function theme.lock_create(s)
+  s.wilock = wibox {
+    screen = s,
+    ontop = true,
+    type = "splash",
+    bg = "#000000a0"
+  }
+  if s == screen.primary then
+    s.wilock:setup {
+      {
+        {
+          {
+            id = "arc",
+            shape = function(cr, width, height) gears.shape.arc(cr, width, height, dpi(10), 0, math.pi / 2, true, true) end,
+            widget = wibox.container.background
+          },
+          id = "rotate",
+          widget = wibox.container.rotate
+        },
+        {
+          id = "icon",
+          align = "center",
+          font = "CaskaydiaCove Nerd Font 45",
+          widget = wibox.widget.textbox
+        },
+        forced_width = dpi(180),
+        forced_height = dpi(180),
+        layout = wibox.layout.stack
+      },
+      widget = wibox.container.place
+    }
+  end
+end
+
+-- wibar
+local function tag_update(item, tag, index)
+  if tag.selected then
+    item.top.bg = theme.colors[index]
+    item.bottom.bg = theme.colors[index]
+  elseif tag.urgent then
+    item.top.bg = "#e4e4e4"
+    item.bottom.bg = "#00000000"
+  elseif #tag:clients() > 0 then
+    item.top.bg = theme.colors[index]
+    item.bottom.bg = "#00000000"
+  else
+    item.top.bg = "#00000000"
+    item.bottom.bg = "#00000000"
+ end
+end
+
+function theme.tags_create(s)
+  s.taglist = awful.widget.taglist {
+    screen = s,
+    filter = awful.widget.taglist.filter.all,
+    buttons = {
+      awful.button({}, awful.button.names.LEFT, function(t)
+        if t == t.screen.selected_tag then
+          awful.tag.history.restore()
+        else
+          t:view_only()
+        end
+      end),
+      awful.button({}, awful.button.names.SCROLL_UP, function(t)
+        awful.tag.viewprev(t.screen)
+      end),
+      awful.button({}, awful.button.names.SCROLL_DOWN, function(t)
+        awful.tag.viewnext(t.screen)
+      end)
+    },
+    layout = wibox.layout.flex.horizontal,
+    widget_template = {
+      {
+        id = "top",
+        forced_height = dpi(5),
+        widget = wibox.container.background
+      },
+      {
+        id = "bottom",
+        forced_height = dpi(2),
+        widget = wibox.container.background
+      },
+      layout = wibox.layout.fixed.vertical,
+      create_callback = function(self, tag, index, _)
+        tag_update(self, tag, index)
+      end,
+      update_callback = function(self, tag, index, _)
+        tag_update(self, tag, index)
+      end
+    }
+  }
+  s.wibar = awful.wibar {
+    screen = s,
+    visible = true,
+    ontop = false,
+    type = "dock",
+    position = "top",
+    height = dpi(7),
+    bg = theme.opacity
+  }
+  s.wibar:setup {
+    widget = s.taglist
+  }
+end
+
+-- notifications
+local naughty = require("naughty")
+
+local rainbow = wibox.widget {
+  {
+    bg = theme.colors[5],
+    widget = wibox.container.background
+  },
+  {
+    bg = theme.colors[6],
+    widget = wibox.container.background
+  },
+  {
+    bg = theme.colors[7],
+    widget = wibox.container.background
+  },
+  {
+    bg = theme.colors[1],
+    widget = wibox.container.background
+  },
+  {
+    bg = theme.colors[2],
+    widget = wibox.container.background
+  },
+  {
+    bg = theme.colors[4],
+    widget = wibox.container.background
+  },
+  forced_height = dpi(5),
+  layout = wibox.layout.flex.horizontal
+}
+
+naughty.connect_signal("request::display", function(n)
+  local actions = wibox.widget {
+    notification = n,
+    base_layout = wibox.widget {
+      spacing = 10,
+      layout = wibox.layout.flex.horizontal
+    },
+    widget_template = {
+      {
+        {
+          id = "text_role",
+          align = "center",
+          font = beautiful.notification_font,
+          widget = wibox.widget.textbox
+        },
+        margins = dpi(7),
+        widget = wibox.container.margin
+      },
+      bg = "#232d35",
+      widget = wibox.container.background
+    },
+    style = {
+      underline_normal = false,
+      underline_selected = true
+    },
+    widget = naughty.list.actions
+  }
+
+  naughty.layout.box {
+    notification = n,
+    position = "top_right",
+    border_width = 0,
+    shape = function(cr, width, height) gears.shape.partially_rounded_rect(cr, width, height, true, false, true, false, dpi(20)) end,
+    widget_template = {
+      {
+        {
+          {
+            {
+              n.icon and {
+                widget = naughty.widget.icon
+              },
+              margins = dpi(7),
+              widget = wibox.container.margin
+            },
+            bg = "#1a2026",
+            widget = wibox.container.background
+          },
+          rainbow,
+          {
+            {
+              {
+                n.title and {
+                  align = "center",
+                  widget = naughty.widget.title
+                },
+                {
+                  align = "center",
+                  widget = naughty.widget.message
+                },
+                layout = wibox.layout.fixed.vertical
+              },
+              margins = dpi(12),
+              widget = wibox.container.margin
+            },
+            bg = "#232d35",
+            widget = wibox.container.background
+          },
+          {
+            rainbow,
+            visible = #n.actions > 0,
+            widget = wibox.container.background
+          },
+          #n.actions > 0 and {
+            {
+              actions,
+              margins = dpi(10),
+              widget = wibox.container.margin
+            },
+            bg = "#1a2026",
+            widget = wibox.container.background
+          },
+          layout = wibox.layout.fixed.vertical
+        },
+        strategy = "min",
+        width = dpi(160),
+        widget = wibox.container.constraint
+      },
+      strategy = "max",
+      width = dpi(350),
+      height = dpi(200),
+      widget = wibox.container.constraint
+    }
+  }
+end)
+
+function theme.notify(args, n)
+  if not n or n._private.is_destroyed or n.is_expired then
+    return naughty.notification(args)
+  end
+
+  n.icon = args.icon
+  n.timeout = args.timeout
+  n.title = args.title
+  n.message = args.message
+  return n
+end
+
+-- launcher wibox
+local wibtns = {}
+local wicount, wicur, wisignal
+local wileft = nil
+
+local function btn_update(wibtn, hover)
+  local frame = wibtn:get_children_by_id("frame")[1]
+  frame.border_color = hover and wibtn.color or "#282b31"
+
+  local icon = wibtn:get_children_by_id("icon")[1]
+  local text = color_text(wibtn.symbol, (wibtn.urgent or hover) and wibtn.color or "#e4e4e4")
+  icon.markup = text
+end
+
+local function btns_hide()
+  keygrabber.stop()
+
+  root._buttons({})
+  awful.mouse.remove_client_mousebinding(wileft)
+
+  for s in screen do
+    s.wibar:_buttons({})
+  end
+
+  btn_update(wibtns[wicur], false)
+
+  for i = 1, wicount do
+     wibtns[i].visible = false
+  end
+end
+
+local function btn_signal()
+  btns_hide()
+  awesome.emit_signal("launch::" .. wisignal, wicur)
+end
+
+local function btn_hilight(w)
+  if w.idx == wicur then return end
+
+  btn_update(wibtns[wicur], false)
+  btn_update(w, true)
+  wicur = w.idx
+
+  w.cursor = "hand1"
+end
+
+local function btn_create(idx, color)
+  local wibtn = wibox {
+    ontop = true,
+    type = "menu",
+    shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(25)) end,
+  }
+  wibtn:setup {
+    {
+      id = "frame",
+      shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(15)) end,
+      border_width = dpi(10),
+      bg = "#282b31",
+      widget = wibox.container.background
+    },
+    {
+      id = "icon",
+      font = "CaskaydiaCove Nerd Font 35",
+      align = "center",
+      widget = wibox.widget.textbox
+    },
+    layout = wibox.layout.stack
+  }
+
+  wibtn:connect_signal("mouse::enter", btn_hilight)
+  wibtn:connect_signal("mouse::move", btn_hilight)
+
+  wibtn:buttons(awful.button({}, awful.button.names.LEFT, btn_signal))
+
+  wibtn.idx = idx
+  wibtn.color = color
+  return wibtn
+end
+
+function theme.init()
+  for i = 1, 10 do
+    local color = i ~= 8 and i % #theme.colors or 8
+    wibtns[i] = btn_create(i, theme.colors[color])
+  end
+end
+
+local function btn_set(cur)
+  btn_update(wibtns[wicur], false)
+  btn_update(wibtns[cur], true)
+  wicur = cur
+end
+
+local function btn_key_loop()
+  keygrabber.run(function(_, key, event)
+    if event == "release" then return end
+
+    if key == "Left" or key == "Up" then
+      btn_set(wicur > 1 and wicur - 1 or wicount)
+    elseif key == "Right" or key == "Down" then
+      btn_set(wicur < wicount and wicur + 1 or 1)
+    elseif key == "Home" then
+      if wicur > 1 then
+        btn_set(1)
+      end
+    elseif key == "End" then
+      if wicur < wicount then
+        btn_set(wicount)
+      end
+    elseif key == "Prior" then
+      local idx = wicur - math.floor(wicount / 2)
+      if idx > 1 then
+        btn_set(idx)
+      else
+        btn_set(1)
+      end
+    elseif key == "Next" then
+      local idx = wicur + math.floor(wicount / 2)
+      if idx < wicount then
+        btn_set(idx)
+      else
+        btn_set(wicount)
+      end
+    elseif key == "Escape" or key == "Menu" then
+      btns_hide()
+    elseif key == "Return" then
+      btn_signal()
+    end
+  end)
+end
+
+function theme.launch(signal, symbols, urgent)
+  local geo_s = mouse.screen.geometry
+  local geo_w = {
+    x = geo_s.x + (geo_s.width - #symbols * dpi(135) + dpi(20)) / 2,
+    y = geo_s.y + (geo_s.height - dpi(115)) / 2,
+    width = dpi(115),
+    height = dpi(115)
+  }
+
+  wicur = 1
+  wicount = #symbols
+  wisignal = signal
+
+  for i = 1, wicount do
+    wibtns[i].screen = mouse.screen
+    wibtns[i].symbol = symbols[i]
+    wibtns[i].urgent = false
+    wibtns[i]:geometry(geo_w)
+    geo_w.x = geo_w.x + dpi(135)
+  end
+
+  if urgent then  -- optional parameter
+    for _, v in ipairs(urgent) do
+      wibtns[v].urgent = true
+    end
+  end
+
+  for i = 1, wicount do
+    btn_update(wibtns[i], i == 1)  -- select first wibox (wicur == 1)
+    wibtns[i].visible = true
+  end
+
+  if not wileft then
+    wileft = awful.button({}, awful.button.names.LEFT, btns_hide)
+  end
+
+  root.buttons(wileft)
+  awful.mouse.append_client_mousebinding(wileft)
+
+  for s in screen do
+    s.wibar:buttons(wileft)
+  end
+
+  btn_key_loop()
+end
+
+return theme
