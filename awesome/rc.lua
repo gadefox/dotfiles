@@ -1,5 +1,4 @@
-require("awful.autofocus")
-local gears = require("gears")
+local autofocus = require("awful.autofocus")
 
 -- focus and swap
 local focus = require("focus")
@@ -126,6 +125,14 @@ local function msg_mpd(out, icon)
   else
     msg_mpd_stop(status == "paused" and status or "stopped")
   end
+end
+
+local function msg_now()
+  theme.notify({
+    title = bold("Now:"),
+    message = os.date("%a %d %b, %H:%M"),
+    icon = png("alarm"),
+  })
 end
 
 -- rules
@@ -261,10 +268,8 @@ awesome.connect_signal("launch::tool", function(option)
   elseif option == 2 then
     awful.spawn.with_shell(term("calc"))
   elseif option == 3 then
-    awful.spawn("gnome-multi-writer")
-  elseif option == 4 then
     awful.spawn.with_shell("jmtpfs /media/mtp")
- elseif option == 5 then
+ elseif option == 4 then
     awful.spawn(term("htop"))
   end
 end)
@@ -295,16 +300,11 @@ awesome.connect_signal("launch::app", function(option)
   elseif option == 7 then
     awful.spawn(term("ncmpc"))
   elseif option == 8 then
-    theme.launch("tool", { "󰭪", "󱖦", "󱊟", "", "" })  -- 
+    theme.launch("tool", { "󰭪", "󱖦", "", "" })  -- 
   elseif option == 9 then
     theme.launch("settings", { "󰃟", "󰍺", "󱘫" })
   elseif option == 10 then
-    theme.notify({
-      title = bold("Now:"),
-      message = os.date("%a %d %b, %H:%M"),
-      icon = png("alarm"),
-      timeout = 3
-    })
+    msg_now()
   end
 end)
 
@@ -428,3 +428,7 @@ awful.keyboard.append_global_keybindings {
   end,
     { description = "stop", group = "music" })
 }
+
+-- start
+msg_now()
+awful.spawn("dex -a")
