@@ -1,0 +1,26 @@
+theme: Adapta-Nokto-Eta
+--with-selection_color ~ selected item ~ #DC461D
+--with-accent_color ~ progress bar ~ #DC731D
+--with-suggestion_color ~ login button ~ #11754A
+--with-destruction_color ~ selected X button ~ #DC9C1D
+
+cursor: Vimix white
+icons: Papirus
+font: Caskaydia Nerd (terminal), Ubuntu (gtk)
+
+apps:
+arandr
+calc
+colortest
+deborphan (unused deb packages)
+dragon (drag & drop)
+lxrandr
+gpick
+mupdf
+pcmanfm-gtk3
+sxiv
+yt-dlp
+xarchiver
+
+systemd/logind.conf:
+HandlePowerKey=ignore
