@@ -389,7 +389,7 @@ local function btn_create(idx, color)
   wibtn:setup {
     {
       id = "frame",
-      shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(14)) end,
+      shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(15)) end,
       border_width = dpi(10),
       bg = "#282b31",
       widget = wibox.container.background
