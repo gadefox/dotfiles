@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec /opt/libreoffice7.5/program/soffice --impress "$@"
