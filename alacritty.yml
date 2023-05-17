@@ -1,0 +1,13 @@
+colors:
+  primary:
+    background: '#000000'
+
+font:
+  size: 14
+
+cursor:
+  style:
+    shape: underline
+
+window:
+  opacity: 0.7
