@@ -34,3 +34,7 @@ libGL.so.340.108
 libnvcuvid.so.340.108
 libnvidia-encode.so.340.108
 libnvidia-ml.so.340.108
+
+/lib/modules/6.1.0-9-amd64/updates/dkms:
+nvidia-uvm.ko
+nvidia.ko
