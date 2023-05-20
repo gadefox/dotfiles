@@ -5,23 +5,37 @@ local wibox = require("wibox")
 
 local theme = {}
 
-theme.colors = {
-  "#8ecb15",
-  "#cb9a15",
-  "#d75f00",
-  "#ff0000",
-  "#cb15c9",
-  "#6f15cb",
-  "#15b4cb",
-  "#5edcb4"
-}
+local function shift_colors()
+  local colors = {
+    "#8ecb15",
+    "#cb9a15",
+    "#d75f00",
+    "#ff0000",
+    "#cb15c9",
+    "#6f15cb",
+    "#15b4cb",
+    "#5edcb4"
+  }
+  local shift = os.date("%d") % #colors
+  local dst = 1
+  theme.colors = {}
+
+  for src = shift + 1, #colors do
+    theme.colors[dst] = colors[src]
+    dst = dst + 1
+  end
+  for src = 1, shift do
+    theme.colors[dst] = colors[src]
+    dst = dst + 1
+  end
+end
 
 -- beautiful
 local beautiful = require("beautiful")
 
 beautiful.init {
   useless_gap = 1,
-  notification_font = "monospace 12" }
+  notification_font = "Roboto Mono 11" }
 
 -- lock screen
 local dirs = { "north", "west", "south", "east" }
@@ -197,6 +211,7 @@ end
 
 -- notifications
 local naughty = require("naughty")
+shift_colors()
 
 local rainbow = wibox.widget {
   {
@@ -380,7 +395,7 @@ local function btn_hilight(w)
   w.cursor = "hand1"
 end
 
-local function btn_create(idx, color)
+local function btn_create(color)
   local wibtn = wibox {
     ontop = true,
     type = "menu",
@@ -389,7 +404,7 @@ local function btn_create(idx, color)
   wibtn:setup {
     {
       id = "frame",
-      shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(15)) end,
+      shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(14)) end,
       border_width = dpi(10),
       bg = "#282b31",
       widget = wibox.container.background
@@ -408,16 +423,14 @@ local function btn_create(idx, color)
 
   wibtn:buttons(awful.button({}, awful.button.names.LEFT, btn_signal))
 
-  wibtn.idx = idx
   wibtn.color = color
   return wibtn
 end
 
-function theme.init()
-  for i = 1, 10 do
-    local color = i ~= 8 and i % #theme.colors or 8
-    wibtns[i] = btn_create(i, theme.colors[color])
-  end
+for i = 1, 10 do
+  local color = i ~= 8 and i % #theme.colors or 8
+  wibtns[i] = btn_create(theme.colors[color])
+  wibtns[i].idx = i
 end
 
 local function btn_set(cur)
