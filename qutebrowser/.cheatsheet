@@ -1,5 +1,6 @@
 -install-
-libjs-pdf
+apt libjs-pdf
+pip adblock
 
 -spellcheck-
 /usr/share/qutebrowser/scripts/dictcli.py install en-US
