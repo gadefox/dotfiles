@@ -1,4 +1,4 @@
-local autofocus = require("awful.autofocus")
+require("awful.autofocus")
 
 -- focus and swap
 local focus = require("focus")
@@ -161,12 +161,14 @@ end
 awesome.connect_signal("launch::dev", function(option)
   if option == 1 then
     awful.spawn("nemiver")
+  elseif option == 2 then
+    awful.spawn("meld")
   end
 end)
 
 awesome.connect_signal("launch::file", function(option)
   if option == 1 then
-    awful.spawn(term("nnn"))
+    awful.spawn("pcmanfm")
   elseif option == 2 then
     awful.spawn("xarchiver")
   end
@@ -181,48 +183,62 @@ awesome.connect_signal("launch::image", function(option)
 end)
 
 awesome.connect_signal("launch::light", function(option)
-  local light, bright, contrast
+  local bright0, contrast0, bright1, contrast1
 
   if option == 1 then
-    light = 0
-    bright = 0
-    contrast = 0
+    bright0 = -1
+    contrast0 = -1
+    bright1 = 0
+    contrast1 = 0
   elseif option == 2 then
-    light = 30
-    bright = 20
-    contrast = 20
+    bright0 = -0.8
+    contrast0 = -0.8
+    bright1 = 20
+    contrast1 = 20
   elseif option == 3 then
-    light = 50
-    bright = 40
-    contrast = 40
+    bright0 = -0.6
+    contrast0 = -0.6
+    bright1 = 40
+    contrast1 = 40
   elseif option == 4 then
-    light = 70
-    bright = 60
-    contrast = 60
+    bright0 = -0.4
+    contrast0 = -0.4
+    bright1 = 60
+    contrast1 = 60
   elseif option == 5 then
-    light = 90
-    bright = 80
-    contrast = 70
+    bright0 = -0.2
+    contrast0 = -0.2
+    bright1 = 80
+    contrast1 = 70
   elseif option == 6 then
-    light = 100
-    bright = 100
-    contrast = 80
+    bright0 = 0
+    contrast0 = 0
+    bright1 = 100
+    contrast1 = 80
   end
 
---  awful.spawn("light -S " .. light)
-  awful.spawn("ddcutil --use-file-io setvcp 10 " .. bright)
-  awful.spawn("ddcutil --use-file-io setvcp 12 " .. contrast)
+  local rgb_names = { "Red", "Green", "Blue" }
+  local nv_cmd = "nvidia-settings"
+
+  for _, color in ipairs(rgb_names) do
+    nv_cmd = nv_cmd .. " -a [DPY:LVDS-0]/" .. color .. "Brightness=" .. bright0
+    nv_cmd = nv_cmd .. " -a [DPY:LVDS-0]/" .. color .. "Contrast=" .. contrast0
+  end
+
+  awful.spawn(nv_cmd)
+  awful.spawn("ddcutil --use-file-io setvcp 10 " .. bright1)
+  awful.spawn("ddcutil --use-file-io setvcp 12 " .. contrast1)
 end)
 
 awesome.connect_signal("launch::office", function(option)
   if option == 1 then
     awful.spawn(term("nvim"))
   elseif option == 2 then
-    awful.spawn.with_shell("swriter")
+    awful.spawn("swriter")
   elseif option == 3 then
-    awful.spawn.with_shell("scalc")
+    awful.spawn("scalc")
   elseif option == 4 then
-    awful.spawn.with_shell("sbase")
+    awful.spawn("sbase")
   end
 end)
 
@@ -238,23 +254,23 @@ awesome.connect_signal("launch::settings", function(option)
   if option == 1 then
     awful.spawn.easy_async_with_shell("ddcutil --use-file-io getvcp 10 | awk '{print $9}'", function(out)
       local vcp = tonumber(string.sub(out, 1, -3))
-      local urgent = {}
+      local urgent
 
       if vcp < 10 then
-        urgent[1] = 1
+        urgent = 1
       elseif vcp < 30 then
-        urgent[1] = 2
+        urgent = 2
       elseif vcp < 50 then
-        urgent[1] = 3
+        urgent = 3
       elseif vcp < 70 then
-        urgent[1] = 4
+        urgent = 4
       elseif vcp < 90 then
-        urgent[1] = 5
+        urgent = 5
       else
-        urgent[1] = 6
+        urgent = 6
       end
 
-      theme.launch("light", { "󱩍", "󱩐", "󱩑", "󱩓", "󱩕", "󰛨" }, urgent)
+      theme.launch("light", { "󱩍", "󱩐", "󱩑", "󱩓", "󱩕", "󰛨" }, { urgent })
     end)
   elseif option == 2 then
     awful.spawn("lxrandr")
@@ -265,12 +281,14 @@ end)
 
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
-    theme.launch("scrot", { "", "󰩭" })
+    awful.spawn(term())
   elseif option == 2 then
-    awful.spawn.with_shell(term("calc"))
+    theme.launch("scrot", { "", "󰩭" })
   elseif option == 3 then
-    awful.spawn.with_shell("jmtpfs /media/mtp")
- elseif option == 4 then
+    awful.spawn(term("calc"))
+  elseif option == 4 then
+    awful.spawn("jmtpfs /media/mtp")
+ elseif option == 5 then
     awful.spawn(term("htop"))
   end
 end)
@@ -279,7 +297,7 @@ awesome.connect_signal("launch::web", function(option)
   if option == 1 then
     awful.spawn("qutebrowser")
   elseif option == 2 then
-    awful.spawn.with_shell("xdg-open 'https://mail.google.com'")
+    awful.spawn("xdg-open 'https://mail.google.com'")
   elseif option == 3 then
     awful.spawn("transmission-gtk")
   end
@@ -295,36 +313,34 @@ end)
 
 awesome.connect_signal("launch::app", function(option)
   if option == 1 then
-    awful.spawn(term())
-  elseif option == 2 then
     theme.launch("file", { "", "" })  -- 
-  elseif option == 3 then
+  elseif option == 2 then
     theme.launch("office", { "", "󱎒", "󱎏", "󱘲" })
-  elseif option == 4 then
+  elseif option == 3 then
     theme.launch("image", { "󰈋", "󱇤" })  -- 
+  elseif option == 4 then
+    theme.launch("dev", { "", "" })
   elseif option == 5 then
-    theme.launch("dev", { "" })  -- 
-  elseif option == 6 then
     theme.launch("web", { "󰈹", "", "󰄠" })
-  elseif option == 7 then
+  elseif option == 6 then
     theme.launch("music", { "󰝚", "󰋍" })
+  elseif option == 7 then
+    theme.launch("tool", { "", "󰭪", "󱖦", "", "" })  -- 
   elseif option == 8 then
-    theme.launch("tool", { "󰭪", "󱖦", "", "" })  -- 
-  elseif option == 9 then
     theme.launch("settings", { "󰃟", "󰍺", "󱘫" })
-  elseif option == 10 then
+  elseif option == 9 then
     msg_now()
   end
 end)
 
 awesome.connect_signal("launch::sys", function(option)
   if option == 1 then
-    awful.spawn.with_shell("systemctl poweroff")
+    awful.spawn("systemctl poweroff")
   elseif option == 2 then
-    awful.spawn.with_shell("systemctl reboot")
+    awful.spawn("systemctl reboot")
   elseif option == 3 then
     theme.lock()
-    awful.spawn.with_shell("systemctl suspend")
+    awful.spawn("systemctl suspend")
   elseif option == 4 then
     theme.lock()
   elseif option == 5 then
@@ -367,7 +383,7 @@ awful.keyboard.append_global_keybindings {
 
   awful.key({ "Mod4" }, "Return", function() awful.spawn(term()) end,
     { description = "open a terminal", group = "launch" }),
-  awful.key({ }, "Menu", function() theme.launch("app", { "", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "", "󱑒" }) end,
+  awful.key({ }, "Menu", function() theme.launch("app", { "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "", "󱑒" }) end,
     { description = "show the menubar", group = "launch" }),
   awful.key({ }, "Print", function()
     theme.notify({
@@ -380,7 +396,7 @@ awful.keyboard.append_global_keybindings {
   end,
     { description = "scrot", group = "launch" }),
 
-  awful.key({ }, "XF86Mail", function() awful.spawn.with_shell("xdg-open 'https://mail.google.com'", { switch_to_tags = true }) end,
+  awful.key({ }, "XF86Mail", function() awful.spawn("xdg-open 'https://mail.google.com'", { switch_to_tags = true }) end,
     { description = "email", group = "launch" }),
   awful.key({ }, "XF86HomePage", function() awful.spawn("qutebrowser") end,
     { description = "browser", group = "launch" }),
@@ -388,8 +404,8 @@ awful.keyboard.append_global_keybindings {
     { description = "browser", group = "launch" }),
   awful.key({ }, "XF86Launch5", function() awful.spawn(term("nnn")) end,
     { description = "nnn fm", group = "launch" }),
-  awful.key({ }, "XF86Launch6", function() awful.spawn("pcmanfm") end,
-    { description = "pcmanfm", group = "launch" }),
+--  awful.key({ }, "XF86Launch6", function() awful.spawn("???") end,
+--    { description = "", group = "launch" }),
   awful.key({ }, "XF86Launch9", function() awful.spawn(term("htop")) end,
     { description = "process monitor", group = "launch" }),
   awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
@@ -414,19 +430,19 @@ awful.keyboard.append_global_keybindings {
     { description = "(un)mute", group = "volume" }),
 
   awful.key({ }, "XF86AudioPlay", function()
-    awful.spawn.easy_async_with_shell("mpc toggle", function(out)
+    awful.spawn.easy_async("mpc toggle", function(out)
       msg_mpd(out, "playerctl_toggle")
     end)
   end,
     { description = "play", group = "music" }),
   awful.key({ }, "XF86AudioPrev", function()
-    awful.spawn.easy_async_with_shell("mpc prev", function(out)
+    awful.spawn.easy_async("mpc prev", function(out)
       msg_mpd(out, "playerctl_prev")
     end)
   end,
     { description = "previous", group = "music" }),
   awful.key({ }, "XF86AudioNext", function()
-    awful.spawn.easy_async_with_shell("mpc next", function(out)
+    awful.spawn.easy_async("mpc next", function(out)
       msg_mpd(out, "playerctl_next")
     end)
   end,
@@ -439,5 +455,4 @@ awful.keyboard.append_global_keybindings {
 }
 
 -- start
-msg_now()
 awful.spawn("dex -a")
