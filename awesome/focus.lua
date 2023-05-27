@@ -1,7 +1,6 @@
 local awful = require("awful")
 local dpi = require("beautiful.xresources").apply_dpi
 local gears = require("gears")
-local theme = require("theme")
 local wibox = require("wibox")
 
 local focus, wiboxes = {}, {}
@@ -173,7 +172,7 @@ local function swap_target(target, cltbl, dir, cur)
     end
 
     target = gears.geometry.rectangle.get_in_direction(dir, screen_geom, cur:geometry())
-    if target and target ~= c.screen then
+    if target and target ~= cur.screen then
       cur.screen = target
       cur:tags { screen[target].selected_tag }
       cur:raise()
@@ -184,7 +183,7 @@ local function swap_target(target, cltbl, dir, cur)
 end
 
 local function bydirection(dir, swap)
-  cur = client.focus
+  local cur = client.focus
   if not cur then
     cur = emulate_client(mouse.screen)
   end
@@ -254,11 +253,11 @@ local function handle(dir, swap)
 end
 
 local function create_arc(idx, round_s, round_e)
-  local colors = { [0] = 1, 5, 6, 7 }  -- idx <0..3>
+  local colors = { [0] = "#7cbb00", "#ffbb00", "#f65314", "#00a1f1" }  -- idx <0..3>
 
   return wibox.widget {
     shape = function(cr, width, height) gears.shape.arc(cr, width, height, dpi(12), math.pi * idx / 2, math.pi * (idx + 1) / 2, round_s, round_e) end,
-    bg = theme.colors[colors[idx]],
+    bg = colors[idx],
     widget = wibox.container.background
   }
 end
