@@ -427,7 +427,7 @@ local function btn_create(color)
   return wibtn
 end
 
-for i = 1, 10 do
+for i = 1, 9 do
   local color = i ~= 8 and i % #theme.colors or 8
   wibtns[i] = btn_create(theme.colors[color])
   wibtns[i].idx = i
