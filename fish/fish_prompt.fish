@@ -1,25 +1,21 @@
 function fish_prompt
   set -l last $status
-  set -l yellow (set_color yellow)
-  set -l red (set_color red)
-  set -l green (set_color green)
-  set -l blue (set_color blue)
-  set -l normal (set_color normal)
-
-  echo ""
+  echo
 
   if test (id -u $USER) = 0
-    echo -n -s $yellow "☢ "
+    set_color yellow
+    echo -n "☢ "
   end
 
-  echo -n -s $blue (pwd | sed "s:^$HOME:~:")
-  echo ""
+  set_color blue
+  echo (pwd | sed "s:^$HOME:~:")
 
   if test $last = 0
-    echo -n $green
+    set_color green
   else
-    echo -n $red
+    set_color red
   end
 
-  echo -n "❯" $normal
+  echo -n "❯ "
+  set_color normal
 end
