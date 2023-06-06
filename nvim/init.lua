@@ -217,10 +217,10 @@ require("Comment").setup {
 vim.opt.list = true
 vim.opt.listchars = { trail = "·", nbsp = "◇", tab = "→ ", extends = "▸", precedes = "◂", space = "⋅", eol = "↴" }
 
-set_hl({
+set_hl {
   IndentBlanklineChar = { fg = palette.overlay0 },
   IndentBlanklineContextChar = { fg = palette.overlay0 }
-})
+}
 
 require("indent_blankline").setup {
   char = "┊",
@@ -261,13 +261,59 @@ lspcfg.lua_ls.setup {
   capabilities = lspcap
 }
 
--- noice
-set_hl({
-  -- NotifyINFOBody = { bg = palette.surface0 },
-  -- NotifyINFOBorder = { bg = palette.surface0, fg = palette.surface0 },
-  -- NotifyINFOIcon = { bg = palette.surface0, fg = palette.green },
-  -- NotifyINFOTitle = { bg = palette.green, fg = palette.surface0 },
+-- notify
+set_hl {
+  NotifyINFOBody = { bg = palette.surface0 },
+  NotifyINFOBorder = { bg = palette.surface0, fg = palette.surface0 },
+  NotifyINFOIcon = { bg = palette.surface0, fg = palette.green },
+  NotifyINFOTitle = { bg = palette.green, fg = palette.mantle },
+  NotifyWARNBody = { bg = palette.surface0 },
+  NotifyWARNBorder = { bg = palette.surface0, fg = palette.surface0 },
+  NotifyWARNIcon = { bg = palette.surface0, fg = palette.peach },
+  NotifyWARNTitle = { bg = palette.peach, fg = palette.mantle },
+  NotifyERRORBody = { bg = palette.surface0 },
+  NotifyERRORBorder = { bg = palette.surface0, fg = palette.surface0 },
+  NotifyERRORIcon = { bg = palette.surface0, fg = palette.red },
+  NotifyERRORTitle = { bg = palette.red, fg = palette.mantle }
+}
 
+local renderbase = require("notify.render.base")
+
+require("notify").setup {
+  on_open = function(win, record)
+    vim.api.nvim_win_set_config(win, {
+      border = "solid",
+      title = {
+        {
+          " " .. record.title[1] .. " ",
+          "Notify" .. record.level .. "Title"
+        }
+      },
+      title_pos = "center"
+    })
+  end,
+  render = function(bufnr, notif, highlights)
+    local namespace = renderbase.namespace()
+    local length = string.len(notif.icon)
+
+    notif.message[1] = string.format("%s %s", notif.icon, notif.message[1])
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, notif.message)
+
+    vim.api.nvim_buf_set_extmark(bufnr, namespace, 0, 0, {
+      hl_group = highlights.icon,
+      end_col = length,
+      priority = 50
+    })
+    vim.api.nvim_buf_set_extmark(bufnr, namespace, 0, length, {
+      hl_group = highlights.body,
+      end_line = #notif.message,
+      priority = 50
+    })
+  end
+}
+
+-- noice
+set_hl {
 	NoiceCmdlinePopup = { bg = palette.surface0 },
   NoiceCmdlineIconCalculator = { bg = palette.surface0, fg = palette.flamingo },
 	NoiceCmdlineIconCmdLine = { bg = palette.surface0, fg = palette.pink },
@@ -290,11 +336,18 @@ set_hl({
 	NoiceCmdlinePopupTitleInput = { bg = palette.red, fg = palette.mantle },
 	NoiceCmdlinePopupTitleLua = { bg = palette.blue, fg = palette.mantle },
 	NoiceCmdlinePopupTitleSearch = { bg = palette.mauve, fg = palette.mantle }
-})
+}
 --
 require("noice").setup {
   health = {
     checker = false
+  },
+  lsp = {
+    override = {
+      ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+      ["vim.lsp.util.stylize_markdown"] = true,
+      ["cmp.entry.get_documentation"] = true,
+    },
   },
   popupmenu = {
     enabled = true
@@ -309,7 +362,7 @@ require("oil").setup {
 }
 
 -- telescope
-set_hl({
+set_hl {
 	TelescopeMatching = { fg = palette.flamingo },
 	TelescopePreviewBorder = { bg = palette.mantle, fg = palette.mantle },
 	TelescopePreviewNormal = { bg = palette.mantle },
@@ -322,7 +375,7 @@ set_hl({
 	TelescopeResultsBorder = { bg = palette.mantle, fg = palette.mantle },
 	TelescopeResultsTitle = { fg = palette.mantle },
 	TelescopeSelection = { fg = palette.text, bg = palette.surface0, bold = true }
-})
+}
 
 local telescope = require("telescope")
 telescope.setup {
@@ -356,7 +409,7 @@ require("nvim-tree").setup {
 
 -- treesitter
 require("nvim-treesitter.configs").setup {
-  ensure_installed = { "c", "cpp", "lua", "python", "json" },
+  ensure_installed = { "c", "cpp", "lua", "python", "json", "regex", "vim" },
   highlight = {
     enable = true
   },
