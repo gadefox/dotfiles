@@ -4,11 +4,9 @@ tls on
 tls_trust_file /etc/ssl/certs/ca-certificates.crt
 logfile -
 
-account gmail
+account default
 host smtp.gmail.com
 from gadefoxren@gmail.com
 user gadefoxren@gmail.com
 auth oauthbearer
-passwordeval oauth2get gmail gadefoxren
-
-account default : gmail
+passwordeval oauth2-gmail gadefoxren
