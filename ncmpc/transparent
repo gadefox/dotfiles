@@ -6,7 +6,6 @@ scroll-sep = "    "
 text-editor = "nvim"
 wide-cursor = no
 set-xterm-title = no
-colordef blue = 142, 153, 228
 color alert = 14
 color background = none
 color browser-directory = 13
