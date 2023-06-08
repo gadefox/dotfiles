@@ -4,10 +4,11 @@ set mailcap_path = "~/.config/mutt/mailcap"
 set signature = "~/.config/mutt/signature"
 
 set charset = "utf-8"
+unset copy
 set editor = "nvim"
 set forward_quote
 set include
-set mail_check = 60
+set mail_check = 300
 unset markers
 set menu_scroll
 set mime_forward
@@ -22,6 +23,7 @@ set sort_aux = last-date-received
 set ssl_force_tls
 set text_flowed
 set tilde
+unset use_from
 unset wait_key
 
 set crypt_autosign
@@ -30,10 +32,8 @@ set crypt_replysignencrypted
 set pgp_sign_as = 0x0D269DCFA58EA395
 set pgp_timeout = 7200
 
-set realname = "René"
-set from = "gadefoxren@gmail.com"
-set imap_authenticators = "oauthbearer"
-set imap_oauth_refresh_command = "oauth2get google gadefoxren"
+set imap_authenticators = "oauthbearer:xoauth2"
+set imap_oauth_refresh_command = "oauth2-gmail gadefoxren"
 set imap_user = "gadefoxren@gmail.com"
 set folder = "imaps://imap.gmail.com:993/"
 set spoolfile = "+INBOX"
@@ -42,8 +42,6 @@ set record = "+[Gmail]/Sent Mail"
 set trash = "+[Gmail]/Bin"
 
 mailboxes =INBOX =Work "=[Gmail]/Sent Mail" =[Gmail]/Drafts =[Gmail]/Bin
-
-auto_view text/html
 
 bind index G imap-fetch-mail
 
