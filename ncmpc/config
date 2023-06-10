@@ -1,12 +1,13 @@
-colordef blue = 142, 153, 228
+colordef black = 142,153,228
+colordef blue = 118,126,189
 color alert = 14
 color browser-directory = 13
 color browser-playlist = 10
-color line = 8
-color list = 15
+color line = 15
+color list = white
 color list-bold = magenta
 color progressbar = 13
-color progressbar-background = 8
+color progressbar-background = 15
 color status-state = 14
 color status-song = magenta
 color status-time = 13
