@@ -1,0 +1,36 @@
+set attach_save_dir = "~/downloads"
+set certificate_file = "~/.config/mutt/certs"
+unset copy
+set crypt_autosign
+set crypt_replysign
+set crypt_replysignencrypted
+set charset = "utf-8"
+set editor = "nvim"
+set forward_quote
+set include
+set mailcap_path = "/etc/neomuttrc.d/mailcap"
+set mail_check = 300
+unset markers
+set menu_scroll
+set mime_forward
+set pager_context = 3
+set pager_index_lines = 10
+set pager_stop
+set pgp_timeout = 7200
+set query_command = "abook --mutt-query '%s'"
+set reply_to
+set sendmail = "msmtp"
+set signature = "~/.config/mutt/sign"
+set sort = reverse-threads
+set sort_aux = last-date-received
+set ssl_force_tls
+set text_flowed
+set tilde
+unset use_from
+unset wait_key
+
+ignore *
+unignore from: subject to cc date x-mailer x-url user-agent
+mailto_allow = cc in-reply-to references
+macro generic,index,pager \ca "<shell-escape>abook<enter>" "launch abook"
+macro index,pager A "<pipe-message>abook --add-email<enter>" "add the sender address to abook"
