@@ -1,7 +1,7 @@
 color attachment yellow default
 color hdrdefault magenta default
-color indicator default brightblack
-color normal color15 black
+color indicator default brightwhite
+color normal white brightblack
 color signature color13 default
 color status color14 default
 color tilde magenta default
@@ -23,4 +23,3 @@ color quoted green default
 color quoted1 blue default
 color quoted2 cyan default
 color quoted3 red default
-color quoted4 white default
