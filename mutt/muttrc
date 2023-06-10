@@ -1,5 +1,4 @@
-source /usr/libexec/neomutt/source-neomuttrc.d|
-set imap_oauth_refresh_command = "oauth2-gmail gadefoxren"
 set imap_user = "gadefoxren"
 set pgp_sign_as = 0x0D269DCFA58EA395
-mailboxes =INBOX =Work "=[Gmail]/Sent Mail" =[Gmail]/Drafts =[Gmail]/Bin
+source /usr/libexec/neomutt/source-neomuttrc.d|
+mailboxes =INBOX "=[Gmail]/Sent Mail" =[Gmail]/Drafts =[Gmail]/Bin =Work
