@@ -3,7 +3,7 @@ color hdrdefault magenta default
 color indicator default brightwhite
 color normal white brightblack
 color signature color13 default
-color status color14 default
+color status color14 black
 color tilde magenta default
 color tree brightgreen default
 
