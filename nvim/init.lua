@@ -21,7 +21,6 @@ require("packer").startup(function(use)
   use "stevearc/oil.nvim"
 end)
 
--- global settings
 vim.bo.autoindent = true
 vim.bo.expandtab = true  -- spaces instead of tabs
 vim.bo.shiftwidth = 2
@@ -72,7 +71,7 @@ local palette = require("catppuccin.palettes").get_palette()
 
 local function set_hl(colors)
   for hl, col in pairs(colors) do
-	  vim.api.nvim_set_hl(0, hl, col)
+    vim.api.nvim_set_hl(0, hl, col)
   end
 end
 
@@ -314,30 +313,30 @@ require("notify").setup {
 
 -- noice
 set_hl {
-	NoiceCmdlinePopup = { bg = palette.surface0 },
+  NoiceCmdlinePopup = { bg = palette.surface0 },
   NoiceCmdlineIconCalculator = { bg = palette.surface0, fg = palette.flamingo },
-	NoiceCmdlineIconCmdLine = { bg = palette.surface0, fg = palette.pink },
-	NoiceCmdlineIconFilter = { bg = palette.surface0, fg = palette.lavender },
+  NoiceCmdlineIconCmdLine = { bg = palette.surface0, fg = palette.pink },
+  NoiceCmdlineIconFilter = { bg = palette.surface0, fg = palette.lavender },
   NoiceCmdlineIconHelp = { bg = palette.surface0, fg = palette.green },
-	NoiceCmdlineIconInput = { bg = palette.surface0, fg = palette.red },
-	NoiceCmdlineIconLua = { bg = palette.surface0, fg = palette.blue },
-	NoiceCmdlineIconSearch = { bg = palette.surface0, fg = palette.mauve },
+  NoiceCmdlineIconInput = { bg = palette.surface0, fg = palette.red },
+  NoiceCmdlineIconLua = { bg = palette.surface0, fg = palette.blue },
+  NoiceCmdlineIconSearch = { bg = palette.surface0, fg = palette.mauve },
   NoiceCmdlinePopupBorderCalculator = { bg = palette.surface0, fg = palette.surface0 },
-	NoiceCmdlinePopupBorderCmdLine = { bg = palette.surface0, fg = palette.surface0 },
-	NoiceCmdlinePopupBorderFilter = { bg = palette.surface0, fg = palette.surface0 },
+  NoiceCmdlinePopupBorderCmdLine = { bg = palette.surface0, fg = palette.surface0 },
+  NoiceCmdlinePopupBorderFilter = { bg = palette.surface0, fg = palette.surface0 },
   NoiceCmdlinePopupBorderHelp = { bg = palette.surface0, fg = palette.surface0 },
-	NoiceCmdlinePopupBorderInput = { bg = palette.surface0, fg = palette.surface0 },
-	NoiceCmdlinePopupBorderLua = { bg = palette.surface0, fg = palette.surface0 },
-	NoiceCmdlinePopupBorderSearch = { bg = palette.surface0, fg = palette.surface0 },
-	NoiceCmdlinePopupTitleCalculator = { bg = palette.flamingo, fg = palette.mantle },
-	NoiceCmdlinePopupTitleCmdLine = { bg = palette.pink, fg = palette.mantle },
-	NoiceCmdlinePopupTitleFilter = { bg = palette.lavender, fg = palette.mantle },
+  NoiceCmdlinePopupBorderInput = { bg = palette.surface0, fg = palette.surface0 },
+  NoiceCmdlinePopupBorderLua = { bg = palette.surface0, fg = palette.surface0 },
+  NoiceCmdlinePopupBorderSearch = { bg = palette.surface0, fg = palette.surface0 },
+  NoiceCmdlinePopupTitleCalculator = { bg = palette.flamingo, fg = palette.mantle },
+  NoiceCmdlinePopupTitleCmdLine = { bg = palette.pink, fg = palette.mantle },
+  NoiceCmdlinePopupTitleFilter = { bg = palette.lavender, fg = palette.mantle },
   NoiceCmdlinePopupTitleHelp = { bg = palette.green, fg = palette.mantle },
-	NoiceCmdlinePopupTitleInput = { bg = palette.red, fg = palette.mantle },
-	NoiceCmdlinePopupTitleLua = { bg = palette.blue, fg = palette.mantle },
-	NoiceCmdlinePopupTitleSearch = { bg = palette.mauve, fg = palette.mantle }
+  NoiceCmdlinePopupTitleInput = { bg = palette.red, fg = palette.mantle },
+  NoiceCmdlinePopupTitleLua = { bg = palette.blue, fg = palette.mantle },
+  NoiceCmdlinePopupTitleSearch = { bg = palette.mauve, fg = palette.mantle }
 }
---
+
 require("noice").setup {
   health = {
     checker = false
@@ -363,18 +362,18 @@ require("oil").setup {
 
 -- telescope
 set_hl {
-	TelescopeMatching = { fg = palette.flamingo },
-	TelescopePreviewBorder = { bg = palette.mantle, fg = palette.mantle },
-	TelescopePreviewNormal = { bg = palette.mantle },
-	TelescopePreviewTitle = { bg = palette.green, fg = palette.mantle },
-	TelescopePromptBorder = { bg = palette.surface0, fg = palette.surface0 },
-	TelescopePromptNormal = { bg = palette.surface0 },
-	TelescopePromptPrefix = { bg = palette.surface0 },
-	TelescopePromptTitle = { bg = palette.pink, fg = palette.mantle },
-	TelescopeResultsNormal = { bg = palette.mantle },
-	TelescopeResultsBorder = { bg = palette.mantle, fg = palette.mantle },
-	TelescopeResultsTitle = { fg = palette.mantle },
-	TelescopeSelection = { fg = palette.text, bg = palette.surface0, bold = true }
+  TelescopeMatching = { fg = palette.flamingo },
+  TelescopePreviewBorder = { bg = palette.mantle, fg = palette.mantle },
+  TelescopePreviewNormal = { bg = palette.mantle },
+  TelescopePreviewTitle = { bg = palette.green, fg = palette.mantle },
+  TelescopePromptBorder = { bg = palette.surface0, fg = palette.surface0 },
+  TelescopePromptNormal = { bg = palette.surface0 },
+  TelescopePromptPrefix = { bg = palette.surface0 },
+  TelescopePromptTitle = { bg = palette.pink, fg = palette.mantle },
+  TelescopeResultsNormal = { bg = palette.mantle },
+  TelescopeResultsBorder = { bg = palette.mantle, fg = palette.mantle },
+  TelescopeResultsTitle = { fg = palette.mantle },
+  TelescopeSelection = { fg = palette.text, bg = palette.surface0, bold = true }
 }
 
 local telescope = require("telescope")
