@@ -1,11 +1,3 @@
-enable-mouse = yes
-hide-cursor = 15
-seek-time = 5
-scroll-offset = 10
-scroll-sep = "    "
-text-editor = "nvim"
-wide-cursor = no
-set-xterm-title = no
 color alert = 14
 color background = none
 color browser-directory = 13
@@ -20,3 +12,12 @@ color status-song = magenta/none
 color status-time = 13/none
 color title = 14/none
 color title-bold = yellow/none
+
+enable-mouse = yes
+hide-cursor = 15
+seek-time = 5
+scroll-offset = 10
+scroll-sep = "    "
+text-editor = "nvim"
+wide-cursor = no
+set-xterm-title = no
