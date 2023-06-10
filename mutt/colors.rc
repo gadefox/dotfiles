@@ -22,6 +22,5 @@ color index yellow default "~F"
 color quoted green default
 color quoted1 blue default
 color quoted2 cyan default
-color quoted3 color11 default
+color quoted3 color9 default
 color quoted4 white default
-color quoted5 color12 default
