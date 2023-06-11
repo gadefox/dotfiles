@@ -58,7 +58,7 @@ vim.keymap.set("n", "<S-Tab>", ":bprevious<CR>", { silent = true })
 
 vim.api.nvim_create_autocmd("BufReadPost", {  -- go to last location when opening a buffer
   callback = function()
-    if vim.fn.line(".") > 1 then  -- if a line has already been specified on the command line, we are done
+    if vim.fn.line(".") > 1 then  -- If a line has already been specified on the command line, we are done
       return
     end
 
