@@ -5,4 +5,8 @@ set spoolfile = "+INBOX"
 set postponed = "+[Gmail]/Drafts"
 set record = "+[Gmail]/Sent Mail"
 set trash = "+[Gmail]/Bin"
-bind index G imap-fetch-mail
+
+named-mailboxes "Inbox" "+INBOX"
+named-mailboxes "Drafts" "+[Gmail]/Drafts"
+named-mailboxes "Sent" "+[Gmail]/Sent Mail"
+named-mailboxes "Trash" "+[Gmail]/Bin"
