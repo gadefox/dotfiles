@@ -1,4 +1,4 @@
 set imap_user = "gadefoxren"
 set pgp_sign_as = 0x0D269DCFA58EA395
 source /usr/libexec/neomutt/source-neomuttrc.d|
-mailboxes =INBOX "=[Gmail]/Sent Mail" =[Gmail]/Drafts =[Gmail]/Bin =Work
+named-mailboxes "Work" "+Work"
