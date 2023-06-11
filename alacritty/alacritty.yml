@@ -23,7 +23,7 @@ colors:
     custom_colors: true
     cursor: "#6C6370"
   normal:
-    black: "#1E2030"
+    black: "#24273A"
     red: "#ED8796"
     green: "#A1B56C"
     yellow: "#F5A97F" 
@@ -32,11 +32,11 @@ colors:
     cyan: "#8BD5CA"
     white: "#CAD3F5"
   bright:
-    black: "#24273A"
+    black: "#363A4F"
     red: "#EE99A0"
     green: "#F0C6C6"
     yellow: "#EED49F"
     blue: "#7DC4E4" 
     magenta: "#F5BDE6"
     cyan: "#F4DBD6"
-    white: "#363A4F"
+    white: "#1E2030"
