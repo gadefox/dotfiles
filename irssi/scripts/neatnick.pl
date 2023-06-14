@@ -2,9 +2,7 @@
 # =====
 # after loading the script, add the colour expando to the format
 # (themes' abstracts are not supported)
-#
 #   /format pubmsg {pubmsgnick $2 {pubnick $nickcolor$0}}$1
-#
 # alternatively, use it together with nm2 script
 
 # Options
@@ -60,35 +58,42 @@
 use strict;
 use warnings;
 
-our $VERSION = '0.4.2';
+our $VERSION = '0.5';
 our %IRSSI = (
     authors	=> 'Nei',
-    name	=> 'neat',
+    name	=> 'neatnick',
     description	=> 'colorise nicks',
     license	=> 'GPL v2',
    );
 
+no warnings 'redefine';
+
+use Hash::Util qw(lock_keys);
+use Irssi;
+
+{ package Irssi::Nick }
+
 Irssi::theme_register([
-  'neatnick_loaded', '{perl NeatNick}Loaded {comment $0}',
-  'neatnick_not_added', '{perl NeatNick}Nothing added',
-  'neatnick_not_removed', '{perl NeatNick}Nothing removed',
-  'neatnick_no_color', '{perl NeatNick}{nick $0} is not colored (yet) $1',
-  'neatnick_no_global', '{perl NeatNick}No global color set for {nick $0}',
-  'neatnick_not_found', '{perl NeatNick}Could not find {nick $0} in $1',
-  'neatnick_recolor', '{perl NeatNick}Re-coloring {nick $0} in $1',
-  'neatnick_reset', '{perl NeatNick}$2 Coloring reset for {nick $0} $1$2',
-  'neatnick_no_color', '{perl NeatNick}{nick $0} has no color set $1',
-  'neatnick_reset', '{perl NeatNick}Reset all coloring',
-  'neatnick_file_save', '{perl NeatNick}Saving colors to file',
-  'neatnick_err_save', '{perlerror NeatNick Error saving nick colours: $!}',
+  'neatnick_loaded',          '{perl NeatNick}Loaded {comment $0}',
+  'neatnick_not_added',       '{perl NeatNick}Nothing added',
+  'neatnick_not_removed',     '{perl NeatNick}Nothing removed',
+  'neatnick_no_color',        '{perl NeatNick}{nick $0} is not colored (yet) $1',
+  'neatnick_no_global',       '{perl NeatNick}No global color set for {nick $0}',
+  'neatnick_not_found',       '{perl NeatNick}Could not find {nick $0} in $1',
+  'neatnick_recolor',         '{perl NeatNick}Re-coloring {nick $0} in $1',
+  'neatnick_reset',           '{perl NeatNick}$2 Coloring reset for {nick $0} $1$2',
+  'neatnick_no_color',        '{perl NeatNick}{nick $0} has no color set $1',
+  'neatnick_reset',           '{perl NeatNick}Reset all coloring',
+  'neatnick_file_save',       '{perl NeatNick}Saving colors to file',
+  'neatnick_err_save',        '{perlerror NeatNick Error saving nick colours: $!}',
   'neatnick_err_netchan_arg', '{perlerror NeatNick No network/channel argument given $0$1}',
-  'neatnick_err_no_net', '{perlerror NeatNick Missing network/ in argument given $0}',
-  'neatnick_err_no_chan', '{perlerror NeatNick Missing /channel in argument given $0}',
-  'neatnick_err_no_nick', '{perlerror NeatNick No nick argument given $0}',
-  'neatnick_err_wrong_nick', '{perlerror NeatNick / not supported in nicks in argument given $0}',
-  'neatnick_err_no_color', '{perlerror NeatNick / No colour or invalid colour argument given $0}',
-  'neatnick_err_arg_count', '{perlerror NeatNick Not enough arguments for /neat $0}',
-  'neatnick_err_compile', '{perlerror NeatNick %Uneatnick_ignorechars%U did not compile: $0}',
+  'neatnick_err_no_net',      '{perlerror NeatNick Missing network/ in argument given $0}',
+  'neatnick_err_no_chan',     '{perlerror NeatNick Missing /channel in argument given $0}',
+  'neatnick_err_no_nick',     '{perlerror NeatNick No nick argument given $0}',
+  'neatnick_err_wrong_nick',  '{perlerror NeatNick / not supported in nicks in argument given $0}',
+  'neatnick_err_no_color',    '{perlerror NeatNick / No colour or invalid colour argument given $0}',
+  'neatnick_err_arg_count',   '{perlerror NeatNick Not enough arguments for /neat $0}',
+  'neatnick_err_compile',     '{perlerror NeatNick %Uneatnick_ignorechars%U did not compile: $0}',
 ]);
 
 sub help_neatnick {
@@ -128,11 +133,6 @@ NEATNICK COLORS REMOVE <list of colours>
 
 HELP
 }
-
-use Hash::Util qw(lock_keys);
-use Irssi;
-
-{ package Irssi::Nick }
 
 my @action_protos = qw(irc silc xmpp);
 my (%set_colour, %avoid_colour, %has_colour, %last_time, %netchan_hist);
@@ -185,6 +185,12 @@ my @colour_list = map { @$_ } @colour_bags;
 my @bases = split //, 'kbgcrmywKBGCRMYW04261537';
 my %base_map = map { $bases[$_] => sprintf '%02X', ($_ % 0x10) } 0..$#bases;
 my %ext_to_base_map = map { (sprintf '%02X', $_) => $bases[$_] } 0..15;
+
+my $irssi_mumbo = qr/\cD[`-i]|\cD[&-@\xff]./;
+my $nickchar = qr/[\]\[[:alnum:]\\|`^{}_-]/;
+my $nick_pat = qr/($nickchar+)/;
+my @ignore_list;
+my $colourer_script;
 
 sub expando_neatcolour {
     return $expando;
@@ -420,10 +426,10 @@ sub colourise_nt {
 
 sub expire_hist {
     for my $ch (@_) {
-	if ($netchan_hist{$ch}
-		&& @{$netchan_hist{$ch}} > 2 * $history_lines) {
-	    splice @{$netchan_hist{$ch}}, 0, $history_lines;
-	}
+      if ($netchan_hist{$ch}
+    		&& @{$netchan_hist{$ch}} > 2 * $history_lines) {
+  	      splice @{$netchan_hist{$ch}}, 0, $history_lines;
+      }
     }
 }
 
@@ -551,7 +557,7 @@ sub nicklist_changed {
 }
 
 sub save_colours {
-    open my $fid, '>', Irssi::get_irssi_dir() . '/saved_nick_colors'
+    open my $fid, '>', Irssi::get_irssi_dir() . '/neatnick.conf'
     or do {
 	    Irssi::printformat(MSGLEVEL_CLIENTCRAP, 'neatnick_err_save') unless $exited;
 	    return;
@@ -607,7 +613,7 @@ sub save_colours {
 sub load_colours {
     $session_load_time = time;
 
-    open my $fid, '<', Irssi::get_irssi_dir() . '/saved_nick_colors'
+    open my $fid, '<', Irssi::get_irssi_dir() . '/neatnick.conf'
       or return;
     my $mode;
     while (my $line = <$fid>) {
@@ -989,10 +995,12 @@ sub setup_changed {
 	            delete $last_time{$netch}{$nick};
 		        }
     		  }
-	      }
-	    $session_load_time = $time;
+        }
+        $session_load_time = $time;
   	  }
     }
+
+    @ignore_list = split /\s+|,/, Irssi::settings_get_str('neatnick_ignore_list');
 }
 
 sub internals {
@@ -1011,40 +1019,140 @@ sub init_nickcolour {
     load_colours();
 }
 
+sub _get_chanref {
+    my ($dest) = @_;
+    return unless $dest->{level} & MSGLEVEL_PUBLIC;
+    return unless defined $dest->{target};
+    return unless ref $dest->{server};
+    $dest->{server}->channel_find($dest->{target})
+}
+
+sub _colourise_nicks {
+    my ($dest, $chanref, @nicks) = @_;
+
+    my %nicks = map { $_->[0] => get_nick_color2($dest->{server}{tag}, $chanref->{name}, $_->[1], 1) }
+    grep { defined }
+    map { if (my $nr = $chanref->nick_find($_)) {
+      [ $_ => $nr->{nick} ]
+    } }
+    keys %{ +{ map { $_ => undef } @nicks } };
+    delete @nicks{ @ignore_list };
+
+    my $nick_re = join '|', map { quotemeta } sort { length $b <=> length $a } grep { length $nicks{$_} } keys %nicks;
+
+    (\%nicks, $nick_re)
+}
+
+sub _colourise_form {
+    my ( $text,
+    $skip,
+    $nicks,
+    $nick_re ) = @_;
+    return if $skip < 0;
+
+    my $repeat = Irssi::settings_get_bool('neatnick_repeat_formats');
+
+    my @forms = split /((?:$irssi_mumbo|\s|[.,*@%+&!#$()=~'";:?\/><]+(?=$irssi_mumbo|\s))+)/, $text, -1;
+    my $ret = '';
+    my $fmtstack = '';
+    while (@forms) {
+      my ($t, $form) = splice @forms, 0, 2;
+      if ($skip > 0) {
+        --$skip;
+        $ret .= $t;
+        $ret .= $form if defined $form;
+        if ($repeat) {
+          $fmtstack .= join '', $form =~ /$irssi_mumbo/g if defined $form;
+          $fmtstack =~ s/\cDe//g;
+        }
+      }
+      elsif (length $nick_re
+      && $t =~ s/((?:^|\s)\W{0,3}?)(?<!$nickchar|')($nick_re)(?!$nickchar)/$1$nicks->{$2}$2\cDg$fmtstack/g) {
+        $ret .= "$t\cDg$fmtstack";
+        $ret .= $form if defined $form;
+        $fmtstack .= join '', $form =~ /$irssi_mumbo/g if defined $form;
+        $fmtstack =~ s/\cDe//g;
+      }
+      else {
+        $ret .= $t;
+        $ret .= $form if defined $form;
+      }
+    }
+
+    $ret
+}
+
+# TXT_OWN_MSG,                                         server->nick, msg, nickmode
+# TXT_OWN_MSG_CHANNEL,                                 server->nick, target, msg, nickmode
+# TXT_PUBMSG_HILIGHT,                                  color, printnick, msg, nickmode
+# TXT_PUBMSG_HILIGHT_CHANNEL,                          color, printnick, target, msg, nickmode
+# for_me ? TXT_PUBMSG_ME : TXT_PUBMSG,                 printnick, msg, nickmode
+# for_me ? TXT_PUBMSG_ME_CHANNEL : TXT_PUBMSG_CHANNEL, printnick, target, msg, nickmode
+sub prt_format_issue {
+    my ( $theme,
+      $module,
+      $dest,
+      $format,
+      @args
+    ) = @_;
+    my $chanref = _get_chanref($dest);
+    return unless $chanref;
+
+    my $arg = 1;
+    $arg++ if $format =~ /_channel/;
+    $arg++ if $format =~ /_hilight/;
+    return unless @args > $arg;
+    
+    utf8::decode($args[$arg]);
+    my $text = $args[$arg];
+    my $stripped = Irssi::strip_codes($text);
+
+    utf8::decode($stripped);
+    my ($nicks, $nick_re) = _colourise_nicks($dest, $chanref, $stripped =~ /$nick_pat/g);
+    return unless $nicks;
+
+    $args[$arg] = _colourise_form($text, 0, $nicks, $nick_re);
+    Irssi::signal_continue($theme, $module, $dest, $format, @args)
+	    if defined $args[$arg] && $args[$arg] ne $text;
+}
+
 Irssi::settings_add_str('neatnick', 'neatnick_colors', 'rRgGybBmMcCX42X3AX5EX4NX3HX3CX32');
 Irssi::settings_add_str('neatnick', 'neatnick_ignorechars', '');
 Irssi::settings_add_time('neatnick', 'neatnick_reassign_time', '30min');
 Irssi::settings_add_bool('neatnick', 'neatnick_global', 0);
+Irssi::settings_add_str('neatnick', 'neatnick_ignore_list' => '');
+Irssi::settings_add_bool('neatnick', 'neatnick_repeat_formats' => 0);
 
 init_nickcolour();
 
 Irssi::expando_create('nickcolor', \&expando_neatcolour, {
-    'message public'  => 'none',
+    'message public'     => 'none',
     'message own_public' => 'none',
     (map { ("message $_ action"     => 'none',
-	    "message $_ own_action" => 'none')
-       } @action_protos),
+            "message $_ own_action" => 'none')
+    } @action_protos),
 });
 
 Irssi::expando_create('inickcolor', \&expando_neatcolour_inv, {
-    'message public'  => 'none',
+    'message public'     => 'none',
     'message own_public' => 'none',
     (map { ("message $_ action"     => 'none',
-	    "message $_ own_action" => 'none')
-       } @action_protos),
+            "message $_ own_action" => 'none')
+    } @action_protos),
 });
 
 Irssi::signal_add({
-    'message public' => 'msg_line_tag',
+    'message public'     => 'msg_line_tag',
     'message own_public' => 'msg_line_clear',
     (map { ("message $_ action"     => 'msg_line_tag',
-	    "message $_ own_action" => 'msg_line_clear')
-       } qw(irc silc)),
+            "message $_ own_action" => 'msg_line_clear')
+    } qw(irc silc)),
     'message xmpp action'     => 'msg_line_tag_xmppaction',
     'message xmpp own_action' => 'msg_line_clear',
-    'print text' => 'prnt_clear_public',
-    'nicklist changed'  => 'nicklist_changed',
-    'gui exit' => 'exit_save',
+    'print text'              => 'prnt_clear_public',
+    'nicklist changed'        => 'nicklist_changed',
+    'gui exit'                => 'exit_save',
+    'print format'            => 'prt_format_issue',
 });
 
 Irssi::command_bind({
