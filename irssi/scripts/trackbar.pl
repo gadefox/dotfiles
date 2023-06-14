@@ -76,9 +76,9 @@ use Encode;
 use POSIX qw(strftime);
 
 Irssi::theme_register([
-    'trackbar_loaded', '{perl Trackbar}Loaded {comment $0}',
+    'trackbar_loaded',      '{perl Trackbar}Loaded {comment $0}',
     'trackbar_all_removed', '{perl Trackbar}All the trackbars have been removed',
-    'trackbar_not_found', '{perl Trackbar}No trackbar found in this window',
+    'trackbar_not_found',   '{perl Trackbar}No trackbar found in this window',
 ]);
 
 sub trackbar_help {
@@ -381,25 +381,25 @@ Irssi::settings_add_bool('trackbar', 'trackbar_require_seen', 0);
 
 update_config();
 
-Irssi::signal_add_last( 'mainwindow resized' => 'trackbar_redraw');
+Irssi::signal_add_last( 'mainwindow resized'    => 'trackbar_redraw');
 Irssi::signal_register({'window trackbar added' => [qw/Irssi::UI::Window/]});
-Irssi::signal_register({'window trackbar seen' => [qw/Irssi::UI::Window/]});
-Irssi::signal_register({'gui page scrolled' => [qw/Irssi::UI::Window/]});
-Irssi::signal_add_last('gui page scrolled' => 'trackbar_update_seen');
-Irssi::signal_add('setup changed' => 'update_config');
-Irssi::signal_add_priority('session save' => 'remove_all_trackbars', Irssi::SIGNAL_PRIORITY_HIGH-1);
-Irssi::signal_add('window changed' => 'sig_window_changed');
+Irssi::signal_register({'window trackbar seen'  => [qw/Irssi::UI::Window/]});
+Irssi::signal_register({'gui page scrolled'     => [qw/Irssi::UI::Window/]});
+Irssi::signal_add_last('gui page scrolled'      => 'trackbar_update_seen');
+Irssi::signal_add('setup changed'               => 'update_config');
+Irssi::signal_add_priority('session save'       => 'remove_all_trackbars', Irssi::SIGNAL_PRIORITY_HIGH-1);
+Irssi::signal_add('window changed'              => 'sig_window_changed');
 
-Irssi::command_bind('trackbar goto'      => 'trackbar_goto');
-Irssi::command_bind('trackbar keep'      => 'trackbar_keep');
-Irssi::command_bind('trackbar mark'      => 'trackbar_mark');
+Irssi::command_bind('trackbar goto'        => 'trackbar_goto');
+Irssi::command_bind('trackbar keep'        => 'trackbar_keep');
+Irssi::command_bind('trackbar mark'        => 'trackbar_mark');
 Irssi::command_bind('trackbar markvisible' => 'trackbar_markvisible');
-Irssi::command_bind('trackbar markall'   => 'trackbar_markall');
-Irssi::command_bind('trackbar remove'    => 'trackbar_remove');
-Irssi::command_bind('trackbar removeall' => 'trackbar_removeall');
-Irssi::command_bind('trackbar redraw'    => 'trackbar_redraw');
-Irssi::command_bind('trackbar'           => 'trackbar_runsub');
-Irssi::command_bind_last('help' => 'trackbar_help');
+Irssi::command_bind('trackbar markall'     => 'trackbar_markall');
+Irssi::command_bind('trackbar remove'      => 'trackbar_remove');
+Irssi::command_bind('trackbar removeall'   => 'trackbar_removeall');
+Irssi::command_bind('trackbar redraw'      => 'trackbar_redraw');
+Irssi::command_bind('trackbar'             => 'trackbar_runsub');
+Irssi::command_bind_last('help'            => 'trackbar_help');
 
 Irssi::printformat(MSGLEVEL_CLIENTCRAP, 'trackbar_loaded', $VERSION);
 
