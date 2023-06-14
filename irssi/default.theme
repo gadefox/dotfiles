@@ -8,43 +8,56 @@ abstracts = {
   sbnickmode = "%r$0%n";
   sbservertag = ":%g$0%n";
 
-  channel = "%g$*%n";
-  channelhilight = "%g$*%n";
+  channel = "%B$*%n";
+  channelhilight = "%B$*%n";
   nickhost = "%M[%g$*%M]%n";
   server = "%g$*%n";
 
-  dccownnick = "%m$*%n";
-  menick = "%m$*%n";
+  dccownnick = "{nick $0}";
+  menick = "{nick $0}";
   nick = "%m$*%n";
-  ownnick = "%m$*%n";
-  ownprivnick = "%m$*%n";
-  pubnick = "%m$*%n";
+  ownnick = "{nick $0}";
+  ownprivnick = "{nick $0}";
+  privnick = "{pubnick $0}";
+  pubnick = "$nickcolor$*%n";
+  targetnick = "%R$*%n";
 
-  msgnick = "%C %n%|$1- ";
+  msgnick = "%K %n%|$1- ";
   ownmsgnick = "%y %n%|";
-  ownprivmsgnick = "{ownmsgnick $*}";
+  ownprivmsgnick = "%r %n%|";
 
   ban = "%r$*%n";
   comment = "%K[%G$*%K]%n";
-  error = "%R$*%n";
   hilight = "%G$*%n";
   line_start = "%C󱗽 %n";
   mode = "{comment $*}";
   prompt = "%C$*:%n ";
-  reason = "%C({comment $*}%C)%n";
+  reason = "{comment $*}";
   timestamp = "%M$*%n";
 
-  errormessage = "%R %n $*";
-  warningmessage = "%Y %n $*";
+  error = "%R $*%n";
+  errormessage = "{error $*}";
+  warn = "%Y $*%n";
+  warningmessage = "{warn $*}";
 
-  action = "%C󱐋 %|%m$0%n $1";
-  ownaction = "%y󱐋 %|%m$0%n $1";
-  ownaction_target = "%y󱐋 %m$1 %y %m$0%n ";
-  pvtaction = "{action $*}";
+  perl = "%b %|$*: %n";
+  perlerror = "{perl $0}{error $1-}";
+  perlwarn = "{perl $0}{warn $1-}";
+
+  action = "%C󱐋%n %|{pubnick $0} ";
+  ownaction = "%y󱐋%n %|{ownnick $0} ";
+  pvtaction = "%C󱐋%n %|{targetnick $0} ";
+  pvtaction_query = "{pvtaction $*}";
 
   ownnotice = "%y󱃝 %m$1-%n ";
   notice = "%r󱃛 %R$* %n";
-  pubnotice_channel = "%K:%g$*%n";
+  pubnotice_channel = "%K:%B$*%n";
   pvtnotice_host = "%K(%g$*%K)%n";
   servernotice = "%g$*%n ";
+};
+
+formats = {
+  "fe-common/irc" = {
+    own_action_target = "{ownaction $0}$1 %y%n {targetnick $2}";
+  };
 };
