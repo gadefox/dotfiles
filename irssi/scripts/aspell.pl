@@ -17,13 +17,13 @@ $VERSION = '0.9.2';
 );
 
 Irssi::theme_register([
-  'aspell_loaded', '{perl ASpell}Loaded {comment $0}',
-  'aspell_result', '%R󰓆 %|$0: %n$1',
-  'aspell_empty', '%R󰓆 $0: %nNo suggestions',
+  'aspell_loaded',    '{perl ASpell}Loaded {comment $0}',
+  'aspell_result',    '%R󰓆 %|$0: %n$1',
+  'aspell_empty',     '%R󰓆 $0: %nNo suggestions',
   'aspell_err_check', '{perlerror ASpell Error while spell-checking for $0}',
-  'aspell_err_set', '{perlerror ASpell Error while setting up spell-checker for $0}',
-  'aspell_err_save', '{perlerror ASpell Error while saving $0 dictionary}',
-  'aspell_add_args', '{perlwarn ASpell ASPELL_ADD <word>  add word(s) to personal dictionary}',
+  'aspell_err_set',   '{perlerror ASpell Error while setting up spell-checker for $0}',
+  'aspell_err_save',  '{perlerror ASpell Error while saving $0 dictionary}',
+  'aspell_add_args',  '{perlwarn ASpell ASPELL_ADD <word>  add word(s) to personal dictionary}',
 ]);
 
 my %speller;
@@ -273,7 +273,7 @@ Irssi::command_bind('aspell_add', 'aspell_add_word');
 Irssi::settings_add_str( 'aspellcheck', 'aspell_default', 'en_US');
 Irssi::settings_add_str( 'aspellcheck', 'aspell_languages', '');
 Irssi::settings_add_str( 'aspellcheck', 'aspell_input_color', '%R');
-Irssi::settings_add_str( 'aspellcheck', 'aspell_window_name', 'aspell');
+Irssi::settings_add_str( 'aspellcheck', 'aspell_window_name', '(aspell)');
 Irssi::settings_add_str( 'aspellcheck', 'aspell_window_height', 10);
 
 Irssi::signal_add_last('key word_completion', sub{aspell_key_pressed(ord '.')});
