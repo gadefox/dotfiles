@@ -22,7 +22,7 @@ require("packer").startup(function(use)
 end)
 
 vim.bo.autoindent = true
-vim.bo.expandtab = true  -- spaces instead of tabs
+vim.bo.expandtab = true
 vim.bo.shiftwidth = 2
 vim.bo.tabstop = 2
 
@@ -411,7 +411,7 @@ require("nvim-tree").setup {
 
 -- treesitter
 require("nvim-treesitter.configs").setup {
-  ensure_installed = { "c", "cpp", "lua", "python", "json", "regex", "vim" },
+  ensure_installed = { "c", "cpp", "json", "lua", "perl", "python", "regex", "vim" },
   highlight = {
     enable = true
   },
