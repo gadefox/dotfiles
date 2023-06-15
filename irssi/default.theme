@@ -22,7 +22,7 @@ abstracts = {
   pubnick = "$nickcolor$*%n";
   targetnick = "%R$*%n";
 
-  msgnick = "%K %n%|$1- ";
+  msgnick = "%K %n$1- %|";
   ownmsgnick = "%y %n%|";
   ownprivmsgnick = "%r %n%|";
 
@@ -40,13 +40,13 @@ abstracts = {
   warn = "%Y $*%n";
   warningmessage = "{warn $*}";
 
-  perl = "%b %|$*: %n";
+  perl = "%b $*: %n%|";
   perlerror = "{perl $0}{error $1-}";
   perlwarn = "{perl $0}{warn $1-}";
 
-  action = "%C󱐋%n %|{pubnick $0} ";
-  ownaction = "%y󱐋%n %|{ownnick $0} ";
-  pvtaction = "%C󱐋%n %|{targetnick $0} ";
+  action = "%C󱐋%n {pubnick $0} %|";
+  ownaction = "%y󱐋%n {ownnick $0} %|";
+  pvtaction = "%C󱐋%n {targetnick $0} %|";
   pvtaction_query = "{pvtaction $*}";
 
   ownnotice = "%y󱃝 %m$1-%n ";
