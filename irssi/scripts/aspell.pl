@@ -270,11 +270,11 @@ sub aspell_add_word
 
 Irssi::command_bind('aspell_add', 'aspell_add_word');
 
-Irssi::settings_add_str( 'aspellcheck', 'aspell_default', 'en_US');
-Irssi::settings_add_str( 'aspellcheck', 'aspell_languages', '');
-Irssi::settings_add_str( 'aspellcheck', 'aspell_input_color', '%R');
-Irssi::settings_add_str( 'aspellcheck', 'aspell_window_name', '(aspell)');
-Irssi::settings_add_str( 'aspellcheck', 'aspell_window_height', 10);
+Irssi::settings_add_str( 'aspell', 'aspell_default', 'en_US');
+Irssi::settings_add_str( 'aspell', 'aspell_languages', '');
+Irssi::settings_add_str( 'aspell', 'aspell_input_color', '%R');
+Irssi::settings_add_str( 'aspell', 'aspell_window_name', '(aspell)');
+Irssi::settings_add_str( 'aspell', 'aspell_window_height', 10);
 
 Irssi::signal_add_last('key word_completion', sub{aspell_key_pressed(ord '.')});
 Irssi::signal_add_last('key word_completion_backward', sub{aspell_key_pressed(ord '.')});
