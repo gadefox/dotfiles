@@ -1,6 +1,5 @@
 set attach_save_dir = "~/downloads"
 set certificate_file = "~/.cache/mutt/certs"
-unset copy
 set crypt_autosign
 set crypt_replysign
 set crypt_replysignencrypted
