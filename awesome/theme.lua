@@ -215,27 +215,27 @@ shift_colors()
 
 local rainbow = wibox.widget {
   {
-    bg = theme.colors[5],
+    bg = "#cb15c9",
     widget = wibox.container.background
   },
   {
-    bg = theme.colors[6],
+    bg = "#6f15cb",
     widget = wibox.container.background
   },
   {
-    bg = theme.colors[7],
+    bg = "#15b4cb",
     widget = wibox.container.background
   },
   {
-    bg = theme.colors[1],
+    bg = "#8ecb15",
     widget = wibox.container.background
   },
   {
-    bg = theme.colors[2],
+    bg = "#cb9a15",
     widget = wibox.container.background
   },
   {
-    bg = theme.colors[4],
+    bg = "#ff0000",
     widget = wibox.container.background
   },
   forced_height = dpi(5),
@@ -443,7 +443,13 @@ local function btn_key_loop()
   keygrabber.run(function(_, key, event)
     if event == "release" then return end
 
-    if key == "Left" or key == "Up" then
+    if #key == 1 then
+      local idx = tonumber(key)
+      if idx and idx > 0 then
+        wicur = idx
+        btn_signal()
+      end
+    elseif key == "Left" or key == "Up" then
       btn_set(wicur > 1 and wicur - 1 or wicount)
     elseif key == "Right" or key == "Down" then
       btn_set(wicur < wicount and wicur + 1 or 1)
