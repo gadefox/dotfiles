@@ -4,6 +4,26 @@ local gears = require("gears")
 local wibox = require("wibox")
 
 local theme = {}
+theme.day = os.date("%d") - 1
+theme.icons = debug.getinfo(1).source:match("@?(.*/)") .. "icons/"
+
+-- wallpaper
+theme.wpdir = "/usr/local/share/images/wallpaper"
+
+awful.spawn.easy_async_with_shell("ls " .. theme.wpdir .. "*.jpg | wc -l", function(out)
+  theme.wpidx = math.floor(theme.day % out)
+  theme.wpcnt = out
+
+  screen.connect_signal("request::wallpaper", function(s)
+    awful.wallpaper {
+      screen = s,
+      widget = {
+        image = theme.wpdir .. theme.wpidx .. ".jpg",
+        widget = wibox.widget.imagebox
+      }
+    }
+  end)
+end)
 
 local function shift_colors()
   local colors = {
@@ -16,7 +36,7 @@ local function shift_colors()
     "#15b4cb",
     "#5edcb4"
   }
-  local shift = os.date("%d") % #colors
+  local shift = theme.day % #colors
   local dst = 1
   theme.colors = {}
 
