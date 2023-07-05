@@ -4,20 +4,8 @@ require("awful.autofocus")
 local focus = require("focus")
 focus.init()
 
--- wallpaper
+-- tags
 local awful = require("awful")
-local wibox = require("wibox")
-
-screen.connect_signal("request::wallpaper", function(s)
-  awful.wallpaper {
-    screen = s,
-    widget = {
-      image = "/usr/local/share/images/wallpaper.jpg",
-      widget = wibox.widget.imagebox
-    }
-  }
-end)
-
 local theme = require("theme")
 
 awful.screen.connect_for_each_screen(function(s)
@@ -46,10 +34,6 @@ end)
 -- custom notifications
 local kb_notif, notif_v, notif_m
 
-local function png(img)
-  return debug.getinfo(1).source:match("@?(.*/)") .. "icons/" .. img .. ".png"
-end
-
 local function bold(s)
   return "<b>" .. s .. "</b>"
 end
@@ -60,7 +44,7 @@ kb_layout:connect_signal("widget::redraw_needed", function ()
   kb_notif = theme.notify({
       title = bold("Keyboard layout:"),
       message = kb_layout.widget.text,
-      icon = png("keyboard"),
+      icon = theme.icons .. "keyboard.png",
     }, kb_notif)
 end)
 
@@ -69,7 +53,7 @@ local function msg_volume(icon)
     notif_v = theme.notify({
       title = bold("Volume:"),
       message = string.gsub(out, "\n", ""),
-      icon = png("volume" .. icon),
+      icon = theme.icons .. icon,
     }, notif_v)
   end)
 end
@@ -80,16 +64,16 @@ local function msg_muted()
 
     if out == "no\n" then
       message = "unmuted"
-      icon = "volume"
+      icon = "volume.png"
     else
       message = "muted"
-      icon = message
+      icon = "muted.png"
     end
 
     notif_v = theme.notify({
       title = bold("Volume:"),
       message = message,
-      icon = png(icon),
+      icon = theme.icons .. icon,
     }, notif_v)
   end)
 end
@@ -98,7 +82,7 @@ local function msg_mpd_stop(msg)
   notif_m = theme.notify({
     title = bold("Music player:"),
     message = msg,
-    icon = png("playerctl_toggle")
+    icon = theme.icons .. "playerctl_toggle.png"
   }, notif_m)
 end
 
@@ -119,7 +103,7 @@ local function msg_mpd(out, icon)
     notif_m = theme.notify({
       title = bold(artist),
       message = song,
-      icon = png(icon),
+      icon = theme.icons .. icon,
     }, notif_m)
   else
     msg_mpd_stop(status == "paused" and status or "stopped")
@@ -130,7 +114,7 @@ local function msg_now()
   theme.notify({
     title = bold("Now:"),
     message = os.date("%a %d %b, %H:%M"),
-    icon = png("alarm"),
+    icon = theme.icons .. "alarm.png",
   })
 end
 
@@ -160,15 +144,15 @@ end
 
 awesome.connect_signal("launch::dev", function(option)
   if option == 1 then
-    awful.spawn("nemiver")
+    awful.spawn(term("nvim"))
   elseif option == 2 then
-    awful.spawn("meld")
+    awful.spawn("nemiver")
   end
 end)
 
 awesome.connect_signal("launch::file", function(option)
   if option == 1 then
-    awful.spawn("pcmanfm")
+    awful.spawn(term("nnn"))
   elseif option == 2 then
     awful.spawn("xarchiver")
   end
@@ -191,23 +175,23 @@ awesome.connect_signal("launch::light", function(option)
     bright1 = 0
     contrast1 = 0
   elseif option == 2 then
-    bright0 = -0.8
-    contrast0 = -0.8
+    bright0 = -0.9
+    contrast0 = -0.9
     bright1 = 20
     contrast1 = 20
   elseif option == 3 then
-    bright0 = -0.6
-    contrast0 = -0.6
+    bright0 = -0.3
+    contrast0 = -0.3
     bright1 = 40
     contrast1 = 40
   elseif option == 4 then
-    bright0 = -0.4
-    contrast0 = -0.4
+    bright0 = 0
+    contrast0 = 0
     bright1 = 60
     contrast1 = 60
   elseif option == 5 then
-    bright0 = -0.2
-    contrast0 = -0.2
+    bright0 = 0
+    contrast0 = 0
     bright1 = 80
     contrast1 = 70
   elseif option == 6 then
@@ -225,20 +209,16 @@ awesome.connect_signal("launch::light", function(option)
     nv_cmd = nv_cmd .. " -a [DPY:LVDS-0]/" .. color .. "Contrast=" .. contrast0
   end
 
-  awful.spawn(nv_cmd)
-  awful.spawn("ddcutil --use-file-io setvcp 10 " .. bright1)
-  awful.spawn("ddcutil --use-file-io setvcp 12 " .. contrast1)
+  awful.spawn.with_shell(nv_cmd)
+  awful.spawn.with_shell("ddcutil --use-file-io setvcp 10 " .. bright1)
+  awful.spawn.with_shell("ddcutil --use-file-io setvcp 12 " .. contrast1)
 end)
 
 awesome.connect_signal("launch::office", function(option)
   if option == 1 then
-    awful.spawn(term("nvim"))
-  elseif option == 2 then
     awful.spawn("swriter")
-  elseif option == 3 then
+  elseif option == 2 then
     awful.spawn("scalc")
-  elseif option == 4 then
-    awful.spawn("sbase")
   end
 end)
 
@@ -274,21 +254,19 @@ awesome.connect_signal("launch::settings", function(option)
     end)
   elseif option == 2 then
     awful.spawn("lxrandr")
-  elseif option == 3 then
-    awful.spawn("dconf-editor")
   end
 end)
 
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
-    awful.spawn(term())
-  elseif option == 2 then
     theme.launch("scrot", { "", "󰩭" })
+  elseif option == 2 then
+    awful.spawn(term())
   elseif option == 3 then
     awful.spawn(term("calc"))
   elseif option == 4 then
-    awful.spawn("jmtpfs /media/mtp")
- elseif option == 5 then
+    awful.spawn.with_shell("jmtpfs /media/mtp")
+  elseif option == 5 then
     awful.spawn(term("htop"))
   end
 end)
@@ -297,9 +275,13 @@ awesome.connect_signal("launch::web", function(option)
   if option == 1 then
     awful.spawn("qutebrowser")
   elseif option == 2 then
-    awful.spawn("xdg-open 'https://mail.google.com'")
+    awful.spawn(term("neomutt"))
   elseif option == 3 then
-    awful.spawn("transmission-gtk")
+    awful.spawn(term("irssi"))
+  elseif option == 4 then
+    awful.spawn(term("rtorrent"))
+  elseif option == 5 then
+    awful.spawn(os.getenv("HOME") .. "/.eID_klient/eID_klient-x86_64.AppImage")
   end
 end)
 
@@ -313,21 +295,21 @@ end)
 
 awesome.connect_signal("launch::app", function(option)
   if option == 1 then
-    theme.launch("file", { "", "" })  -- 
+    theme.launch("file", { "", "" })
   elseif option == 2 then
-    theme.launch("office", { "", "󱎒", "󱎏", "󱘲" })
+    theme.launch("office", { "󱎒", "󱎏" })
   elseif option == 3 then
-    theme.launch("image", { "󰈋", "󱇤" })  -- 
+    theme.launch("image", { "󰈋", "󱇤" })
   elseif option == 4 then
-    theme.launch("dev", { "", "" })
+    theme.launch("dev", { "󱥈", "" })
   elseif option == 5 then
-    theme.launch("web", { "󰈹", "", "󰄠" })
+    theme.launch("web", { "󰈹", "", "󰻞", "󰄠", ""  })
   elseif option == 6 then
     theme.launch("music", { "󰝚", "󰋍" })
   elseif option == 7 then
-    theme.launch("tool", { "", "󰭪", "󱖦", "", "" })  -- 
+    theme.launch("tool", { "󰭪", "", "󱖦", "", "󱊖", "" })
   elseif option == 8 then
-    theme.launch("settings", { "󰃟", "󰍺", "󱘫" })
+    theme.launch("settings", { "󰃟", "󰍺" })
   elseif option == 9 then
     msg_now()
   end
@@ -335,12 +317,12 @@ end)
 
 awesome.connect_signal("launch::sys", function(option)
   if option == 1 then
-    awful.spawn("systemctl poweroff")
+    awful.spawn.with_shell("systemctl poweroff")
   elseif option == 2 then
-    awful.spawn("systemctl reboot")
+    awful.spawn.with_shell("systemctl reboot")
   elseif option == 3 then
     theme.lock()
-    awful.spawn("systemctl suspend")
+    awful.spawn.with_shell("systemctl suspend")
   elseif option == 4 then
     theme.lock()
   elseif option == 5 then
@@ -389,23 +371,23 @@ awful.keyboard.append_global_keybindings {
     theme.notify({
       title = bold("Screenshot:"),
       message = "select a window or rectangle",
-      icon = png("screenshot"),
+      icon = theme.icons .. "screenshot.png",
       timeout = 2
     })
-    awful.spawn("slop-shot")
+    awful.spawn.with_shell("slop-shot")
   end,
     { description = "scrot", group = "launch" }),
 
-  awful.key({ }, "XF86Mail", function() awful.spawn("xdg-open 'https://mail.google.com'", { switch_to_tags = true }) end,
+  awful.key({ }, "XF86Mail", function() awful.spawn(term("neomutt")) end,
     { description = "email", group = "launch" }),
   awful.key({ }, "XF86HomePage", function() awful.spawn("qutebrowser") end,
     { description = "browser", group = "launch" }),
+  awful.key({ }, "XF86Messenger", function() awful.spawn(term("irssi")) end,
+    { description = "messenger", group = "launch" }),
   awful.key({ }, "XF86Tools", function() awful.spawn(term("ncmpc")) end,
     { description = "browser", group = "launch" }),
   awful.key({ }, "XF86Launch5", function() awful.spawn(term("nnn")) end,
     { description = "nnn fm", group = "launch" }),
---  awful.key({ }, "XF86Launch6", function() awful.spawn("???") end,
---    { description = "", group = "launch" }),
   awful.key({ }, "XF86Launch9", function() awful.spawn(term("htop")) end,
     { description = "process monitor", group = "launch" }),
   awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
@@ -414,41 +396,41 @@ awful.keyboard.append_global_keybindings {
     { description = "calc", group = "launch" }),
 
   awful.key({ }, "XF86AudioLowerVolume", function()
-    awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%")
-    msg_volume("1")
+    awful.spawn.with_shell("pactl set-sink-volume @DEFAULT_SINK@ -5%")
+    msg_volume("volume1.png")
   end,
     { description = "lower", group = "volume" }),
   awful.key({ }, "XF86AudioRaiseVolume", function()
-    awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%")
-    msg_volume("")
+    awful.spawn.with_shell("pactl set-sink-volume @DEFAULT_SINK@ +5%")
+    msg_volume("volume.png")
  end,
     { description = "raise", group = "volume" }),
   awful.key({ }, "XF86AudioMute", function()
-    awful.spawn("pactl set-sink-mute @DEFAULT_SINK@ toggle")
+    awful.spawn.with_shell("pactl set-sink-mute @DEFAULT_SINK@ toggle")
     msg_muted()
   end,
     { description = "(un)mute", group = "volume" }),
 
   awful.key({ }, "XF86AudioPlay", function()
     awful.spawn.easy_async("mpc toggle", function(out)
-      msg_mpd(out, "playerctl_toggle")
+      msg_mpd(out, "playerctl_toggle.png")
     end)
   end,
     { description = "play", group = "music" }),
   awful.key({ }, "XF86AudioPrev", function()
     awful.spawn.easy_async("mpc prev", function(out)
-      msg_mpd(out, "playerctl_prev")
+      msg_mpd(out, "playerctl_prev.png")
     end)
   end,
     { description = "previous", group = "music" }),
   awful.key({ }, "XF86AudioNext", function()
     awful.spawn.easy_async("mpc next", function(out)
-      msg_mpd(out, "playerctl_next")
+      msg_mpd(out, "playerctl_next.png")
     end)
   end,
     { description = "next", group = "music" }),
   awful.key({ }, "XF86AudioStop", function()
-    awful.spawn("mpc stop")
+    awful.spawn.with_shell("mpc stop")
     msg_mpd_stop("stopped")
   end,
     { description = "stop", group = "music" })
