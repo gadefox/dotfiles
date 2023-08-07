@@ -1,5 +1,8 @@
 https://www.if-not-true-then-false.com/2020/inttf-nvidia-patcher/#download-and-use-inttf-nvidia-patcher-bash-script
 
+sudo dkms build -k 6.4.0-1-amd64 -m nvidia -v 340.108
+sudo dkms install -k 6.4.0-1-amd64 -m nvidia -v 340.108
+
 /bin:
 nvidia-debugdump
 nvidia-modprobe
