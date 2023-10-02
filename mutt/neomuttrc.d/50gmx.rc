@@ -9,3 +9,5 @@ named-mailboxes "Inbox" $spoolfile
 named-mailboxes "Drafts" $postponed
 named-mailboxes "Sent" $record
 named-mailboxes "Trash" $trash
+
+named-mailboxes "Spam" "+Spam"
