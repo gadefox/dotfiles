@@ -1,15 +1,28 @@
+-- packer package
+local install = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+local glob = vim.fn.glob(install)
+if vim.fn.empty(glob) > 0 then
+  vim.fn.system({
+    "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install
+  })
+  vim.api.nvim_command("packadd packer.nvim")
+end
+
 require("packer").startup(function(use)
   use "wbthomason/packer.nvim"
   use { "catppuccin/nvim", as = "catppuccin" }
   use "norcalli/nvim-colorizer.lua"
+  use "RRethy/vim-illuminate"
   use "lukas-reineke/indent-blankline.nvim"
-  use "HiPhish/nvim-ts-rainbow2"
+  use "HiPhish/rainbow-delimiters.nvim"
   use "windwp/nvim-autopairs"
   use "numToStr/Comment.nvim"
+  use { "kevinhwang91/nvim-ufo", requires = "kevinhwang91/promise-async" }
   use { "utilyre/barbecue.nvim", requires = { "nvim-tree/nvim-web-devicons", "SmiteshP/nvim-navic" } }
   use "nvim-tree/nvim-tree.lua"
   use { "folke/noice.nvim", requires = { "rcarriga/nvim-notify", "MunifTanjim/nui.nvim" } }
   use "folke/which-key.nvim"
+  use "lewis6991/gitsigns.nvim"
   use { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }
   use "nvim-treesitter/nvim-treesitter-context"
   use "nvim-treesitter/nvim-treesitter-textobjects"
@@ -18,7 +31,6 @@ require("packer").startup(function(use)
   use { "hrsh7th/nvim-cmp", requires = { "hrsh7th/cmp-nvim-lsp", "hrsh7th/cmp-buffer", "hrsh7th/cmp-cmdline", "hrsh7th/cmp-path" } }
   use "neovim/nvim-lspconfig"
   use "DNLHC/glance.nvim"
-  use "stevearc/oil.nvim"
 end)
 
 vim.bo.autoindent = true
@@ -32,6 +44,10 @@ vim.o.clipboard = "unnamedplus"
 vim.o.cursorline = true
 vim.o.expandtab = true
 vim.o.fileencoding = "utf-8"
+vim.o.foldcolumn = "1"
+vim.o.foldlevel = 99
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 vim.o.hidden = true
 vim.o.ignorecase = true
 vim.o.mouse = "a"
@@ -79,23 +95,27 @@ local function set_hl(colors)
 end
 
 local catppuccin = require("catppuccin")
-catppuccin.setup {
+catppuccin.setup({
   term_colors = true,
-  lsp_saga = false,
-  gitgutter = false,
-  gitsigns = false,
-  leap = false,
-  neotree = {
-    enabled = false
-  },
-  dashboard = false,
-  neogit = false,
-  barbar = false,
-  markdown = false,
-  symbols_outline = false
-}
-
-catppuccin.load("macchiato")
+  transparent_background = true,
+  integrations = {
+    alpha = false,
+    dashboard = false,
+    flash = false,
+    markdown = false,
+    neogit = false,
+    dap = {
+      enabled = false,
+      enable_ui = false,
+    },
+    navic = { enabled = true },
+    notify = true,
+    telescope = { enabled = false },
+    treesitter_context = true,
+    which_key = true 
+  }
+})
+catppuccin.load()
 
 -- autopairs package
 require("nvim-autopairs").setup()
@@ -103,10 +123,11 @@ require("nvim-autopairs").setup()
 -- barbecue
 vim.opt.updatetime = 300
 
-require("barbecue").setup {
+require("barbecue").setup({
   create_autocmd = false,
-  show_modified = true
-}
+  show_modified = true,
+  theme = "catppuccin"
+})
 
 local barbecue_ui = require("barbecue.ui")
 
@@ -158,7 +179,7 @@ local lsp_icons = {
 local context = require("cmp.config.context")
 local cmp = require("cmp")
 
-cmp.setup {
+cmp.setup({
   enabled = function()
     if vim.api.nvim_get_mode().mode == "c" then
       return true
@@ -183,7 +204,7 @@ cmp.setup {
     ["<Tab>"] = cmp.mapping.select_next_item(),
     ["<S-Tab>"] = cmp.mapping.select_prev_item()
   }
-}
+})
 
 cmp.setup.cmdline({ "/", "?" }, {
   mapping = cmp.mapping.preset.cmdline(),
@@ -209,38 +230,41 @@ cmp.setup.cmdline(":", {
 require("colorizer").setup()
 
 -- comments
-require("Comment").setup {
+require("Comment").setup({
   mappings = {
     extra = false
   }
-}
+})
 
 -- indent blackline (┊.↴)
 vim.opt.list = true
 vim.opt.listchars = { trail = "·", nbsp = "◇", tab = "→ ", extends = "▸", precedes = "◂", space = "⋅", eol = "↴" }
 
-set_hl {
+set_hl({
   IndentBlanklineChar = { fg = palette.overlay0 },
   IndentBlanklineContextChar = { fg = palette.overlay0 }
-}
+})
 
-require("indent_blankline").setup {
-  char = "┊",
-  context_char = "│",
-  show_current_context = true,
-  show_current_context_start = true
-}
+require("ibl").setup()
+
+-- gitsigns
+require("gitsigns").setup({
+  current_line_blame = true
+})
 
 -- glance
-vim.keymap.set("n", "gC", ":Glance definitions<CR>", { silent = true })
-vim.keymap.set("n", "gR", ":Glance references<CR>", { silent = true })
-vim.keymap.set("n", "gT", ":Glance type_definitions<CR>", { silent = true })
-vim.keymap.set("n", "gI", ":Glance implementations<CR>", { silent = true })
-
 require("glance").setup()
 
+-- illuminate
+require("illuminate")
+
 -- lspconfig
-local signs = { Error = " ", Warn = " ", Info = " ", Hint = " " }
+local signs = {
+  Error = " ",
+  Warn = " ",
+  Info = " ",
+  Hint = " "
+}
 
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
@@ -251,20 +275,20 @@ for type, icon in pairs(signs) do
   })
 end
 
-local lspcap = require("cmp_nvim_lsp").default_capabilities()
 local lspcfg = require("lspconfig")
+local lspcap = require("cmp_nvim_lsp").default_capabilities()
 
-lspcfg.clangd.setup {
+lspcfg.clangd.setup({
   capabilities = lspcap
-}
+})
 
-lspcfg.lua_ls.setup {
+lspcfg.lua_ls.setup({
   cmd = { "/usr/local/libexec/lsp-lua/bin/lua-language-server" },
   capabilities = lspcap
-}
+})
 
 -- notify
-set_hl {
+set_hl({
   NotifyINFOBody = { bg = palette.surface0 },
   NotifyINFOBorder = { bg = palette.surface0, fg = palette.surface0 },
   NotifyINFOIcon = { bg = palette.surface0, fg = palette.green },
@@ -277,11 +301,12 @@ set_hl {
   NotifyERRORBorder = { bg = palette.surface0, fg = palette.surface0 },
   NotifyERRORIcon = { bg = palette.surface0, fg = palette.red },
   NotifyERRORTitle = { bg = palette.red, fg = palette.mantle }
-}
+})
 
 local renderbase = require("notify.render.base")
 
-require("notify").setup {
+require("notify").setup({
+  background_colour = palette.surface0,
   on_open = function(win, record)
     vim.api.nvim_win_set_config(win, {
       border = "solid",
@@ -312,10 +337,10 @@ require("notify").setup {
       priority = 50
     })
   end
-}
+})
 
 -- noice
-set_hl {
+set_hl({
   NoiceCmdlinePopup = { bg = palette.surface0 },
   NoiceCmdlineIconCalculator = { bg = palette.surface0, fg = palette.flamingo },
   NoiceCmdlineIconCmdLine = { bg = palette.surface0, fg = palette.pink },
@@ -338,9 +363,9 @@ set_hl {
   NoiceCmdlinePopupTitleInput = { bg = palette.red, fg = palette.mantle },
   NoiceCmdlinePopupTitleLua = { bg = palette.blue, fg = palette.mantle },
   NoiceCmdlinePopupTitleSearch = { bg = palette.mauve, fg = palette.mantle }
-}
+})
 
-require("noice").setup {
+require("noice").setup({
   health = {
     checker = false
   },
@@ -354,17 +379,10 @@ require("noice").setup {
   popupmenu = {
     enabled = true
   }
-}
-
--- oil ~ edit files and directories using the buffer
-require("oil").setup {
-  view_options = {
-    show_hidden = true
-  }
-}
+})
 
 -- telescope
-set_hl {
+set_hl({
   TelescopeMatching = { fg = palette.flamingo },
   TelescopePreviewBorder = { bg = palette.mantle, fg = palette.mantle },
   TelescopePreviewNormal = { bg = palette.mantle },
@@ -377,10 +395,10 @@ set_hl {
   TelescopeResultsBorder = { bg = palette.mantle, fg = palette.mantle },
   TelescopeResultsTitle = { fg = palette.mantle },
   TelescopeSelection = { fg = palette.text, bg = palette.surface0, bold = true }
-}
+})
 
 local telescope = require("telescope")
-telescope.setup {
+telescope.setup({
   defaults = {
     prompt_prefix = "   ",
     selection_caret = "  ",
@@ -390,12 +408,12 @@ telescope.setup {
       }
     }
   }
-}
+})
 
 telescope.load_extension("fzf")
 
 -- tree
-require("nvim-tree").setup {
+require("nvim-tree").setup({
   git = {
     ignore = false
   },
@@ -407,15 +425,12 @@ require("nvim-tree").setup {
   view = {
     width = 25
   }
-}
+})
 
 -- treesitter
-require("nvim-treesitter.configs").setup {
+require("nvim-treesitter.configs").setup({
   ensure_installed = { "c", "cpp", "json", "lua", "perl", "python", "regex", "vim" },
   highlight = {
-    enable = true
-  },
-  rainbow = {
     enable = true
   },
   textobjects = {
@@ -450,7 +465,47 @@ require("nvim-treesitter.configs").setup {
       }
     }
   }
-}
+})
+
+-- ufo folding
+local ufo = require("ufo")
+ufo.setup({
+  fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
+    local newVirtText = {}
+    local suffix = (' 󰁂 %d '):format(endLnum - lnum)
+    local sufWidth = vim.fn.strdisplaywidth(suffix)
+    local targetWidth = width - sufWidth
+    local curWidth = 0
+
+    for _, chunk in ipairs(virtText) do
+      local chunkText = chunk[1]
+      local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+
+      if targetWidth > curWidth + chunkWidth then
+        table.insert(newVirtText, chunk)
+      else
+        local hlGroup = chunk[2]
+
+        chunkText = truncate(chunkText, targetWidth - curWidth)
+        table.insert(newVirtText, { chunkText, hlGroup })
+        chunkWidth = vim.fn.strdisplaywidth(chunkText)
+
+        -- str width returned from truncate() may less than 2nd argument, need padding
+        if curWidth + chunkWidth < targetWidth then
+          suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+        end
+        break
+      end
+      curWidth = curWidth + chunkWidth
+    end
+
+    table.insert(newVirtText, { suffix, 'MoreMsg' })
+    return newVirtText
+  end,
+  provider_selector = function(bufnr, filetype, buftype)
+    return { "treesitter", "indent" }
+  end
+})
 
 -- whichkey
 vim.o.timeout = true
@@ -458,28 +513,34 @@ vim.o.timeoutlen = 300
 
 local wkey = require("which-key")
 
-wkey.setup {
+wkey.setup({
   popup_mappings = {
     scroll_down = "<PageDown>",
     scroll_up = "<PageUp>"
   }
-}
+})
 
 wkey.register({
+  b = { function()
+    catppuccin.options.transparent_background = not catppuccin.options.transparent_background
+    catppuccin.compile()
+    vim.cmd.colorscheme(vim.g.colors_name)
+  end, "Toggle transparent background" },
   c = { ":bdelete<CR>", "Close Buffer" },
   e = { ":NvimTreeToggle<CR>", "Explorer" },
   f = {
-    name = "Telescope",
-    b = { ":Telescope buffers<CR>", "Buffers" },
-    c = { ":Telescope commands<CR>", "Commands" },
-    d = { ":Telescope diagnostics<CR>", "Diagnostics" },
-    f = { ":Telescope find_files<CR>", "Find files" },
-    g = { ":Telescope live_grep<CR>", "Find text" },
-    h = { ":Telescope help_tags<CR>", "Help tags" },
-    l = { ":Telescope highlights<CR>", "Highlights" },
-    v = { ":Telescope vim_options<CR>", "Vim options" }
+    name = "Folding",
+    c = { function() ufo.closeAllFolds() end, "Close all folds" },
+    o = { function() ufo.openAllFolds() end, "Open all folds" }
   },
-  o = { ":Oil<CR>", "Oil" },
+  g = {
+    name = "Glance",
+    d = { ":Glance definitions<CR>", "Definition" },
+    i = { ":Glance implementations<CR>", "Implementation" },
+    r = { ":Glance references<CR>", "References" },
+    t = { ":Glance type_definitions<CR>", "Type" }
+  },
+  p = { ":PackerUpdate<CR>", "Update Plugins" },
   q = { ":q<CR>", "Quit" },
   s = {
     name = "LSP",
@@ -489,6 +550,18 @@ wkey.register({
     i = { ":lua vim.lsp.buf.implementation()<CR>", "Go to implementation" },
     h = { ":lua vim.lsp.buf.hover()<CR>", "Hover" },
     r = { ":lua vim.lsp.buf.rename()<CR>", "Rename" }
+  },
+  t = {
+    name = "Telescope",
+    b = { ":Telescope buffers<CR>", "Buffers" },
+    c = { ":Telescope commands<CR>", "Commands" },
+    d = { ":Telescope diagnostics<CR>", "Diagnostics" },
+    f = { ":Telescope find_files<CR>", "Find files" },
+    g = { ":Telescope live_grep<CR>", "Find text" },
+    h = { ":Telescope help_tags<CR>", "Help tags" },
+    l = { ":Telescope highlights<CR>", "Highlights" },
+    r = { ":Telescope oldfiles<CR>", "Recept files" },
+    v = { ":Telescope vim_options<CR>", "Vim options" }
   },
   w = { ":w<CR>", "Save" }
 }, {
