@@ -15,6 +15,15 @@ nord11 = '#ebcb8b'
 nord12 = '#a3be8c'
 nord13 = '#b48ead'
 
+c.aliases = {}
+c.bindings.key_mappings = {}
+c.auto_save.interval = 15000
+c.colors.contextmenu.disabled.bg = '#28343A'
+c.colors.contextmenu.disabled.fg = '#576267'
+c.colors.contextmenu.menu.bg = '#28343A'
+c.colors.contextmenu.menu.fg = '#B9C3C8'
+c.colors.contextmenu.selected.bg = '#3B484D'
+c.colors.contextmenu.selected.fg = '#CFD8DC'
 c.colors.completion.category.bg = nord0
 c.colors.completion.category.border.bottom = nord0
 c.colors.completion.category.border.top = nord0
@@ -87,19 +96,29 @@ c.colors.tabs.selected.even.bg = nord0
 c.colors.tabs.selected.even.fg = nord5
 c.colors.tabs.selected.odd.bg = nord0
 c.colors.tabs.selected.odd.fg = nord5
-
-c.aliases = {}
-c.bindings.key_mappings = {}
-c.auto_save.interval = 15000
+c.colors.tooltip.bg = '#1E282D'
+c.colors.tooltip.fg = '#B9C3C8'
+c.content.autoplay = False
+c.content.desktop_capture = False
+c.content.geolocation = False
+c.content.media.audio_capture = False
+c.content.media.audio_video_capture = False
+c.content.media.video_capture = False
+c.content.mouse_lock = False
+c.content.notifications.enabled = True
+c.content.notifications.presenter = 'libnotify'
+c.content.persistent_storage = False
+c.content.register_protocol_handler = True
 c.content.site_specific_quirks.skip = []
 c.content.pdfjs = True
 c.downloads.prevent_mixed_content = False
-c.editor.command = ['nvim', '{file}']
+c.editor.command = ['alacritty', '-e', 'nvim', '{file}']
 c.fileselect.single_file.command = ['alacritty', '-e', 'nnn', '{}']
 c.fileselect.multiple_files.command = ['alacritty', '-e', 'nnn', '{}']
 c.fileselect.folder.command = ['alacritty', '-e', 'nnn', '{}']
 c.fonts.default_size = '11pt'
-c.hints.chars = 'zxcvbnm'
+c.fonts.tooltip = '12pt'
+c.hints.chars = 'aszx'
 c.messages.timeout = 5000
 c.spellcheck.languages = ['en-US']
 c.statusbar.show = 'in-mode'
@@ -111,54 +130,65 @@ c.tabs.close_mouse_button_on_bar = 'close-current'
 c.tabs.favicons.show = 'pinned'
 c.tabs.last_close = 'close'
 c.tabs.title.format = '{current_title}'
-c.tabs.tooltips = False
 c.url.default_page = 'https://www.google.com'
-c.url.searchengines = {'DEFAULT': 'https://www.google.com/search?q={}'}
 c.url.start_pages = 'https://www.google.com'
 c.window.title_format = '_'
-c.zoom.default = '110%'
+c.zoom.default = '130%'
+c.zoom.levels = ["100%", "110%", "120%", "130%", "140%", "150%"]
 
-c.bindings.default['normal'] = {}
-c.bindings.commands['normal'] = {
-  '<Backspace>': 'back',
-  '<Ctrl+q>': 'quit',
+c.url.searchengines = {
+  'DEFAULT': 'https://www.google.com/search?q={}',
+  'd': 'https://duckduckgo.com/?q={}',
+  'r': 'https://reddit.com/r/{}',
+  's': 'https://stackoverflow.com/search?q={}',
+  'w': 'https://en.wikipedia.org/wiki/{}',
+  'y': 'https://www.youtube.com/results?search_query={}'
+}
+
+c.bindings.default['normal'] = {
   '<Escape>': 'clear-keychain ;; search ;; fullscreen --leave',
-  '<Ctrl+Left>': 'tab-prev',
-  '<Ctrl+Right>': 'tab-next',
-  '/': 'set-cmd-text /',
-  '?': 'set-cmd-text ?',
-  ':': 'set-cmd-text :',
-  '\\v': 'hint links run :spawn mpv {hint-url}',
-  '\\V': 'hint links run :spawn yt-dlp {hint-url}',
-  '\\o': 'hint links run :open {hint-url}',
-  '\\O': 'hint links run :open -t -r {hint-url}',
+  '<Ctrl+Backspace>': 'back',
+  '<Ctrl+Del>': 'tab-close',
+  '<Ctrl+Shift+Del>': 'tab-only',
+  '<Ctrl+PgDown>': 'tab-prev',
+  '<Ctrl+PgUp>': 'tab-next',
+  '<Ctrl+q>': 'quit',
+  '<F5>': 'reload',
+  '<Ins>': 'mode-enter insert',
+  'i': 'mode-enter insert',
+  '/': 'cmd-set-text /',
+  '?': 'cmd-set-text ?',
+  ':': 'cmd-set-text :',
+  '\\<Ins>': 'hint inputs',
+  '\\i': 'hint images download',
+  '\\\\': 'hint links run :open {hint-url}',
+  '\\]': 'hint links run :open -t {hint-url}',
   '\\d': 'hint links download',
-  '\\i': 'hint inputs',
-  '<Del>': 'tab-close',
-  '<Ctrl+Del>': 'tab-only',
+  '\\v': 'hint links spawn mpv {hint-url}',
+  '\\V': 'hint links spawn yt-mp3 {hint-url}',
+  'a': 'config-cycle content.blocking.enabled true false',
   'dc': 'download-clear',
   'dx': 'download-cancel',
-  'i': 'mode-enter insert',
-  'm': 'quickmark-save',
-  'M': 'bookmark-add',
+  'm': 'bookmark-add',
+  'M': 'quickmark-save',
   'n': 'search-next',
   'N': 'search-prev',
-  'o': 'set-cmd-text -s :open',
-  'O': 'set-cmd-text -s :open -t',
-  'p': 'open - {clipboard}',
-  'P': 'open -t -- {clipboard}',
-  '<F5>': 'reload',
+  '[': 'cmd-set-text -s :open',
+  ']': 'cmd-set-text -s :open -t',
+  'p': 'open {clipboard}',
+  'P': 'open -t {clipboard}',
+  'u': 'undo',
+  'v': 'spawn mpv {url}',
+  'V': 'spawn yt-mp3 {url}',
   'y': 'yank'
 }
 
-c.bindings.default['hint'] = {}
-c.bindings.commands['hint'] = {
+c.bindings.default['hint'] = {
   '<Escape>': 'mode-leave',
   '<Return>': 'hint-follow'
 }
 
-c.bindings.default['command'] = {}
-c.bindings.commands['command'] = {
+c.bindings.default['command'] = {
   '<Escape>': 'mode-leave',
   '<Return>': 'command-accept',
   '<Up>': 'completion-item-focus --history prev',
@@ -173,10 +203,19 @@ c.bindings.commands['command'] = {
   '<Ctrl+c>': 'completion-item-yank'
 }
 
-c.bindings.default['prompt'] = {}
-c.bindings.commands['prompt'] = {
+c.bindings.default['prompt'] = {
   '<Escape>': 'mode-leave',
   '<Return>': 'prompt-accept',
   '<Up>': 'prompt-item-focus prev',
-  '<Down>': 'prompt-item-focus next'
+  '<Down>': 'prompt-item-focus next',
+  '<Ctrl-y>': 'prompt-yank',
+  '<Ctrl-o>': 'prompt-open-download',
+  '<Ctrl-p>': 'prompt-open-download --pdfjs'
+}
+
+c.bindings.default['insert'] = {
+  '<Escape>': 'mode-leave',
+  '<Ins>': 'mode-leave',
+  '<Shift-Escape>': 'fake-key <Escape>',
+  '<Ctrl-e>': 'edit-text'
 }
