@@ -6,9 +6,6 @@ shell_patterns=0
 # f pattern Match currently selected file | F pattern Match last selected in other panel | d pattern Match currently selected directory | D pattern Match last selected directory in other panel | t type Type of currently selected file | T type Type of last selected file in other panel | ! sub-cond Negate result of sub-condition
 # Type is one or more of the following: r regular file | d directory | n not a directory | l link | x executable file | t tagged | c character device | b  block device | f FIFO (pipe) | s socket
 
-a  Mount android
-   jmtpfs /media/mtp
-
 + ! t t
 c  Change ownership of selected subdirectory (chown)
    value=%{Ender new user:group}
@@ -63,12 +60,24 @@ l  View shared library dependencies
 o  View SONAME information
    %view{ascii,nroff} readelf -d %f | grep SONAME
 
++ ! t t
+r  Do something on the current file
+   CMD=%{Enter command}
+   $CMD %f
+
++ t t
+R  Do something on the tagged files
+   CMD=%{Enter command}
+   for i in %t; do
+     $CMD "$i"
+   done
+
 + t r & ! t t
-s  Strip executable
+s  Strip current executable
    strip -s %f
 
 + t t
-S  Strip executables
+S  Strip tagged executables
    for i in %t; do
      strip -s "$i"
    done
