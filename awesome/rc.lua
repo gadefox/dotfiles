@@ -135,7 +135,7 @@ end)
 
 -- key bindings
 local function term(cmd)
-  local ret = "alacritty"
+  local ret = "st"
   if cmd then
     ret = ret .. " -e " .. cmd
   end
@@ -144,16 +144,22 @@ end
 
 awesome.connect_signal("launch::dev", function(option)
   if option == 1 then
-    awful.spawn(term("nvim"))
+    awful.spawn(term())
   elseif option == 2 then
+    awful.spawn(term("nvim"))
+  elseif option == 3 then
     awful.spawn("nemiver")
   end
 end)
 
 awesome.connect_signal("launch::file", function(option)
   if option == 1 then
-    awful.spawn(term("nnn"))
+    awful.spawn("pcmanfm")
   elseif option == 2 then
+    awful.spawn(term("nnn"))
+  elseif option == 3 then
+    awful.spawn(term("mc"))
+  elseif option == 4 then
     awful.spawn("xarchiver")
   end
 end)
@@ -261,12 +267,8 @@ awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
     theme.launch("scrot", { "", "󰩭" })
   elseif option == 2 then
-    awful.spawn(term())
-  elseif option == 3 then
     awful.spawn(term("calc"))
-  elseif option == 4 then
-    awful.spawn.with_shell("jmtpfs /media/mtp")
-  elseif option == 5 then
+  elseif option == 3 then
     awful.spawn(term("htop"))
   end
 end)
@@ -277,11 +279,11 @@ awesome.connect_signal("launch::web", function(option)
   elseif option == 2 then
     awful.spawn(term("neomutt"))
   elseif option == 3 then
-    awful.spawn(term("irssi"))
+    awful.spawn(term("abook"))
   elseif option == 4 then
-    awful.spawn(term("rtorrent"))
+    awful.spawn(term("irssi"))
   elseif option == 5 then
-    awful.spawn(os.getenv("HOME") .. "/.eID_klient/eID_klient-x86_64.AppImage")
+    awful.spawn(term("rtorrent"))
   end
 end)
 
@@ -293,47 +295,52 @@ awesome.connect_signal("launch::music", function(option)
   end
 end)
 
+awesome.connect_signal("launch::info", function(option)
+  if option == 1 then
+    msg_now()
+  elseif option == 2 then
+    awful.spawn("pavucontrol")
+  end
+end)
+
 awesome.connect_signal("launch::app", function(option)
   if option == 1 then
-    theme.launch("file", { "", "" })
+    theme.launch("info", { "󱑒", "" })
   elseif option == 2 then
-    theme.launch("office", { "󱎒", "󱎏" })
+    theme.launch("file", { "", "󱗁", "󰖔", "" })
   elseif option == 3 then
-    theme.launch("image", { "󰈋", "󱇤" })
+    theme.launch("office", { "󱎒", "󱎏" })
   elseif option == 4 then
-    theme.launch("dev", { "󱥈", "" })
+    theme.launch("image", { "󰈋", "󱇤" })
   elseif option == 5 then
-    theme.launch("web", { "󰈹", "", "󰻞", "󰄠", ""  })
+    theme.launch("dev", { "", "󱥈", "" })
   elseif option == 6 then
-    theme.launch("music", { "󰝚", "󰋍" })
+    theme.launch("web", { "󰈹", "", "", "", "󰄠" })
   elseif option == 7 then
-    theme.launch("tool", { "󰭪", "", "󱖦", "", "󱊖", "" })
+    theme.launch("music", { "󰝚", "󰋍" })
   elseif option == 8 then
-    theme.launch("settings", { "󰃟", "󰍺" })
+    theme.launch("tool", { "󰭪", "󱖦", "" })
   elseif option == 9 then
-    msg_now()
+    theme.launch("settings", { "󰃟", "󰍺" })
   end
 end)
 
 awesome.connect_signal("launch::sys", function(option)
   if option == 1 then
-    awful.spawn.with_shell("systemctl poweroff")
+    awful.spawn.with_shell("/sbin/poweroff")
   elseif option == 2 then
-    awful.spawn.with_shell("systemctl reboot")
+    awful.spawn.with_shell("/sbin/reboot")
   elseif option == 3 then
     theme.lock()
-    awful.spawn.with_shell("systemctl suspend")
   elseif option == 4 then
-    theme.lock()
-  elseif option == 5 then
     awesome.quit()
-  elseif option == 6 then
+  elseif option == 5 then
     awesome.restart()
   end
 end)
 
 awful.keyboard.append_global_keybindings {
-  awful.key({ }, "XF86PowerOff", function() theme.launch("sys", { "󰐥", "󰜉", "󰒲", "󰍁", "󰗽", "󱣲" }) end,
+  awful.key({ }, "XF86PowerOff", function() theme.launch("sys", { "󰐥", "󰜉", "󰍁", "󰗽", "󱣲" }) end,
     { description = "quit", group = "awesome" }),
   awful.key({ "Mod4" }, "Escape", theme.lock,
     { description = "quit", group = "awesome" }),
@@ -356,18 +363,20 @@ awful.keyboard.append_global_keybindings {
     { description = "last", group = "tag" }),
   awful.key({ "Mod4" }, "BackSpace", awful.tag.history.restore,
     { description = "back & forth", group = "tag" }),
---  awful.key({ "Mod4", "Shift" }, "minus", function () awful.tag.incgap(-1, nil) end,
---    {description = "decrement gap", group = "tags" }),
---  awful.key({ "Mod4" }, "minus", function () awful.tag.incgap(1, nil) end,
---    {description = "increment gaps", group = "tags" }),
+  awful.key({ "Mod4", "Shift" }, "minus", function () awful.tag.incgap(-1, nil) end,
+    {description = "decrement gap", group = "tags" }),
+  awful.key({ "Mod4" }, "minus", function () awful.tag.incgap(1, nil) end,
+    {description = "increment gaps", group = "tags" }),
   awful.key({ "Mod4" }, "space", awful.client.urgent.jumpto,
     { description = "jump to urgent client", group = "client" }),
 
   awful.key({ "Mod4" }, "Return", function() awful.spawn(term()) end,
     { description = "open a terminal", group = "launch" }),
-  awful.key({ }, "Menu", function() theme.launch("app", { "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "", "󱑒" }) end,
+  awful.key({ }, "Menu", function() theme.launch("app", { "", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "" }) end,
     { description = "show the menubar", group = "launch" }),
-  awful.key({ }, "Print", function()
+  awful.key({ }, "Print", function() awful.spawn("scrot") end,
+    { description = "printscreen", group = "launch" }),
+  awful.key({ "Shift" }, "Print", function()
     theme.notify({
       title = bold("Screenshot:"),
       message = "select a window or rectangle",
@@ -376,7 +385,7 @@ awful.keyboard.append_global_keybindings {
     })
     awful.spawn.with_shell("slop-shot")
   end,
-    { description = "scrot", group = "launch" }),
+    { description = "printscreen area", group = "launch" }),
 
   awful.key({ }, "XF86Mail", function() awful.spawn(term("neomutt")) end,
     { description = "email", group = "launch" }),
@@ -387,7 +396,9 @@ awful.keyboard.append_global_keybindings {
   awful.key({ }, "XF86Tools", function() awful.spawn(term("ncmpc")) end,
     { description = "browser", group = "launch" }),
   awful.key({ }, "XF86Launch5", function() awful.spawn(term("nnn")) end,
-    { description = "nnn fm", group = "launch" }),
+    { description = "terminal fm", group = "launch" }),
+  awful.key({ }, "XF86Launch6", function() awful.spawn("pcmanfm") end,
+    { description = "file manager", group = "launch" }),
   awful.key({ }, "XF86Launch9", function() awful.spawn(term("htop")) end,
     { description = "process monitor", group = "launch" }),
   awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
