@@ -1,5 +1,6 @@
 alias c="clear"
 alias e="exit"
-alias ls="ls --hyperlink=auto --color=auto"
+alias ls="ls --color=auto"
 alias l="ls -A"
 alias ll="ls -lA"
+alias mc="mc --xterm"
