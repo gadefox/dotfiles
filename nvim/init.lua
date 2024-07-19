@@ -21,7 +21,7 @@ require("packer").startup(function(use)
   use { "utilyre/barbecue.nvim", requires = { "nvim-tree/nvim-web-devicons", "SmiteshP/nvim-navic" } }
   use "nvim-tree/nvim-tree.lua"
   use { "folke/noice.nvim", requires = { "rcarriga/nvim-notify", "MunifTanjim/nui.nvim" } }
-  use "folke/which-key.nvim"
+  use { "folke/which-key.nvim", requires = { "echasnovski/mini.nvim" } }
   use "lewis6991/gitsigns.nvim"
   use { "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }
   use "nvim-treesitter/nvim-treesitter-context"
@@ -514,56 +514,45 @@ vim.o.timeoutlen = 300
 local wkey = require("which-key")
 
 wkey.setup({
-  popup_mappings = {
+  keys = {
     scroll_down = "<PageDown>",
     scroll_up = "<PageUp>"
   }
 })
 
-wkey.register({
-  b = { function()
+wkey.add({
+  { "<leader>b", function()
     catppuccin.options.transparent_background = not catppuccin.options.transparent_background
     catppuccin.compile()
     vim.cmd.colorscheme(vim.g.colors_name)
-  end, "Toggle transparent background" },
-  c = { ":bdelete<CR>", "Close Buffer" },
-  e = { ":NvimTreeToggle<CR>", "Explorer" },
-  f = {
-    name = "Folding",
-    c = { function() ufo.closeAllFolds() end, "Close all folds" },
-    o = { function() ufo.openAllFolds() end, "Open all folds" }
-  },
-  g = {
-    name = "Glance",
-    d = { ":Glance definitions<CR>", "Definition" },
-    i = { ":Glance implementations<CR>", "Implementation" },
-    r = { ":Glance references<CR>", "References" },
-    t = { ":Glance type_definitions<CR>", "Type" }
-  },
-  p = { ":PackerUpdate<CR>", "Update Plugins" },
-  q = { ":q<CR>", "Quit" },
-  s = {
-    name = "LSP",
-    ["?"] = { ":LspInfo<CR>", "Info" },
-    c = { ":lua vim.lsp.buf.definition()<CR>", "Go to definition" },
-    d = { ":lua vim.lsp.buf.declaration()<CR>", "Go to declaration" },
-    i = { ":lua vim.lsp.buf.implementation()<CR>", "Go to implementation" },
-    h = { ":lua vim.lsp.buf.hover()<CR>", "Hover" },
-    r = { ":lua vim.lsp.buf.rename()<CR>", "Rename" }
-  },
-  t = {
-    name = "Telescope",
-    b = { ":Telescope buffers<CR>", "Buffers" },
-    c = { ":Telescope commands<CR>", "Commands" },
-    d = { ":Telescope diagnostics<CR>", "Diagnostics" },
-    f = { ":Telescope find_files<CR>", "Find files" },
-    g = { ":Telescope live_grep<CR>", "Find text" },
-    h = { ":Telescope help_tags<CR>", "Help tags" },
-    l = { ":Telescope highlights<CR>", "Highlights" },
-    r = { ":Telescope oldfiles<CR>", "Recept files" },
-    v = { ":Telescope vim_options<CR>", "Vim options" }
-  },
-  w = { ":w<CR>", "Save" }
-}, {
-  prefix = "<leader>"
+  end, desc = "Toggle transparent background" },
+  { "<leader>c", desc = "Close Buffer", ":bdelete<CR>" },
+  { "<leader>e", desc = "Explorer", ":NvimTreeToggle<CR>" },
+  { "<leader>f", group = "Folding" },
+  { "<leader>fc", desc = "Close all folds", function() ufo.closeAllFolds() end },
+  { "<leader>fo", desc = "Open all folds", function() ufo.openAllFolds() end },
+  { "<leader>g", group = "Glance" },
+  { "<leader>gd", desc = "Definition", ":Glance definitions<CR>" },
+  { "<leader>gi", desc = "Implementation", ":Glance implementations<CR>" },
+  { "<leader>gr", desc = "References", ":Glance references<CR>" },
+  { "<leader>gt", desc= "Type", ":Glance type_definitions<CR>" },
+  { "<leader>p", desc = "Update Plugins", ":PackerUpdate<CR>" },
+  { "<leader>q", desc = "Quit", ":q<CR>" },
+  { "<leader>s", group = "LSP" },
+  { "<leader>s?", desc = "Info", ":LspInfo<CR>" },
+  { "<leader>sc", desc = "Go to definition", ":lua vim.lsp.buf.definition()<CR>" },
+  { "<leader>sd", desc = "Go to declaration", ":lua vim.lsp.buf.declaration()<CR>" },
+  { "<leader>si", desc = "Go to implementation", ":lua vim.lsp.buf.implementation()<CR>" },
+  { "<leader>sh", desc = "Hover", ":lua vim.lsp.buf.hover()<CR>" },
+  { "<leader>sr", desc = "Rename", ":lua vim.lsp.buf.rename()<CR>" },
+  { "<leader>t", group = "Telescope" },
+  { "<leader>tb", desc = "Buffers", ":Telescope buffers<CR>" },
+  { "<leader>tc", desc = "Commands", ":Telescope commands<CR>" },
+  { "<leader>td", desc = "Diagnostics", ":Telescope diagnostics<CR>" },
+  { "<leader>tf", desc = "Find files", ":Telescope find_files<CR>" },
+  { "<leader>tg", desc = "Find text", ":Telescope live_grep<CR>" },
+  { "<leader>th", desc = "Help tags", ":Telescope help_tags<CR>" },
+  { "<leader>tl", desc = "Highlights", ":Telescope highlights<CR>" },
+  { "<leader>tr", desc = "Recept files", ":Telescope oldfiles<CR>" },
+  { "<leader>tv", desc = "Vim options", ":Telescope vim_options<CR>" }
 })
