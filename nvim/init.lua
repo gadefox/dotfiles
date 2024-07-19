@@ -554,5 +554,6 @@ wkey.add({
   { "<leader>th", desc = "Help tags", ":Telescope help_tags<CR>" },
   { "<leader>tl", desc = "Highlights", ":Telescope highlights<CR>" },
   { "<leader>tr", desc = "Recept files", ":Telescope oldfiles<CR>" },
-  { "<leader>tv", desc = "Vim options", ":Telescope vim_options<CR>" }
+  { "<leader>tv", desc = "Vim options", ":Telescope vim_options<CR>" },
+  { "<leader>w", desc = "Save Buffer", ":write<CR>" }
 })
