@@ -112,10 +112,10 @@ c.content.register_protocol_handler = True
 c.content.site_specific_quirks.skip = []
 c.content.pdfjs = True
 c.downloads.prevent_mixed_content = False
-c.editor.command = ['alacritty', '-e', 'nvim', '{file}']
-c.fileselect.single_file.command = ['alacritty', '-e', 'nnn', '{}']
-c.fileselect.multiple_files.command = ['alacritty', '-e', 'nnn', '{}']
-c.fileselect.folder.command = ['alacritty', '-e', 'nnn', '{}']
+c.editor.command = ['st', '-e', 'nvim', '{file}']
+c.fileselect.single_file.command = ['st', '-e', 'nnn', '{}']
+c.fileselect.multiple_files.command = ['st', '-e', 'nnn', '{}']
+c.fileselect.folder.command = ['st', '-e', 'nnn', '{}']
 c.fonts.default_size = '11pt'
 c.fonts.tooltip = '12pt'
 c.hints.chars = 'aszx'
@@ -138,7 +138,6 @@ c.zoom.levels = ["100%", "110%", "120%", "130%", "140%", "150%"]
 
 c.url.searchengines = {
   'DEFAULT': 'https://www.google.com/search?q={}',
-  'd': 'https://duckduckgo.com/?q={}',
   'r': 'https://reddit.com/r/{}',
   's': 'https://stackoverflow.com/search?q={}',
   'w': 'https://en.wikipedia.org/wiki/{}',
@@ -149,37 +148,30 @@ c.bindings.default['normal'] = {
   '<Escape>': 'clear-keychain ;; search ;; fullscreen --leave',
   '<Ctrl+Backspace>': 'back',
   '<Ctrl+Del>': 'tab-close',
-  '<Ctrl+Shift+Del>': 'tab-only',
   '<Ctrl+PgDown>': 'tab-prev',
   '<Ctrl+PgUp>': 'tab-next',
   '<Ctrl+q>': 'quit',
   '<F5>': 'reload',
   '<Ins>': 'mode-enter insert',
-  'i': 'mode-enter insert',
   '/': 'cmd-set-text /',
   '?': 'cmd-set-text ?',
   ':': 'cmd-set-text :',
-  '\\<Ins>': 'hint inputs',
-  '\\i': 'hint images download',
-  '\\\\': 'hint links run :open {hint-url}',
-  '\\]': 'hint links run :open -t {hint-url}',
-  '\\d': 'hint links download',
   '\\v': 'hint links spawn mpv {hint-url}',
-  '\\V': 'hint links spawn yt-mp3 {hint-url}',
-  'a': 'config-cycle content.blocking.enabled true false',
-  'dc': 'download-clear',
-  'dx': 'download-cancel',
+  '\\d': 'hint links spawn yt-mp3 {hint-url}',
+  'b': 'config-cycle content.blocking.enabled true false',
+  'cd': 'download-clear',
+  'ch': 'history-clear',
+  'cm': 'clear-messages',
   'm': 'bookmark-add',
   'M': 'quickmark-save',
   'n': 'search-next',
   'N': 'search-prev',
   '[': 'cmd-set-text -s :open',
   ']': 'cmd-set-text -s :open -t',
-  'p': 'open {clipboard}',
-  'P': 'open -t {clipboard}',
+  'p': 'open -t {clipboard}',
   'u': 'undo',
-  'v': 'spawn mpv {url}',
-  'V': 'spawn yt-mp3 {url}',
+  'vd': 'spawn yt-mp3 {url}',
+  'vv': 'spawn mpv {url}',
   'y': 'yank'
 }
 
