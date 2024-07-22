@@ -1,3 +1,4 @@
-#!/bin/sh
+#!/bin/rc
 
-yt-dlp --paths ~/downloads --extract-audio --audio-format mp3 $@
+name=`(yt-dlp --print after_move:filepath --extract-audio --audio-format mp3 $1)
+notify-send --icon=/etc/xdg/awesome/icons/download.png 'Download Complete' $name
