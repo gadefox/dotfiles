@@ -56,3 +56,7 @@ rm -r /usr/share/zsh
 
 echo lib cache
 ldconfig
+
+echo create locale.alias
+mkdir /usr/share/locale
+ln -s /etc/locale.alias /usr/share/locale/locale.alias
