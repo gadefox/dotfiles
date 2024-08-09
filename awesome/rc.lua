@@ -208,8 +208,8 @@ awesome.connect_signal("launch::light", function(option)
     contrast1 = 80
   end
 
-  local rgb_names = { "Red", "Green", "Blue" }
   local cmd = "ddcutil setvcp 10 " .. bright1 .. "; sleep 1; ddcutil setvcp 12 " .. contrast1 .. "; sleep 1; nvidia-settings"
+  local rgb_names = { "Red", "Green", "Blue" }
   for _, color in ipairs(rgb_names) do
     cmd = cmd .. " -a [DPY:LVDS-0]/" .. color .. "Brightness=" .. bright0
     cmd = cmd .. " -a [DPY:LVDS-0]/" .. color .. "Contrast=" .. contrast0
@@ -350,9 +350,9 @@ end)
 
 awesome.connect_signal("launch::sys", function(option)
   if option == 1 then
-    awful.spawn.with_shell("/sbin/poweroff")
+    awful.spawn("/sbin/poweroff")
   elseif option == 2 then
-    awful.spawn.with_shell("/sbin/reboot")
+    awful.spawn("/sbin/reboot")
   elseif option == 3 then
     theme.lock()
   elseif option == 4 then
@@ -406,7 +406,7 @@ awful.keyboard.append_global_keybindings {
       icon = theme.icons .. "screenshot.png",
       timeout = 2
     })
-    awful.spawn.with_shell("slop-shot")
+    awful.spawn("slop-shot")
   end,
     { description = "printscreen area", group = "launch" }),
 
@@ -432,17 +432,17 @@ awful.keyboard.append_global_keybindings {
     { description = "calc", group = "launch" }),
 
   awful.key({ }, "XF86AudioLowerVolume", function()
-    awful.spawn.with_shell("pactl set-sink-volume @DEFAULT_SINK@ -5%")
+    awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%")
     msg_volume("volume1.png")
   end,
     { description = "lower", group = "volume" }),
   awful.key({ }, "XF86AudioRaiseVolume", function()
-    awful.spawn.with_shell("pactl set-sink-volume @DEFAULT_SINK@ +5%")
+    awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ +5%")
     msg_volume("volume.png")
  end,
     { description = "raise", group = "volume" }),
   awful.key({ }, "XF86AudioMute", function()
-    awful.spawn.with_shell("pactl set-sink-mute @DEFAULT_SINK@ toggle")
+    awful.spawn("pactl set-sink-mute @DEFAULT_SINK@ toggle")
     msg_muted()
   end,
     { description = "(un)mute", group = "volume" }),
@@ -466,7 +466,7 @@ awful.keyboard.append_global_keybindings {
   end,
     { description = "next", group = "music" }),
   awful.key({ }, "XF86AudioStop", function()
-    awful.spawn.with_shell("mpc stop")
+    awful.spawn("mpc stop")
     msg_mpd_stop("stopped")
   end,
     { description = "stop", group = "music" })
