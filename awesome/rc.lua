@@ -308,21 +308,21 @@ end)
 
 awesome.connect_signal("launch::timer", function(option)
   if option == 1 then
-    awful.spawn("timer 300")
+    awful.spawn("timer 5")
   elseif option == 2 then
-    awful.spawn("timer 600")
+    awful.spawn("timer 10")
   elseif option == 3 then
-    awful.spawn("timer 900")
+    awful.spawn("timer 15")
   elseif option == 4 then
-    awful.spawn("timer 1200")
+    awful.spawn("timer 20")
   elseif option == 5 then
-    awful.spawn("timer 1500")
+    awful.spawn("timer 25")
   elseif option == 6 then
-    awful.spawn("timer 1800")
+    awful.spawn("timer 30")
   elseif option == 7 then
-    awful.spawn("timer 2700")
+    awful.spawn("timer 45")
   elseif option == 8 then
-    awful.spawn("timer 3300")
+    awful.spawn("timer 55")
   end
 end)
 
