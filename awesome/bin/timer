@@ -1,5 +1,13 @@
 #!/bin/rc
 
+fn minstr {
+  str = $*' minute'
+  ~$* 1 || str = $str's'
+  echo -n $str
+}
+
+str = `{ minstr $* }
+notify-send --icon=/etc/xdg/awesome/icons/alarm.png '<b>Timer</b>' 'Starting '$^str' countdown'
 sleep `{ calc 60*$* }
-notify-send --icon=/etc/xdg/awesome/icons/alarm.png '<b>Time is up!</b>' $*' minutes countdown finished'
+notify-send --icon=/etc/xdg/awesome/icons/alarm.png '<b>Time is up!</b>' $^str' countdown finished'
 paplay /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
