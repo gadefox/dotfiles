@@ -1,0 +1,4 @@
+#!/bin/sh
+sleep $1
+notify-send --icon=/etc/xdg/awesome/icons/alarm.png 'Time is up!' 'Timer countdown finished'
+paplay /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
