@@ -1,5 +1,5 @@
 #!/bin/rc
 
 sleep `{ calc 60*$* }
-notify-send --icon=/etc/xdg/awesome/icons/alarm.png 'Time is up!' $*' minutes countdown finished'
+notify-send --icon=/etc/xdg/awesome/icons/alarm.png '<b>Time is up!</b>' $*' minutes countdown finished'
 paplay /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
