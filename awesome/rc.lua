@@ -208,13 +208,17 @@ awesome.connect_signal("launch::light", function(option)
     contrast1 = 80
   end
 
-  local cmd = "ddcutil setvcp 10 " .. bright1 .. "; sleep 1; ddcutil setvcp 12 " .. contrast1 .. "; sleep 1; nvidia-settings"
+  awful.spawn.easy_async("ddcutil setvcp 10 " .. bright1, function()
+    awful.spawn("ddcutil setvcp 12 " .. contrast1)
+  end)
+
+  local cmd = "nvidia-settings"
   local rgb_names = { "Red", "Green", "Blue" }
   for _, color in ipairs(rgb_names) do
     cmd = cmd .. " -a [DPY:LVDS-0]/" .. color .. "Brightness=" .. bright0
     cmd = cmd .. " -a [DPY:LVDS-0]/" .. color .. "Contrast=" .. contrast0
   end
-  awful.spawn.with_shell(cmd)
+  awful.spawn(cmd)
 end)
 
 awesome.connect_signal("launch::office", function(option)
