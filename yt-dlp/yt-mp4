@@ -1,0 +1,9 @@
+#!/bin/rc
+
+fn filename {
+  parts = `` (/) { echo -n $* }
+  echo -n $parts($#parts)
+}
+
+output = `{ yt-dlp --print after_move:filepath $* }
+notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>Download Complete</b>' `{ filename $output }
