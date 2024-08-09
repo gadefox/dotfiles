@@ -1,4 +1,5 @@
 require("awful.autofocus")
+local gears = require("gears")
 
 -- focus and swap
 local focus = require("focus")
@@ -32,7 +33,7 @@ client.connect_signal("mouse::enter", function(c)
 end)
 
 -- custom notifications
-local kb_notif, notif_v, notif_m
+local notif_kb, notif_v, notif_m
 
 local function bold(s)
   return "<b>" .. s .. "</b>"
@@ -41,11 +42,11 @@ end
 local kb_layout = awful.widget.keyboardlayout()
 
 kb_layout:connect_signal("widget::redraw_needed", function ()
-  kb_notif = theme.notify({
+  notif_kb = theme.notify({
       title = bold("Keyboard layout:"),
       message = kb_layout.widget.text,
       icon = theme.icons .. "keyboard.png",
-    }, kb_notif)
+    }, notif_kb)
 end)
 
 local function msg_volume(icon)
@@ -208,16 +209,12 @@ awesome.connect_signal("launch::light", function(option)
   end
 
   local rgb_names = { "Red", "Green", "Blue" }
-  local nv_cmd = "nvidia-settings"
-
+  local cmd = "ddcutil setvcp 10 " .. bright1 .. "; sleep 1; ddcutil setvcp 12 " .. contrast1 .. "; sleep 1; nvidia-settings"
   for _, color in ipairs(rgb_names) do
-    nv_cmd = nv_cmd .. " -a [DPY:LVDS-0]/" .. color .. "Brightness=" .. bright0
-    nv_cmd = nv_cmd .. " -a [DPY:LVDS-0]/" .. color .. "Contrast=" .. contrast0
+    cmd = cmd .. " -a [DPY:LVDS-0]/" .. color .. "Brightness=" .. bright0
+    cmd = cmd .. " -a [DPY:LVDS-0]/" .. color .. "Contrast=" .. contrast0
   end
-
-  awful.spawn.with_shell(nv_cmd)
-  awful.spawn.with_shell("ddcutil --use-file-io setvcp 10 " .. bright1)
-  awful.spawn.with_shell("ddcutil --use-file-io setvcp 12 " .. contrast1)
+  awful.spawn.with_shell(cmd)
 end)
 
 awesome.connect_signal("launch::office", function(option)
@@ -238,10 +235,10 @@ end)
 
 awesome.connect_signal("launch::settings", function(option)
   if option == 1 then
-    awful.spawn.easy_async_with_shell("ddcutil --use-file-io getvcp 10 | awk '{print $9}'", function(out)
-      local vcp = tonumber(string.sub(out, 1, -3))
+    awful.spawn.easy_async_with_shell("ddcutil -t getvcp 10 | awk '{print $4}'", function(out)
       local urgent
 
+      local vcp = tonumber(out)
       if vcp < 10 then
         urgent = 1
       elseif vcp < 30 then
@@ -263,12 +260,18 @@ awesome.connect_signal("launch::settings", function(option)
   end
 end)
 
+local function timer()
+  theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕" })
+end
+
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
-    theme.launch("scrot", { "", "󰩭" })
+    timer()
   elseif option == 2 then
-    awful.spawn(term("calc"))
+    theme.launch("scrot", { "", "󰩭" })
   elseif option == 3 then
+    awful.spawn(term("calc"))
+  elseif option == 4 then
     awful.spawn(term("htop"))
   end
 end)
@@ -277,13 +280,13 @@ awesome.connect_signal("launch::web", function(option)
   if option == 1 then
     awful.spawn("qutebrowser")
   elseif option == 2 then
-    awful.spawn(term("neomutt"))
+    awful.spawn("firefox")
   elseif option == 3 then
-    awful.spawn(term("abook"))
+    awful.spawn("evolution")
   elseif option == 4 then
     awful.spawn(term("irssi"))
   elseif option == 5 then
-    awful.spawn(term("rtorrent"))
+    awful.spawn("transmission-gtk")
   end
 end)
 
@@ -303,6 +306,26 @@ awesome.connect_signal("launch::info", function(option)
   end
 end)
 
+awesome.connect_signal("launch::timer", function(option)
+  if option == 1 then
+    awful.spawn("timer 300")
+  elseif option == 2 then
+    awful.spawn("timer 600")
+  elseif option == 3 then
+    awful.spawn("timer 900")
+  elseif option == 4 then
+    awful.spawn("timer 1200")
+  elseif option == 5 then
+    awful.spawn("timer 1500")
+  elseif option == 6 then
+    awful.spawn("timer 1800")
+  elseif option == 7 then
+    awful.spawn("timer 2700")
+  elseif option == 8 then
+    awful.spawn("timer 3300")
+  end
+end)
+
 awesome.connect_signal("launch::app", function(option)
   if option == 1 then
     theme.launch("info", { "󱑒", "" })
@@ -315,11 +338,11 @@ awesome.connect_signal("launch::app", function(option)
   elseif option == 5 then
     theme.launch("dev", { "", "󱥈", "" })
   elseif option == 6 then
-    theme.launch("web", { "󰈹", "", "", "", "󰄠" })
+    theme.launch("web", { "󰘯", "󰈹", "", "", "󰄠" })
   elseif option == 7 then
     theme.launch("music", { "󰝚", "󰋍" })
   elseif option == 8 then
-    theme.launch("tool", { "󰭪", "󱖦", "" })
+    theme.launch("tool", { "󰔛", "󰭪", "󱖦", "" })
   elseif option == 9 then
     theme.launch("settings", { "󰃟", "󰍺" })
   end
@@ -387,7 +410,7 @@ awful.keyboard.append_global_keybindings {
   end,
     { description = "printscreen area", group = "launch" }),
 
-  awful.key({ }, "XF86Mail", function() awful.spawn(term("neomutt")) end,
+  awful.key({ }, "XF86Mail", function() awful.spawn("evolution") end,
     { description = "email", group = "launch" }),
   awful.key({ }, "XF86HomePage", function() awful.spawn("qutebrowser") end,
     { description = "browser", group = "launch" }),
@@ -401,6 +424,8 @@ awful.keyboard.append_global_keybindings {
     { description = "file manager", group = "launch" }),
   awful.key({ }, "XF86Launch9", function() awful.spawn(term("htop")) end,
     { description = "process monitor", group = "launch" }),
+  awful.key({ }, "XF86Favorites", function() timer() end,
+    { description = "timer", group = "launch" }),
   awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
     { description = "neovim", group = "launch" }),
   awful.key({ }, "XF86Calculator", function() awful.spawn(term("calc")) end,
