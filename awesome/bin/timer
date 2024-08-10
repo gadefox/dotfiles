@@ -7,7 +7,7 @@ fn minstr {
 }
 
 str = `{ minstr $* }
-notify-send --icon=/etc/xdg/awesome/icons/alarm.png '<b>Timer</b>' 'Starting '$^str' countdown'
+notify-send --icon=/etc/xdg/awesome/icons/timer.png '<b>Timer</b>' 'Starting '$^str' countdown'
 sleep `{ calc 60*$* }
-notify-send --icon=/etc/xdg/awesome/icons/alarm.png '<b>Time is up!</b>' $^str' countdown finished'
+notify-send --icon=/etc/xdg/awesome/icons/timer.png '<b>Time is up!</b>' $^str' countdown finished'
 paplay /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
