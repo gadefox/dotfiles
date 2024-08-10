@@ -280,6 +280,10 @@ awesome.connect_signal("launch::tool", function(option)
   end
 end)
 
+local function irssi()
+  awful.spawn(term("irssi --home=~/.local/share/irssi"))
+end
+
 awesome.connect_signal("launch::web", function(option)
   if option == 1 then
     awful.spawn("qutebrowser")
@@ -288,7 +292,7 @@ awesome.connect_signal("launch::web", function(option)
   elseif option == 3 then
     awful.spawn("evolution")
   elseif option == 4 then
-    awful.spawn(term("irssi"))
+    irssi()
   elseif option == 5 then
     awful.spawn("transmission-gtk")
   end
@@ -418,7 +422,7 @@ awful.keyboard.append_global_keybindings {
     { description = "email", group = "launch" }),
   awful.key({ }, "XF86HomePage", function() awful.spawn("qutebrowser") end,
     { description = "browser", group = "launch" }),
-  awful.key({ }, "XF86Messenger", function() awful.spawn(term("irssi")) end,
+  awful.key({ }, "XF86Messenger", function() irssi() end,
     { description = "messenger", group = "launch" }),
   awful.key({ }, "XF86Tools", function() awful.spawn(term("ncmpc")) end,
     { description = "browser", group = "launch" }),
