@@ -10,4 +10,4 @@ str = `{ minstr $* }
 notify-send --icon=/etc/xdg/awesome/icons/timer.png '<b>Timer</b>' 'Starting '$^str' countdown'
 sleep `{ calc 60*$* }
 notify-send --icon=/etc/xdg/awesome/icons/timer.png '<b>Time is up!</b>' $^str' countdown finished'
-paplay /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
+paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
