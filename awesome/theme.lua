@@ -300,8 +300,11 @@ naughty.connect_signal("request::display", function(n)
         {
           {
             {
-              n.icon and {
-                widget = naughty.widget.icon
+              {
+                n.icon and {
+                  widget = naughty.widget.icon
+                },
+                widget = wibox.container.place
               },
               margins = dpi(7),
               widget = wibox.container.margin
