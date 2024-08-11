@@ -302,11 +302,12 @@ naughty.connect_signal("request::display", function(n)
             {
               {
                 n.icon and {
+                  forced_height = 42,
                   widget = naughty.widget.icon
                 },
                 widget = wibox.container.place
               },
-              margins = dpi(7),
+              margins = dpi(8),
               widget = wibox.container.margin
             },
             bg = "#1a2026",
