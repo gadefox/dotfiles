@@ -327,7 +327,7 @@ naughty.connect_signal("request::display", function(n)
                 },
                 layout = wibox.layout.fixed.vertical
               },
-              margins = dpi(12),
+              margins = dpi(10),
               widget = wibox.container.margin
             },
             bg = "#232d35",
@@ -350,7 +350,7 @@ naughty.connect_signal("request::display", function(n)
           layout = wibox.layout.fixed.vertical
         },
         strategy = "min",
-        width = dpi(160),
+        width = dpi(220),
         widget = wibox.container.constraint
       },
       strategy = "max",
