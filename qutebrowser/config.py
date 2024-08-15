@@ -1,20 +1,5 @@
 config.load_autoconfig(False)
 
-nord0 = '#2e3440'
-nord1 = '#3b4252'
-nord2 = '#434c5e'
-nord3 = '#4c566a'
-nord4 = '#d8dee9'
-nord5 = '#e5e9f0'
-nord6 = '#eceff4'
-nord7 = '#88c0d0'
-nord8 = '#5e81ac'
-nord9 = '#bf616a'
-nord10 = '#d08770'
-nord11 = '#ebcb8b'
-nord12 = '#a3be8c'
-nord13 = '#b48ead'
-
 c.aliases = {}
 c.bindings.key_mappings = {}
 c.auto_save.interval = 15000
@@ -24,78 +9,78 @@ c.colors.contextmenu.menu.bg = '#28343A'
 c.colors.contextmenu.menu.fg = '#B9C3C8'
 c.colors.contextmenu.selected.bg = '#3B484D'
 c.colors.contextmenu.selected.fg = '#CFD8DC'
-c.colors.completion.category.bg = nord0
-c.colors.completion.category.border.bottom = nord0
-c.colors.completion.category.border.top = nord0
-c.colors.completion.category.fg = nord5
-c.colors.completion.even.bg = nord1
-c.colors.completion.odd.bg = nord1
-c.colors.completion.fg = nord4
-c.colors.completion.item.selected.bg = nord3
-c.colors.completion.item.selected.border.bottom = nord3
-c.colors.completion.item.selected.border.top = nord3
-c.colors.completion.item.selected.fg = nord6
-c.colors.completion.match.fg = nord11
-c.colors.completion.scrollbar.bg = nord1
-c.colors.completion.scrollbar.fg = nord5
-c.colors.downloads.bar.bg = nord0
-c.colors.downloads.error.bg = nord9
-c.colors.downloads.error.fg = nord5
-c.colors.downloads.stop.bg = nord13
+c.colors.completion.category.bg = '#2e3440'
+c.colors.completion.category.border.bottom = '#2e3440'
+c.colors.completion.category.border.top = '#2e3440'
+c.colors.completion.category.fg = '#e5e9f0'
+c.colors.completion.even.bg = '#3b4252'
+c.colors.completion.odd.bg = '#3b4252'
+c.colors.completion.fg = '#d8dee9'
+c.colors.completion.item.selected.bg = '#4c566a'
+c.colors.completion.item.selected.border.bottom = '#4c566a'
+c.colors.completion.item.selected.border.top = '#4c566a'
+c.colors.completion.item.selected.fg = '#eceff4'
+c.colors.completion.match.fg = '#ebcb8b'
+c.colors.completion.scrollbar.bg = '#3b4252'
+c.colors.completion.scrollbar.fg = '#e5e9f0'
+c.colors.downloads.bar.bg = '#2e3440'
+c.colors.downloads.error.bg = '#bf616a'
+c.colors.downloads.error.fg = '#e5e9f0'
+c.colors.downloads.stop.bg = '#b48ead'
 c.colors.downloads.system.bg = 'none'
-c.colors.hints.bg = nord11
-c.colors.hints.fg = nord0
-c.colors.hints.match.fg = nord8
-c.colors.keyhint.bg = nord1
-c.colors.keyhint.fg = nord5
-c.colors.keyhint.suffix.fg = nord11
-c.colors.messages.error.bg = nord9
-c.colors.messages.error.border = nord9
-c.colors.messages.error.fg = nord0
-c.colors.messages.info.bg = nord7
-c.colors.messages.info.border = nord7
-c.colors.messages.info.fg = nord0
-c.colors.messages.warning.bg = nord10
-c.colors.messages.warning.border = nord10
-c.colors.messages.warning.fg = nord5
-c.colors.prompts.bg = nord2
-c.colors.prompts.border = '1px solid ' + nord0
-c.colors.prompts.fg = nord5
-c.colors.prompts.selected.bg = nord3
-c.colors.statusbar.caret.bg = nord13
-c.colors.statusbar.caret.fg = nord5
-c.colors.statusbar.caret.selection.bg = nord13
-c.colors.statusbar.caret.selection.fg = nord5
-c.colors.statusbar.command.bg = nord2
-c.colors.statusbar.command.fg = nord5
-c.colors.statusbar.command.private.bg = nord2
-c.colors.statusbar.command.private.fg = nord5
-c.colors.statusbar.insert.bg = nord12
-c.colors.statusbar.insert.fg = nord0
-c.colors.statusbar.normal.bg = nord0
-c.colors.statusbar.normal.fg = nord5
-c.colors.statusbar.passthrough.bg = nord8
-c.colors.statusbar.passthrough.fg = nord5
-c.colors.statusbar.private.bg = nord3
-c.colors.statusbar.private.fg = nord5
-c.colors.statusbar.progress.bg = nord5
-c.colors.statusbar.url.error.fg = nord9
-c.colors.statusbar.url.fg = nord5
-c.colors.statusbar.url.hover.fg = nord7
-c.colors.statusbar.url.success.http.fg = nord5
-c.colors.statusbar.url.success.https.fg = nord12
-c.colors.statusbar.url.warn.fg = nord10
-c.colors.tabs.bar.bg = nord3
-c.colors.tabs.even.bg = nord3
-c.colors.tabs.even.fg = nord5
-c.colors.tabs.indicator.error = nord9
+c.colors.hints.bg = '#ebcb8b'
+c.colors.hints.fg = '#2e3440'
+c.colors.hints.match.fg = '#5e81ac'
+c.colors.keyhint.bg = '#3b4252'
+c.colors.keyhint.fg = '#e5e9f0'
+c.colors.keyhint.suffix.fg = '#ebcb8b'
+c.colors.messages.error.bg = '#bf616a'
+c.colors.messages.error.border = '#bf616a'
+c.colors.messages.error.fg = '#2e3440'
+c.colors.messages.info.bg = '#88c0d0'
+c.colors.messages.info.border = '#88c0d0'
+c.colors.messages.info.fg = '#2e3440'
+c.colors.messages.warning.bg = '#d08770'
+c.colors.messages.warning.border = '#d08770'
+c.colors.messages.warning.fg = '#e5e9f0'
+c.colors.prompts.bg = '#434c5e'
+c.colors.prompts.border = '1px solid ' + '#2e3440'
+c.colors.prompts.fg = '#e5e9f0'
+c.colors.prompts.selected.bg = '#4c566a'
+c.colors.statusbar.caret.bg = '#b48ead'
+c.colors.statusbar.caret.fg = '#e5e9f0'
+c.colors.statusbar.caret.selection.bg = '#b48ead'
+c.colors.statusbar.caret.selection.fg = '#e5e9f0'
+c.colors.statusbar.command.bg = '#434c5e'
+c.colors.statusbar.command.fg = '#e5e9f0'
+c.colors.statusbar.command.private.bg = '#434c5e'
+c.colors.statusbar.command.private.fg = '#e5e9f0'
+c.colors.statusbar.insert.bg = '#a3be8c'
+c.colors.statusbar.insert.fg = '#2e3440'
+c.colors.statusbar.normal.bg = '#2e3440'
+c.colors.statusbar.normal.fg = '#e5e9f0'
+c.colors.statusbar.passthrough.bg = '#5e81ac'
+c.colors.statusbar.passthrough.fg = '#e5e9f0'
+c.colors.statusbar.private.bg = '#4c566a'
+c.colors.statusbar.private.fg = '#e5e9f0'
+c.colors.statusbar.progress.bg = '#e5e9f0'
+c.colors.statusbar.url.error.fg = '#bf616a'
+c.colors.statusbar.url.fg = '#e5e9f0'
+c.colors.statusbar.url.hover.fg = '#88c0d0'
+c.colors.statusbar.url.success.http.fg = '#e5e9f0'
+c.colors.statusbar.url.success.https.fg = '#a3be8c'
+c.colors.statusbar.url.warn.fg = '#d08770'
+c.colors.tabs.bar.bg = '#4c566a'
+c.colors.tabs.even.bg = '#4c566a'
+c.colors.tabs.even.fg = '#e5e9f0'
+c.colors.tabs.indicator.error = '#bf616a'
 c.colors.tabs.indicator.system = 'none'
-c.colors.tabs.odd.bg = nord3
-c.colors.tabs.odd.fg = nord5
-c.colors.tabs.selected.even.bg = nord0
-c.colors.tabs.selected.even.fg = nord5
-c.colors.tabs.selected.odd.bg = nord0
-c.colors.tabs.selected.odd.fg = nord5
+c.colors.tabs.odd.bg = '#4c566a'
+c.colors.tabs.odd.fg = '#e5e9f0'
+c.colors.tabs.selected.even.bg = '#2e3440'
+c.colors.tabs.selected.even.fg = '#e5e9f0'
+c.colors.tabs.selected.odd.bg = '#2e3440'
+c.colors.tabs.selected.odd.fg = '#e5e9f0'
 c.colors.tooltip.bg = '#1E282D'
 c.colors.tooltip.fg = '#B9C3C8'
 c.content.autoplay = False
@@ -145,34 +130,32 @@ c.url.searchengines = {
 }
 
 c.bindings.default['normal'] = {
-  '<Escape>': 'clear-keychain ;; search ;; fullscreen --leave',
+  'Escape': 'fullscreen --leave',
   '<Ctrl+Backspace>': 'back',
   '<Ctrl+Del>': 'tab-close',
   '<Ctrl+PgDown>': 'tab-prev',
   '<Ctrl+PgUp>': 'tab-next',
-  '<Ctrl+q>': 'quit',
+  '<Ctrl+b>': 'config-cycle content.blocking.enabled true false',
   '<F5>': 'reload',
   '<Ins>': 'mode-enter insert',
+  '[': 'cmd-set-text -s :open',
+  ']': 'cmd-set-text -s :open -t',
   '/': 'cmd-set-text /',
   '?': 'cmd-set-text ?',
   ':': 'cmd-set-text :',
-  '\\v': 'hint links spawn mpv {hint-url}',
-  '\\d': 'hint links spawn yt-mp3 {hint-url}',
-  'b': 'config-cycle content.blocking.enabled true false',
+  '\\a': 'hint links spawn yt-mp3 {hint-url}',
+  '\\p': 'hint links spawn mpv {hint-url}',
+  '\\v': 'hint links spawn yt-mp4 {hint-url}',
+  'b': 'bookmark-add',
+  'B': 'quickmark-save',
   'cd': 'download-clear',
   'ch': 'history-clear',
   'cm': 'clear-messages',
-  'm': 'bookmark-add',
-  'M': 'quickmark-save',
+  'da': 'spawn yt-mp3 {url}',
   'n': 'search-next',
   'N': 'search-prev',
-  '[': 'cmd-set-text -s :open',
-  ']': 'cmd-set-text -s :open -t',
-  'p': 'open -t {clipboard}',
-  'u': 'undo',
-  'vd': 'spawn yt-mp3 {url}',
-  'vv': 'spawn mpv {url}',
-  'y': 'yank'
+  'y': 'yank',
+  'p': 'spawn mpv {url}',
 }
 
 c.bindings.default['hint'] = {
