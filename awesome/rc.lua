@@ -265,7 +265,7 @@ awesome.connect_signal("launch::settings", function(option)
 end)
 
 local function timer()
-  theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕" })
+  theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
 end
 
 awesome.connect_signal("launch::tool", function(option)
@@ -331,6 +331,8 @@ awesome.connect_signal("launch::timer", function(option)
     awful.spawn("timer 45")
   elseif option == 8 then
     awful.spawn("timer 55")
+  elseif option == 9 then
+    awful.spawn("timer")
   end
 end)
 
