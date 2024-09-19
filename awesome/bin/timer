@@ -8,6 +8,7 @@ fn minstr {
 
 if (~ $* ()) {
   ps = `{ ps -d -o command,etimes | grep '^sleep' }
+  ~$ps () && exit
   parts = `` (' ') { echo -n $ps }
   rest = `{ calc 'floor(('$parts(2)'-'$parts(3)')/60)' }
   notify-send --icon=/etc/xdg/awesome/icons/timer.png '<b>Timer</b>' $^rest' minutes left'
