@@ -268,14 +268,20 @@ local function timer()
   theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
 end
 
+local function app()
+  theme.launch("app", { "", "" })
+end
+
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
     timer()
   elseif option == 2 then
-    theme.launch("scrot", { "", "󰩭" })
+    app()
   elseif option == 3 then
-    awful.spawn(term("calc"))
+    theme.launch("scrot", { "", "󰩭" })
   elseif option == 4 then
+    awful.spawn(term("calc"))
+  elseif option == 5 then
     awful.spawn(term("htop"))
   end
 end)
@@ -336,7 +342,7 @@ awesome.connect_signal("launch::timer", function(option)
   end
 end)
 
-awesome.connect_signal("launch::app", function(option)
+awesome.connect_signal("launch::menu", function(option)
   if option == 1 then
     theme.launch("info", { "󱑒", "" })
   elseif option == 2 then
@@ -346,13 +352,13 @@ awesome.connect_signal("launch::app", function(option)
   elseif option == 4 then
     theme.launch("image", { "󰈋", "󱇤" })
   elseif option == 5 then
-    theme.launch("dev", { "", "󱥈", "" })
+    theme.launch("dev", { "", "󱥈", "" })
   elseif option == 6 then
     theme.launch("web", { "󰘯", "󰈹", "", "", "󰄠" })
   elseif option == 7 then
     theme.launch("music", { "󰝚", "󰋍" })
   elseif option == 8 then
-    theme.launch("tool", { "󰔛", "󰭪", "󱖦", "" })
+    theme.launch("tool", { "󰔛", "󱓟", "󰭪", "󱖦", "" })
   elseif option == 9 then
     theme.launch("settings", { "󰃟", "󰍺" })
   end
@@ -369,6 +375,14 @@ awesome.connect_signal("launch::sys", function(option)
     awesome.quit()
   elseif option == 5 then
     awesome.restart()
+  end
+end)
+
+awesome.connect_signal("launch::app", function(option)
+  if option == 1 then
+    awful.spawn("dmenu_run -")
+  elseif option == 2 then
+    awful.spawn("dmenu_run")
   end
 end)
 
@@ -405,7 +419,7 @@ awful.keyboard.append_global_keybindings {
 
   awful.key({ "Mod4" }, "Return", function() awful.spawn(term()) end,
     { description = "open a terminal", group = "launch" }),
-  awful.key({ }, "Menu", function() theme.launch("app", { "", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "" }) end,
+  awful.key({ }, "Menu", function() theme.launch("menu", { "", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "" }) end,
     { description = "show the menubar", group = "launch" }),
   awful.key({ }, "Print", function() awful.spawn("scrot") end,
     { description = "printscreen", group = "launch" }),
@@ -414,7 +428,7 @@ awful.keyboard.append_global_keybindings {
       title = bold("Screenshot:"),
       message = "select a window or rectangle",
       icon = theme.icons .. "screenshot.png",
-      timeout = 2
+      timeout = 3
     })
     awful.spawn("slop-shot")
   end,
@@ -432,9 +446,11 @@ awful.keyboard.append_global_keybindings {
     { description = "terminal fm", group = "launch" }),
   awful.key({ }, "XF86Launch6", function() awful.spawn("pcmanfm") end,
     { description = "file manager", group = "launch" }),
-  awful.key({ }, "XF86Launch9", function() awful.spawn(term("htop")) end,
+  awful.key({ }, "XF86Launch7", function() awful.spawn(term("htop")) end,
     { description = "process monitor", group = "launch" }),
-  awful.key({ }, "XF86Favorites", function() timer() end,
+  awful.key({ }, "XF86Favorites", function() app() end,
+    { description = "application", group = "launch" }),
+  awful.key({ "Shift" }, "XF86Favorites", function() timer() end,
     { description = "timer", group = "launch" }),
   awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
     { description = "neovim", group = "launch" }),
