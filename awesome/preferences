@@ -1,0 +1,10 @@
+calendar=/home/fox/documents/priv/when
+editor=nvim
+header=0
+monday_first=1
+past=-3
+future=3
+calendar_today_style=fgblack,bgwhite
+items_today_style=fgred
+styled_output_if_not_tty=1
+neighboring_months=0
