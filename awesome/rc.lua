@@ -225,12 +225,18 @@ awesome.connect_signal("launch::settings", function(option)
   end
 end)
 
+local function timer()
+  theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
+end
+
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
     awful.spawn(term())
   elseif option == 2 then
     theme.launch("scrot", { "", "󰩭" })
   elseif option == 3 then
+    timer()
+  elseif option == 4 then
     awful.spawn(term("htop"))
   end
 end)
@@ -265,20 +271,14 @@ awesome.connect_signal("launch::calendar", function(option)
   theme.create_notify("calendar", nil, option - 1, 15)
 end)
 
-local function timer()
-  theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
-end
-
 awesome.connect_signal("launch::misc", function(option)
   if option == 1 then
     awful.spawn("dmenu_run")
   elseif option == 2 then
     awful.spawn("dmenu_run -")
   elseif option == 3 then
-    timer()
-  elseif option == 4 then
     theme.launch("calendar", { "󰸘", "󱁳" })
-  elseif option == 5 then
+  elseif option == 4 then
     msg_now()
   end
 end)
@@ -307,7 +307,7 @@ end)
 
 awesome.connect_signal("launch::menu", function(option)
   if option == 1 then
-    theme.launch("misc", { "󱓟", "", "󰔛", "", "󱑒" })
+    theme.launch("misc", { "󱓟", "", "", "󱑒" })
   elseif option == 2 then
     theme.launch("file", { "", "󱗁", "󰖔", "" })
   elseif option == 3 then
@@ -319,7 +319,7 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 6 then
     theme.launch("music", { "󰝚", "󰋍" })
   elseif option == 7 then
-    theme.launch("tool", { "", "󰭪", "" })
+    theme.launch("tool", { "", "󰭪", "󰔛", "" })
   elseif option == 8 then
     theme.launch("settings", { "󰃟", "󰍺" })
   end
