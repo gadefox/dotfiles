@@ -19,16 +19,7 @@ end
 -- rainbow colors
 theme.rainbow_colors = {}
 
-local colors = {
-  "#8ecb15",
-  "#cb9a15",
-  "#d75f00",
-  "#ff0000",
-  "#cb15c9",
-  "#6f15cb",
-  "#15b4cb",
-  "#5edcb4"
-}
+local colors = { "#8ecb15", "#cb9a15", "#d75f00", "#ff0000", "#cb15c9", "#6f15cb", "#15b4cb", "#5edcb4" }
 local shift = theme.day % #colors
 local dst = 1
 
