@@ -112,7 +112,7 @@ catppuccin.setup({
     notify = true,
     telescope = { enabled = false },
     treesitter_context = true,
-    which_key = true 
+    which_key = true
   }
 })
 catppuccin.load()
@@ -139,40 +139,40 @@ vim.api.nvim_create_autocmd({
 })
 
 -- cmp
-local lsp_icons = {
+local kind_icons = {
   Array = "󰅪 ",
   Boolean = "◩ ",
   Class = "󰠱 ",
-  Color = " ",
+  Color = "󰏘 ",
   Constant = "󰏿 ",
   Constructor = " ",
-  Enum = "練 ",
+  Enum = " ",
   EnumMember = " ",
   Event = " ",
   Field = " ",
   File = " ",
   Folder = " ",
-  Function = " ",
+  Function = "󰊕 ",
   Interface = " ",
   Key = "󰌋 ",
-  Keyword = " ",
+  Keyword = "󰌋 ",
   Method = "󰆧 ",
   Module = " ",
   Namespace = "󰌗 ",
   Null = "󰟢 ",
   Number = "󰎠 ",
   Object = "󰅩 ",
-  Operator = " ",
+  Operator = "󰆕 ",
   Package = " ",
   Property = " ",
   Reference = "󰈇 ",
   Snippet = " ",
   String = " ",
   Struct = "󰙅 ",
-  Text = " ",
-  TypeParameter = " ",
+  Text = " ",
+  TypeParameter = "󰅲 ",
   Unit = " ",
-  Value = " ",
+  Value = "󰎠 ",
   Variable = "󰀫 "
 }
 
@@ -188,7 +188,7 @@ cmp.setup({
   end,
   formatting = {
     format = function(_, item)
-      item.kind = lsp_icons[item.kind]
+      item.kind = kind_icons[item.kind]
       return item
     end
   },
@@ -259,12 +259,7 @@ require("glance").setup()
 require("illuminate")
 
 -- lspconfig
-local signs = {
-  Error = " ",
-  Warn = " ",
-  Info = " ",
-  Hint = " "
-}
+local signs = { Error = "󰅙 ", Warn = " ", Info = "󰋼 ", Hint = " " }
 
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
