@@ -105,16 +105,6 @@ local function term(cmd)
   return ret
 end
 
-awesome.connect_signal("launch::dev", function(option)
-  if option == 1 then
-    awful.spawn(term())
-  elseif option == 2 then
-    awful.spawn(term("nvim"))
-  elseif option == 3 then
-    awful.spawn("nemiver")
-  end
-end)
-
 awesome.connect_signal("launch::file", function(option)
   if option == 1 then
     awful.spawn("pcmanfm")
@@ -283,15 +273,15 @@ local function apps()
   theme.launch("apps", { "", "" })
 end
 
-awesome.connect_signal("launch::info", function(option)
+awesome.connect_signal("launch::misc", function(option)
   if option == 1 then
-    msg_now()
-  elseif option == 2 then
-    theme.launch("calendar", { "󰸘", "󱁳" })
-  elseif option == 3 then
-    timer()
-  elseif option == 4 then
     apps()
+  elseif option == 2 then
+    timer()
+  elseif option == 3 then
+    theme.launch("calendar", { "󰸘", "󱁳" })
+  elseif option == 4 then
+    msg_now()
   end
 end)
 
@@ -319,7 +309,7 @@ end)
 
 awesome.connect_signal("launch::menu", function(option)
   if option == 1 then
-    theme.launch("info", { "󱑒", "", "󰔛", "󱓟" })
+    theme.launch("misc", { "󱓟", "󰔛", "", "󱑒" })
   elseif option == 2 then
     theme.launch("file", { "", "󱗁", "󰖔", "" })
   elseif option == 3 then
@@ -392,7 +382,7 @@ awful.keyboard.append_global_keybindings {
 
   awful.key({ "Mod4" }, "Return", function() awful.spawn(term()) end,
     { description = "open a terminal", group = "launch" }),
-  awful.key({ }, "Menu", function() theme.launch("menu", { "", "󰉕", "󰧭", "", "󰖟", "󰽴", "", "" }) end,
+  awful.key({ }, "Menu", function() theme.launch("menu", { "󰊲", "󰉕", "󰧭", "", "󰖟", "󰽴", "", "" }) end,
     { description = "show menubar", group = "launch" }),
   awful.key({ "Shift" }, "Menu", function() apps() end,
     { description = "launch application", group = "launch" }),
