@@ -2,7 +2,6 @@ atool
 calc
 cmake
 clangd
-dconf-cli
 dconf-editor
 ddcutil
 deborphan
@@ -57,7 +56,6 @@ python3-gi
 python3-jinja2
 python3-pip
 python3-pygments
-python3-sip
 python3-yaml
 python3-xdg
 pwgen
