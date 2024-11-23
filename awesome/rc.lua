@@ -129,9 +129,9 @@ end)
 
 awesome.connect_signal("launch::image", function(option)
   if option == 1 then
-    awful.spawn("gpick")
-  elseif option == 2 then
     awful.spawn("gimp")
+  elseif option == 2 then
+    awful.spawn("gpick")
   end
 end)
 
@@ -185,8 +185,12 @@ end)
 
 awesome.connect_signal("launch::office", function(option)
   if option == 1 then
-    awful.spawn("swriter")
+    awful.spawn(term("nvim"))
   elseif option == 2 then
+    awful.spawn(term("calc"))
+  elseif option == 3 then
+    awful.spawn("swriter")
+  elseif option == 4 then
     awful.spawn("scalc")
   end
 end)
@@ -231,24 +235,12 @@ awesome.connect_signal("launch::settings", function(option)
   end
 end)
 
-local function timer()
-  theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
-end
-
-local function app()
-  theme.launch("apps", { "", "" })
-end
-
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
-    timer()
+    awful.spawn(term())
   elseif option == 2 then
-    app()
-  elseif option == 3 then
     theme.launch("scrot", { "", "󰩭" })
-  elseif option == 4 then
-    awful.spawn(term("calc"))
-  elseif option == 5 then
+  elseif option == 3 then
     awful.spawn(term("htop"))
   end
 end)
@@ -275,7 +267,7 @@ awesome.connect_signal("launch::music", function(option)
   if option == 1 then
     awful.spawn(term("ncmpc"))
   elseif option == 2 then
-    awful.spawn("pavucontrol")
+    awful.spawn(term("pulsemixer"))
   end
 end)
 
@@ -283,11 +275,23 @@ awesome.connect_signal("launch::calendar", function(option)
   theme.create_notify("calendar", nil, option - 1, 15)
 end)
 
+local function timer()
+  theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
+end
+
+local function apps()
+  theme.launch("apps", { "", "" })
+end
+
 awesome.connect_signal("launch::info", function(option)
   if option == 1 then
     msg_now()
   elseif option == 2 then
     theme.launch("calendar", { "󰸘", "󱁳" })
+  elseif option == 3 then
+    timer()
+  elseif option == 4 then
+    apps()
   end
 end)
 
@@ -315,22 +319,20 @@ end)
 
 awesome.connect_signal("launch::menu", function(option)
   if option == 1 then
-    theme.launch("info", { "󱑒", "" })
+    theme.launch("info", { "󱑒", "", "󰔛", "󱓟" })
   elseif option == 2 then
     theme.launch("file", { "", "󱗁", "󰖔", "" })
   elseif option == 3 then
-    theme.launch("office", { "󱎒", "󱎏" })
+    theme.launch("office", { "󱩽", "󱖦", "󱎒", "󱎏" })
   elseif option == 4 then
-    theme.launch("image", { "󰈋", "󱇤" })
+    theme.launch("image", { "󱇤", "󰈋" })
   elseif option == 5 then
-    theme.launch("dev", { "", "󱥈", "" })
-  elseif option == 6 then
     theme.launch("web", { "󰘯", "󰈹", "", "", "󰄠" })
-  elseif option == 7 then
+  elseif option == 6 then
     theme.launch("music", { "󰝚", "󰋍" })
+  elseif option == 7 then
+    theme.launch("tool", { "", "󰭪", "" })
   elseif option == 8 then
-    theme.launch("tool", { "󰔛", "󱓟", "󰭪", "󱖦", "" })
-  elseif option == 9 then
     theme.launch("settings", { "󰃟", "󰍺" })
   end
 end)
@@ -390,9 +392,9 @@ awful.keyboard.append_global_keybindings {
 
   awful.key({ "Mod4" }, "Return", function() awful.spawn(term()) end,
     { description = "open a terminal", group = "launch" }),
-  awful.key({ }, "Menu", function() theme.launch("menu", { "", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "" }) end,
+  awful.key({ }, "Menu", function() theme.launch("menu", { "", "󰉕", "󰧭", "", "󰖟", "󰽴", "", "" }) end,
     { description = "show menubar", group = "launch" }),
-  awful.key({ "Shift" }, "Menu", function() app() end,
+  awful.key({ "Shift" }, "Menu", function() apps() end,
     { description = "launch application", group = "launch" }),
   awful.key({ }, "Print", function() awful.spawn("scrot") end,
     { description = "printscreen", group = "launch" }),
