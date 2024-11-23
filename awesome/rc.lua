@@ -1,5 +1,4 @@
 require("awful.autofocus")
-local gears = require("gears")
 
 -- focus and swap
 local focus = require("focus")
@@ -32,7 +31,7 @@ client.connect_signal("mouse::enter", function(c)
   }
 end)
 
--- custom notifications
+-- notifications
 local notify_kblayout, notify_volume, notify_music
 local widget_kblayout = awful.widget.keyboardlayout()
 
@@ -192,11 +191,16 @@ awesome.connect_signal("launch::office", function(option)
   end
 end)
 
+local function slop_shot()
+  theme.create_notify("screenshot", "Screenshot:", "select a window or rectangle", 3)
+  awful.spawn("slop-shot")
+end
+
 awesome.connect_signal("launch::scrot", function(option)
   if option == 1 then
     awful.spawn("scrot")
   elseif option == 2 then
-    awful.spawn("slop-shot")
+    slop-shot()
   end
 end)
 
@@ -392,10 +396,7 @@ awful.keyboard.append_global_keybindings {
     { description = "launch application", group = "launch" }),
   awful.key({ }, "Print", function() awful.spawn("scrot") end,
     { description = "printscreen", group = "launch" }),
-  awful.key({ "Shift" }, "Print", function()
-    theme.create_notify("screenshot", "Screenshot:", "select a window or rectangle", nil, 3)
-    awful.spawn("slop-shot")
-  end,
+  awful.key({ "Shift" }, "Print", function() slop_shot() end,
     { description = "printscreen area", group = "launch" }),
 
   awful.key({ }, "XF86Mail", function() awful.spawn("evolution") end,
