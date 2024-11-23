@@ -194,7 +194,7 @@ awesome.connect_signal("launch::scrot", function(option)
   if option == 1 then
     awful.spawn("scrot")
   elseif option == 2 then
-    slop-shot()
+    slop_shot()
   end
 end)
 
