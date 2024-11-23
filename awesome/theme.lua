@@ -5,57 +5,73 @@ local wibox = require("wibox")
 
 local theme = {}
 theme.day = os.date("%d") - 1
-theme.icons = debug.getinfo(1).source:match("@?(.*/)") .. "icons/"
 
--- wallpaper
-theme.wpdir = "/usr/local/share/images/wallpaper"
+function theme.get_icon_path(icon)
+  return debug.getinfo(1).source:match("@?(.*/)") .. "icons/" .. icon .. ".png"
+end
 
-awful.spawn.easy_async_with_shell("ls " .. theme.wpdir .. "*.jpg | wc -l", function(out)
-  theme.wpidx = math.floor(theme.day % out)
-  theme.wpcnt = out
-
-  screen.connect_signal("request::wallpaper", function(s)
-    awful.wallpaper {
-      screen = s,
-      widget = {
-        image = theme.wpdir .. theme.wpidx .. ".jpg",
-        widget = wibox.widget.imagebox
-      }
-    }
-  end)
-end)
-
-local function shift_colors()
-  local colors = {
-    "#8ecb15",
-    "#cb9a15",
-    "#d75f00",
-    "#ff0000",
-    "#cb15c9",
-    "#6f15cb",
-    "#15b4cb",
-    "#5edcb4"
-  }
-  local shift = theme.day % #colors
-  local dst = 1
-  theme.colors = {}
-
-  for src = shift + 1, #colors do
-    theme.colors[dst] = colors[src]
-    dst = dst + 1
-  end
-  for src = 1, shift do
-    theme.colors[dst] = colors[src]
-    dst = dst + 1
+function theme.bold(s)
+  if s then
+    return "<b>" .. s .. "</b>"
   end
 end
+
+-- rainbow colors
+theme.rainbow_colors = {}
+
+local colors = {
+  "#8ecb15",
+  "#cb9a15",
+  "#d75f00",
+  "#ff0000",
+  "#cb15c9",
+  "#6f15cb",
+  "#15b4cb",
+  "#5edcb4"
+}
+local shift = theme.day % #colors
+local dst = 1
+
+for src = shift + 1, #colors do
+  theme.rainbow_colors[dst] = colors[src]
+  dst = dst + 1
+end
+for src = 1, shift do
+  theme.rainbow_colors[dst] = colors[src]
+  dst = dst + 1
+end
+
+-- wallpaper
+theme.wallpaper_prefix = "/usr/local/share/images/wallpaper"
+
+function theme.set_wallpaper(screen)
+  awful.wallpaper({
+    screen = screen,
+    widget = {
+      image = theme.wallpaper_prefix .. theme.wallpaper_index .. ".jpg",
+      widget = wibox.widget.imagebox
+    }
+  })
+end
+
+awful.spawn.easy_async_with_shell("ls " .. theme.wallpaper_prefix .. "*.jpg | wc -l", function(out)
+  theme.wallpaper_index = math.floor(theme.day % out)
+  theme.wallpaper_max = out
+
+  screen.connect_signal("request::wallpaper", function(s)
+    theme.set_wallpaper(s)
+  end)
+end)
 
 -- beautiful
 local beautiful = require("beautiful")
 
-beautiful.init {
-  useless_gap = 1,
-  notification_font = "Roboto Mono 11" }
+beautiful.init({
+  useless_gap = 1,  -- the gap between clients
+  calendar_font = "Roboto Mono 11",
+  notification_font = "Roboto Mono 11",
+  notification_max_width = 850
+})
 
 -- lock screen
 local dirs = { "north", "west", "south", "east" }
@@ -73,10 +89,10 @@ local function lock_animate(fail, back)
   rotate.direction = dirs[(length % 4) + 1]
 
   local arc = wilock:get_children_by_id("arc")[1]
-  arc.bg = length == 0 and "#00000000" or (back and "#888a85a0" or theme.colors[(length % #theme.colors) + 1])
+  arc.bg = length == 0 and "#00000000" or (back and "#888a85a0" or theme.rainbow_colors[(length % #theme.rainbow_colors) + 1])
 
   local icon = wilock:get_children_by_id("icon")[1]
-  icon.markup = fail and color_text("󱗑", theme.colors[5]) or "󰍁"
+  icon.markup = fail and color_text("󱗑", theme.rainbow_colors[5]) or "󰍁"
 end
 
 local function lock_show(show)
@@ -161,13 +177,13 @@ end
 -- wibar
 local function tag_update(item, tag, index)
   if tag.selected then
-    item.top.bg = theme.colors[index]
-    item.bottom.bg = theme.colors[index]
+    item.top.bg = theme.rainbow_colors[index]
+    item.bottom.bg = theme.rainbow_colors[index]
   elseif tag.urgent then
     item.top.bg = "#e4e4e4"
     item.bottom.bg = "#00000000"
   elseif #tag:clients() > 0 then
-    item.top.bg = theme.colors[index]
+    item.top.bg = theme.rainbow_colors[index]
     item.bottom.bg = "#00000000"
   else
     item.top.bg = "#00000000"
@@ -185,6 +201,14 @@ function theme.tags_create(s)
           awful.tag.history.restore()
         else
           t:view_only()
+        end
+      end),
+      awful.button({}, awful.button.names.RIGHT, function(t)
+        local clients = t:clients()
+
+        for i = 1, #clients do
+          local c = clients[i]
+          c:kill()
         end
       end),
       awful.button({}, awful.button.names.SCROLL_UP, function(t)
@@ -209,7 +233,7 @@ function theme.tags_create(s)
       layout = wibox.layout.fixed.vertical,
       create_callback = function(self, tag, index, _)
         tag_update(self, tag, index)
-      end,
+ end,
       update_callback = function(self, tag, index, _)
         tag_update(self, tag, index)
       end
@@ -231,9 +255,8 @@ end
 
 -- notifications
 local naughty = require("naughty")
-shift_colors()
 
-local rainbow = wibox.widget {
+local rainbow_widget = wibox.widget {
   {
     bg = "#cb15c9",
     widget = wibox.container.background
@@ -313,7 +336,7 @@ naughty.connect_signal("request::display", function(n)
             bg = "#1a2026",
             widget = wibox.container.background
           },
-          rainbow,
+          rainbow_widget,
           {
             {
               {
@@ -321,9 +344,33 @@ naughty.connect_signal("request::display", function(n)
                   align = "center",
                   widget = naughty.widget.title
                 },
-                {
+                type(n.message) == "string" and {
                   align = "center",
                   widget = naughty.widget.message
+                } or {
+                  date = os.date("*t"),
+                  fn_embed = function(widget, flag)
+                    if flag == "focus" then
+                      local markup = theme.bold(widget:get_text())
+                      widget:set_markup(markup)
+
+                      return wibox.widget({
+                        widget,
+                        shape = function(cr, width, height) gears.shape.partially_rounded_rect(cr, width, height, false, true, false, true, 5) end,
+                        fg = "#000000",
+                        bg = "#dc461d",
+                        widget = wibox.container.background
+                      })
+                    end
+
+                    if flag == "header" or flag == "monthheader" or flag == "yearheader" then
+                      local markup = theme.bold(widget:get_text())
+                      widget:set_markup(markup)
+                    end
+
+                    return widget
+                  end,
+                  widget = n.message == 0 and wibox.widget.calendar.month or wibox.widget.calendar.year
                 },
                 layout = wibox.layout.fixed.vertical
               },
@@ -334,7 +381,7 @@ naughty.connect_signal("request::display", function(n)
             widget = wibox.container.background
           },
           {
-            rainbow,
+            rainbow_widget,
             visible = #n.actions > 0,
             widget = wibox.container.background
           },
@@ -354,23 +401,32 @@ naughty.connect_signal("request::display", function(n)
         widget = wibox.container.constraint
       },
       strategy = "max",
-      width = dpi(350),
-      height = dpi(200),
+      height = beautiful.notification_maxwidth,
       widget = wibox.container.constraint
     }
   }
 end)
 
-function theme.notify(args, n)
-  if not n or n._private.is_destroyed or n.is_expired then
-    return naughty.notification(args)
+function theme.create_notify(icon, title, message, timeout)
+  return naughty.notification({
+    icon = theme.get_icon_path(icon),
+    title = theme.bold(title),
+    message = message,
+    timeout = timeout
+  })
+end
+
+function theme.show_notify(widget, icon, title, message, timeout)
+  if not widget or widget._private.is_destroyed or widget.is_expired then
+    return theme.create_notify(icon, title, message, timeout)
   end
 
-  n.icon = args.icon
-  n.timeout = args.timeout
-  n.title = args.title
-  n.message = args.message
-  return n
+  widget.icon = theme.get_icon_path(icon)
+  widget.title = theme.bold(title)
+  widget.message = message
+  widget.timeout = timeout
+
+  return widget
 end
 
 -- launcher wibox
@@ -452,8 +508,8 @@ local function btn_create(color)
 end
 
 for i = 1, 9 do
-  local color = i ~= 8 and i % #theme.colors or 8
-  wibtns[i] = btn_create(theme.colors[color])
+  local color = i ~= 8 and i % #theme.rainbow_colors or 8
+  wibtns[i] = btn_create(theme.rainbow_colors[color])
   wibtns[i].idx = i
 end
 
