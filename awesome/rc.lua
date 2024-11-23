@@ -269,18 +269,16 @@ local function timer()
   theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
 end
 
-local function apps()
-  theme.launch("apps", { "", "" })
-end
-
 awesome.connect_signal("launch::misc", function(option)
   if option == 1 then
-    apps()
+    awful.spawn("dmenu_run")
   elseif option == 2 then
-    timer()
+    awful.spawn("dmenu_run -")
   elseif option == 3 then
-    theme.launch("calendar", { "󰸘", "󱁳" })
+    timer()
   elseif option == 4 then
+    theme.launch("calendar", { "󰸘", "󱁳" })
+  elseif option == 5 then
     msg_now()
   end
 end)
@@ -309,7 +307,7 @@ end)
 
 awesome.connect_signal("launch::menu", function(option)
   if option == 1 then
-    theme.launch("misc", { "󱓟", "󰔛", "", "󱑒" })
+    theme.launch("misc", { "󱓟", "", "󰔛", "", "󱑒" })
   elseif option == 2 then
     theme.launch("file", { "", "󱗁", "󰖔", "" })
   elseif option == 3 then
@@ -338,14 +336,6 @@ awesome.connect_signal("launch::power", function(option)
     awesome.quit()
   elseif option == 5 then
     awesome.restart()
-  end
-end)
-
-awesome.connect_signal("launch::apps", function(option)
-  if option == 1 then
-    awful.spawn("dmenu_run")
-  elseif option == 2 then
-    awful.spawn("dmenu_run -")
   end
 end)
 
@@ -384,8 +374,6 @@ awful.keyboard.append_global_keybindings {
     { description = "open a terminal", group = "launch" }),
   awful.key({ }, "Menu", function() theme.launch("menu", { "󰊲", "󰉕", "󰧭", "", "󰖟", "󰽴", "", "" }) end,
     { description = "show menubar", group = "launch" }),
-  awful.key({ "Shift" }, "Menu", function() apps() end,
-    { description = "launch application", group = "launch" }),
   awful.key({ }, "Print", function() awful.spawn("scrot") end,
     { description = "printscreen", group = "launch" }),
   awful.key({ "Shift" }, "Print", function() slop_shot() end,
