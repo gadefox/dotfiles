@@ -4,7 +4,7 @@
   },
   "diagnostics": {
     "globals": [
-      "require", "os", "debug", "string", "table", "math", "pairs", "ipairs", "tonumber",
+      "require", "type", "os", "debug", "string", "table", "math", "pairs", "ipairs", "tonumber",
       "awesome", "keygrabber", "screen", "mouse", "client", "tag", "root"
     ]
   }
