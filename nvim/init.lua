@@ -467,7 +467,7 @@ local ufo = require("ufo")
 ufo.setup({
   fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
     local newVirtText = {}
-    local suffix = (' 󰁂 %d '):format(endLnum - lnum)
+    local suffix = string.format(" 󰁂 %d ", endLnum - lnum)
     local sufWidth = vim.fn.strdisplaywidth(suffix)
     local targetWidth = width - sufWidth
     local curWidth = 0
@@ -487,7 +487,7 @@ ufo.setup({
 
         -- str width returned from truncate() may less than 2nd argument, need padding
         if curWidth + chunkWidth < targetWidth then
-          suffix = suffix .. (' '):rep(targetWidth - curWidth - chunkWidth)
+          suffix = suffix .. string.rep(" ", targetWidth - curWidth - chunkWidth)
         end
         break
       end
