@@ -86,6 +86,7 @@ c.colors.tooltip.fg = '#B9C3C8'
 c.content.autoplay = False
 c.content.desktop_capture = False
 c.content.geolocation = False
+c.content.javascript.clipboard = 'access'
 c.content.media.audio_capture = False
 c.content.media.audio_video_capture = False
 c.content.media.video_capture = False
