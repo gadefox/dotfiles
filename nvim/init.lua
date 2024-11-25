@@ -1,7 +1,7 @@
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+local lazy = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 
-if not vim.loop.fs_stat(lazypath) then
-  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", "https://github.com/folke/lazy.nvim.git", lazypath })
+if not vim.loop.fs_stat(lazy) then
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", "https://github.com/folke/lazy.nvim.git", lazy })
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo({
       { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
@@ -13,9 +13,13 @@ if not vim.loop.fs_stat(lazypath) then
   end
 end
 
-vim.api.nvim_create_autocmd("BufReadPost", { -- go to last location when opening a buffer
+vim.opt.rtp:prepend(lazy)
+
+-- go to last location when opening a buffer
+vim.api.nvim_create_autocmd("BufReadPost", {
   callback = function()
-    if vim.fn.line(".") > 1 then -- If a line has already been specified on the command line, we are done
+    -- if a line has already been specified on the command line, we are done
+    if vim.fn.line(".") > 1 then
       return
     end
 
@@ -26,113 +30,83 @@ vim.api.nvim_create_autocmd("BufReadPost", { -- go to last location when opening
   end
 })
 
-vim.bo.autoindent = true
-vim.bo.expandtab = true
-vim.bo.shiftwidth = 2
-vim.bo.tabstop = 2
-
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-vim.g.mapleader = "\\"
-vim.g.maplocalleader = "\\"
-
-local hlrainbow = { "RainbowRed", "RainbowYellow", "RainbowBlue", "RainbowOrange", "RainbowGreen", "RainbowViolet", "RainbowCyan" }
-vim.g.rainbow_delimiters = { highlight = hlrainbow }
-
-vim.o.autoindent = true
-vim.o.backup = false
-vim.o.clipboard = "unnamedplus"
-vim.o.cursorline = true
-vim.o.expandtab = true
-vim.o.fileencoding = "utf-8"
--- vim.o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-vim.o.foldcolumn = "1"
-vim.o.foldlevel = 99
-vim.o.foldlevelstart = 99
-vim.o.foldenable = true
-vim.o.hidden = true
-vim.o.ignorecase = true
-vim.o.mouse = "a"
-vim.o.pumheight = 20 -- max popup menu height
-vim.o.scrolloff = 10 -- min nr of lines to keep above and below the cursor
-vim.o.sidescrolloff = 15
-vim.o.shiftwidth = 2
-vim.o.shortmess = vim.o.shortmess .. "I"
-vim.o.softtabstop = 2
-vim.o.tabstop = 2
-vim.o.timeout = true
-vim.o.timeoutlen = 300
-vim.o.writebackup = false
-
-vim.opt.laststatus = 0
-vim.opt.list = true
-vim.opt.listchars = { trail = "·", nbsp = "◇", tab = "→ ", extends = "▸", precedes = "◂", space = "⋅", eol = "↴" }
-vim.opt.rtp:prepend(lazypath)
-vim.opt.termguicolors = true
-vim.opt.updatetime = 300
-
-vim.wo.number = true
-vim.wo.signcolumn = "yes"
-vim.wo.wrap = false
-
 vim.cmd("filetype plugin indent on")
 
-vim.keymap.set("n", "<del>", "\"_x")
+vim.fn.sign_define("DiagnosticSignError", { text = "", texthl = "DiagnosticSignError", numhl = "" })
+vim.fn.sign_define("DiagnosticSignWarn", { text = "", texthl = "DiagnosticSignWarn", numhl = "" })
+vim.fn.sign_define("DiagnosticSignInfo", { text = "", texthl = "DiagnosticSignInfo", numhl = "" })
+vim.fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint", numhl = "" })
+vim.fn.sign_define("DiagnosticSignOk", { text = "", texthl = "DiagnosticSignOk", numhl = "" })
+
+vim.opt.clipboard = "unnamedplus" -- use system clipboard
+vim.opt.ignorecase = true  -- ignore case in search patterns
+vim.opt.mouse = "a" -- enable mouse support (all modes)
+vim.opt.shortmess = vim.o.shortmess .. "I" -- don't give the intro message when starting vim
+vim.opt.expandtab = true -- use space character instead of the tab character
+vim.opt.shiftwidth = 2 -- block shift (>> << keys) indent
+vim.opt.tabstop = 4 -- number of spaces that a <tab> in the file counts for
+
+vim.opt.cursorline = true -- highlight the text line of the cursor
+vim.opt.list = true
+vim.opt.listchars = { extends = "▸", precedes = "◂", space = "⋅", tab = "→ ", trail = "·", eol = "↴", nbsp = "◇" } -- nbsp -> non-breakable space character; trail -> trailing spaces
+vim.opt.number = true -- line numbers
+vim.opt.pumheight = 20 -- maximum number of items to show in the popup menu
+vim.opt.scrolloff = 10 -- min nr of lines to keep above and below the cursor
+vim.opt.signcolumn = "yes" -- diagnostic signs
+vim.opt.sidescrolloff = 15 -- the minimal number of screen columns to keep to the left and to the	right of the cursor if `nowrap is set
+vim.opt.wrap = false -- lines will not wrap	and only part of long lines will be displayed
+vim.opt.laststatus = 0 -- hide statusbar
+vim.opt.statusline = string.rep("-", vim.api.nvim_win_get_width(0))
+
 vim.keymap.set("n", "<tab>", "<cmd>bnext<cr>", { silent = true })
 vim.keymap.set("n", "<s-tab>", "<cmd>bprevious<cr>", { silent = true })
+
+local palette
+local kind_icons = {
+  Array = "󰅪",
+  Boolean = "◩",
+  Class = "󰠱",
+  Color = "󰏘",
+  Constant = "󰏿",
+  Constructor = "",
+  Enum = "󰒻",
+  EnumMember = "",
+  Event = "",
+  Field = "",
+  File = "󰈙",
+  Folder = "",
+  Function = "󰊕",
+  Interface = "",
+  Key = "",
+  Keyword = "",
+  Method = "󱎥",
+  Macro = "󱢓",
+  Module = "",
+  Namespace = "󰌗",
+  Null = "󰟢",
+  Number = "󰎠",
+  Object = "󰅩",
+  Operator = "󰆕",
+  Package = "",
+  Parameter = "󰅲",
+  Property = "󰆧",
+  Reference = "󰈇",
+  Snippet = "",
+  StaticMethod = "󰠄",
+  String = "󰀬",
+  Struct = "󰙅",
+  Text = "󰉿",
+  TypeAlias = "",
+  TypeParameter = "",
+  Unit = "",
+  Value = "",
+  Variable = "󰀫"
+}
 
 local function set_highlight(colors)
   for hl, col in pairs(colors) do
     vim.api.nvim_set_hl(0, hl, col)
   end
-end
-
-local kind_icons = {
-  Array = "󰅪 ",
-  Boolean = "◩ ",
-  Class = "󰠱 ",
-  Color = "󰏘 ",
-  Constant = "󰏿 ",
-  Constructor = " ",
-  Enum = " ",
-  EnumMember = " ",
-  Event = " ",
-  Field = " ",
-  File = " ",
-  Folder = " ",
-  Function = "󰊕 ",
-  Interface = " ",
-  Key = "󰌋 ",
-  Keyword = "󰌋 ",
-  Method = "󰆧 ",
-  Module = " ",
-  Namespace = "󰌗 ",
-  Null = "󰟢 ",
-  Number = "󰎠 ",
-  Object = "󰅩 ",
-  Operator = "󰆕 ",
-  Package = " ",
-  Property = " ",
-  Reference = "󰈇 ",
-  Snippet = " ",
-  String = " ",
-  Struct = "󰙅 ",
-  Text = " ",
-  TypeParameter = "󰅲 ",
-  Unit = " ",
-  Value = "󰎠 ",
-  Variable = "󰀫 "
-}
-
-local signs = { Error = "󰅙 ", Warn = " ", Info = "󰋼 ", Hint = " " }
-
-for type, icon in pairs(signs) do
-  local hl = "DiagnosticSign" .. type
-  vim.fn.sign_define(hl, {
-    text = icon,
-    texthl = hl,
-    numhl = ""
-  })
 end
 
 require("lazy").setup({
@@ -142,83 +116,43 @@ require("lazy").setup({
     priority = 1000,
     config = function()
       local catppuccin = require("catppuccin")
+
       catppuccin.setup({
+        flavour = "mocha",
         term_colors = true,
         transparent_background = true,
         integrations = {
           alpha = false,
+          dap = false,
+          dap_ui = false,
           dashboard = false,
           flash = false,
-          markdown = false,
-          neogit = false,
-          dap = {
-            enabled = false,
-            enable_ui = false,
+          fzf = false,
+          gitsigns = false,
+          indent_blankline = {
+            enabled = false
           },
-          navic = { enabled = true },
-          notify = true,
-          telescope = { enabled = false },
-          treesitter_context = true,
-          which_key = true
+          markdown = false,
+          mini = {
+            enabled = false
+          },
+          neogit = false,
+          neotree = false,
+          nvimtree = false,
+          render_markdown = false,
+          semantic_tokens = false,
+          telescope = {
+            enabled = false
+          }
         }
       })
-      catppuccin.load()
 
-      local palette = require("catppuccin.palettes").get_palette()
-      set_highlight({
-        IndentBlanklineChar = { fg = palette.overlay0 },
-        IndentBlanklineContextChar = { fg = palette.overlay0 },
-        NoiceCmdlinePopup = { bg = palette.surface0 },
-        NoiceCmdlineIconCalculator = { bg = palette.surface0, fg = palette.flamingo },
-        NoiceCmdlineIconCmdLine = { bg = palette.surface0, fg = palette.pink },
-        NoiceCmdlineIconFilter = { bg = palette.surface0, fg = palette.lavender },
-        NoiceCmdlineIconHelp = { bg = palette.surface0, fg = palette.green },
-        NoiceCmdlineIconInput = { bg = palette.surface0, fg = palette.red },
-        NoiceCmdlineIconLua = { bg = palette.surface0, fg = palette.blue },
-        NoiceCmdlineIconSearch = { bg = palette.surface0, fg = palette.mauve },
-        NoiceCmdlinePopupBorderCalculator = { bg = palette.surface0, fg = palette.surface0 },
-        NoiceCmdlinePopupBorderCmdLine = { bg = palette.surface0, fg = palette.surface0 },
-        NoiceCmdlinePopupBorderFilter = { bg = palette.surface0, fg = palette.surface0 },
-        NoiceCmdlinePopupBorderHelp = { bg = palette.surface0, fg = palette.surface0 },
-        NoiceCmdlinePopupBorderInput = { bg = palette.surface0, fg = palette.surface0 },
-        NoiceCmdlinePopupBorderLua = { bg = palette.surface0, fg = palette.surface0 },
-        NoiceCmdlinePopupBorderSearch = { bg = palette.surface0, fg = palette.surface0 },
-        NoiceCmdlinePopupTitleCalculator = { bg = palette.flamingo, fg = palette.mantle },
-        NoiceCmdlinePopupTitleCmdLine = { bg = palette.pink, fg = palette.mantle },
-        NoiceCmdlinePopupTitleFilter = { bg = palette.lavender, fg = palette.mantle },
-        NoiceCmdlinePopupTitleHelp = { bg = palette.green, fg = palette.mantle },
-        NoiceCmdlinePopupTitleInput = { bg = palette.red, fg = palette.mantle },
-        NoiceCmdlinePopupTitleLua = { bg = palette.blue, fg = palette.mantle },
-        NoiceCmdlinePopupTitleSearch = { bg = palette.mauve, fg = palette.mantle },
-        NotifyINFOBody = { bg = palette.surface0 },
-        NotifyINFOBorder = { bg = palette.surface0, fg = palette.surface0 },
-        NotifyINFOIcon = { bg = palette.surface0, fg = palette.green },
-        NotifyINFOTitle = { bg = palette.green, fg = palette.mantle },
-        NotifyWARNBody = { bg = palette.surface0 },
-        NotifyWARNBorder = { bg = palette.surface0, fg = palette.surface0 },
-        NotifyWARNIcon = { bg = palette.surface0, fg = palette.peach },
-        NotifyWARNTitle = { bg = palette.peach, fg = palette.mantle },
-        NotifyERRORBody = { bg = palette.surface0 },
-        NotifyERRORBorder = { bg = palette.surface0, fg = palette.surface0 },
-        NotifyERRORIcon = { bg = palette.surface0, fg = palette.red },
-        NotifyERRORTitle = { bg = palette.red, fg = palette.mantle },
-        TelescopeMatching = { fg = palette.flamingo },
-        TelescopePreviewBorder = { bg = palette.mantle, fg = palette.mantle },
-        TelescopePreviewNormal = { bg = palette.mantle },
-        TelescopePreviewTitle = { bg = palette.green, fg = palette.mantle },
-        TelescopePromptBorder = { bg = palette.surface0, fg = palette.surface0 },
-        TelescopePromptNormal = { bg = palette.surface0 },
-        TelescopePromptPrefix = { bg = palette.surface0 },
-        TelescopePromptTitle = { bg = palette.pink, fg = palette.mantle },
-        TelescopeResultsNormal = { bg = palette.mantle },
-        TelescopeResultsBorder = { bg = palette.mantle, fg = palette.mantle },
-        TelescopeResultsTitle = { fg = palette.mantle },
-        TelescopeSelection = { fg = palette.text, bg = palette.surface0, bold = true }
-      })
+      catppuccin.load()
+      palette = require("catppuccin.palettes").get_palette()
     end
   },
 
-  { -- #ff0000
+  { -- #cba6f7
     "NvChad/nvim-colorizer.lua",
     event = "BufReadPre",
     config = true
@@ -226,37 +160,33 @@ require("lazy").setup({
 
   { "RRethy/vim-illuminate" }, -- automatically highlights other uses of the word under the cursor
 
-  { -- (┊.↴)
+  { -- ┊ → ↴
     "lukas-reineke/indent-blankline.nvim",
     name = "ibl",
+    dependencies = {
+      "HiPhish/rainbow-delimiters.nvim" -- due to `highlight definition otherwise it's not dependent
+    },
     config = function()
-      local hooks = require("ibl.hooks")
-
-      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
-      hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-        set_highlight({
-          RainbowRed = { fg = "#e06c75" },
-          RainbowYellow = { fg = "#e5c07b" },
-          RainbowBlue = { fg = "#61afef" },
-          RainbowOrange = { fg = "#d19a66" },
-          RainbowGreen = { fg = "#98c379" },
-          RainbowViolet = { fg = "#c678dd" },
-          RainbowCyan = { fg = "#56b6c2" },
-        })
-      end)
+      local config = require("rainbow-delimiters.config")
 
       require("ibl").setup({
         indent = {
           char = "▏"
         },
         scope = {
-          highlight = hlrainbow
+          highlight = config.highlight
         }
+      })
+
+      local hooks = require("ibl.hooks")
+      hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
+
+      set_highlight({
+        IndentBlanklineChar = { fg = palette.overlay0 },
+        IndentBlanklineContextChar = { fg = palette.overlay0 }
       })
     end
   },
-
-  { "HiPhish/rainbow-delimiters.nvim" },
 
   {
     "windwp/nvim-autopairs",
@@ -278,50 +208,60 @@ require("lazy").setup({
     }
   },
 
-  { -- folding
+  {
     "kevinhwang91/nvim-ufo",
     dependencies = {
       "kevinhwang91/promise-async"
     },
-    opts = {
-      provider_selector = function()
-        return { "treesitter", "indent" }
-      end,
-      fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate)
-        local newVirtText = {}
-        local suffix = string.format(" 󰁂 %d ", endLnum - lnum)
-        local sufWidth = vim.fn.strdisplaywidth(suffix)
-        local targetWidth = width - sufWidth
-        local curWidth = 0
+    config = function()
+      local ufo = require("ufo")
 
-        for _, chunk in ipairs(virtText) do
-          local chunkText = chunk[1]
-          local chunkWidth = vim.fn.strdisplaywidth(chunkText)
+      ufo.setup({
+        provider_selector = function()
+          return { "treesitter", "indent" }
+        end,
+        fold_virt_text_handler = function(text, lnum, endlnum, width, truncate)
+          local virt = {}
+          local suffix = string.format(" 󰁂 %d ", endlnum - lnum)
+          local sufwidth = vim.fn.strdisplaywidth(suffix)
+          local targetwidth = width - sufwidth
+          local curwidth = 0
 
-          if targetWidth > curWidth + chunkWidth then
-            table.insert(newVirtText, chunk)
-          else
-            local hlGroup = chunk[2]
+          for _, chunk in ipairs(text) do
+            local chunktext = chunk[1]
+            local chunkwidth = vim.fn.strdisplaywidth(chunktext)
 
-            chunkText = truncate(chunkText, targetWidth - curWidth)
-            table.insert(newVirtText, { chunkText, hlGroup })
-            chunkWidth = vim.fn.strdisplaywidth(chunkText)
+            if targetwidth > curwidth + chunkwidth then
+              table.insert(virt, chunk)
+            else
+              local hlgroup = chunk[2]
 
-            -- str width returned from truncate() may less than 2nd argument, need padding
-            if curWidth + chunkWidth < targetWidth then
-              suffix = suffix .. string.rep(" ", targetWidth - curWidth - chunkWidth)
+              chunktext = truncate(chunktext, targetwidth - curwidth)
+              table.insert(virt, { chunktext, hlgroup })
+              chunkwidth = vim.fn.strdisplaywidth(chunktext)
+
+              -- str width returned from truncate() may less than 2nd argument, need padding
+              if curwidth + chunkwidth < targetwidth then
+                suffix = suffix .. string.rep(" ", targetwidth - curwidth - chunkwidth)
+              end
+              break
             end
-            break
+            curwidth = curwidth + chunkwidth
           end
-          curWidth = curWidth + chunkWidth
-        end
 
-        local rAlignAppndx = math.max(math.min(vim.opt.textwidth["_value"], width - 1) - curWidth - sufWidth, 0)
-        suffix = string.rep(" ", rAlignAppndx) .. suffix
-        table.insert(newVirtText, { suffix, "MoreMsg" })
-        return newVirtText
-      end
-    }
+          table.insert(virt, { suffix, "MoreMsg" })
+          return virt
+        end
+      })
+
+      vim.keymap.set("n", "zR", ufo.openAllFolds)
+      vim.keymap.set("n", "zM", ufo.closeAllFolds)
+
+      vim.opt.foldcolumn = "1" -- enable fold column (1 columns)
+      vim.opt.foldlevel = 99
+      vim.opt.foldlevelstart = 99
+      vim.opt.fillchars = "foldsep: ,foldopen:,foldclose:"
+    end
   },
 
   { -- VS Code like winbar
@@ -334,15 +274,15 @@ require("lazy").setup({
     config = function()
       require("barbecue").setup({
         create_autocmd = false,
-        show_modified = true,
-        theme = "catppuccin"
+        kinds = kind_icons,
+        show_modified = true
       })
 
-      local barbecue_ui = require("barbecue.ui")
+      local ui = require("barbecue.ui")
 
       vim.api.nvim_create_autocmd({ "WinResized", "BufWinEnter", "CursorHold", "InsertLeave", "BufModifiedSet" }, {
         group = vim.api.nvim_create_augroup("barbecue.updater", {}),
-        callback = function() barbecue_ui.update() end
+        callback = function() ui.update() end
       })
     end
   },
@@ -368,7 +308,6 @@ require("lazy").setup({
     "rcarriga/nvim-notify",
     config = function()
       local renderbase = require("notify.render.base")
-      local palette = require("catppuccin.palettes").get_palette()
 
       require("notify").setup({
         background_colour = palette.surface0,
@@ -403,40 +342,139 @@ require("lazy").setup({
           })
         end
       })
+
+      set_highlight({
+        NotifyINFOBody = { bg = palette.surface0 },
+        NotifyINFOBorder = { bg = palette.surface0, fg = palette.surface0 },
+        NotifyINFOIcon = { bg = palette.surface0, fg = palette.green },
+        NotifyINFOTitle = { bg = palette.green, fg = palette.mantle },
+        NotifyWARNBody = { bg = palette.surface0 },
+        NotifyWARNBorder = { bg = palette.surface0, fg = palette.surface0 },
+        NotifyWARNIcon = { bg = palette.surface0, fg = palette.peach },
+        NotifyWARNTitle = { bg = palette.peach, fg = palette.mantle },
+        NotifyERRORBody = { bg = palette.surface0 },
+        NotifyERRORBorder = { bg = palette.surface0, fg = palette.surface0 },
+        NotifyERRORIcon = { bg = palette.surface0, fg = palette.red },
+        NotifyERRORTitle = { bg = palette.red, fg = palette.mantle }
+      })
     end
   },
 
-  { -- diagnostics ...
+  {
+    "nvim-telescope/telescope.nvim",
+    dependencies = {
+      "nvim-lua/plenary.nvim"
+    },
+    config = function()
+      require("telescope").setup({
+        defaults = {
+          prompt_prefix = " ",
+          selection_caret = " ❯ ",
+          entry_prefix = "   ",
+          layout_config = {
+            horizontal = {
+              prompt_position = "top"
+            }
+          }
+        }
+      })
+
+      set_highlight({
+        TelescopeMatching = { fg = palette.flamingo },
+        TelescopePreviewBorder = { bg = palette.mantle, fg = palette.mantle },
+        TelescopePreviewNormal = { bg = palette.mantle },
+        TelescopePreviewTitle = { bg = palette.green, fg = palette.mantle },
+        TelescopePromptBorder = { bg = palette.surface0, fg = palette.surface0 },
+        TelescopePromptNormal = { bg = palette.surface0 },
+        TelescopePromptPrefix = { bg = palette.surface0 },
+        TelescopePromptTitle = { bg = palette.pink, fg = palette.mantle },
+        TelescopeResultsNormal = { bg = palette.mantle },
+        TelescopeResultsBorder = { bg = palette.mantle, fg = palette.mantle },
+        TelescopeResultsTitle = { fg = palette.mantle },
+        TelescopeSelection = { fg = palette.text, bg = palette.surface0, bold = true }
+      })
+    end
+  },
+
+  {
     "folke/trouble.nvim",
     config = true,
     cmd = "Trouble",
     keys = {
       {
-        "<leader>xx",
-        "<cmd>Trouble diagnostics toggle<cr>",
-        desc = "Diagnostics",
-      },
-      {
-        "<leader>xs",
-        "<cmd>Trouble symbols toggle focus=false<cr>",
-        desc = "Symbols",
-      },
-      {
-        "<leader>cd",
-        "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-        desc = "LSP definitions, references ...",
+        "<leader>xd",
+        "<cmd>Trouble lsp toggle focus=false<cr>",
+        desc = "LSP definitions, references ..."
       },
       {
         "<leader>xl",
         "<cmd>Trouble loclist toggle<cr>",
-        desc = "Location list",
+        desc = "Location list"
       },
       {
         "<leader>xq",
         "<cmd>Trouble qflist toggle<cr>",
-        desc = "Quickfix list",
+        desc = "Quickfix list"
+      },
+      {
+        "<leader>xs",
+        "<cmd>Trouble symbols toggle focus=true win.position=bottom<cr>",
+        desc = "Symbols"
+      },
+      {
+        "<leader>xx",
+        "<cmd>Trouble diagnostics toggle focus=true filter.buf=0<cr>",
+        desc = "Diagnostics"
       }
     }
+  },
+
+  {
+    "folke/todo-comments.nvim",
+    config = function()
+     local todo = require("todo-comments")
+
+      todo.setup({
+        keywords = {
+          FIX = {
+            icon = " ",
+            alt = { "FIXME", "BUG", "ISSUE" },
+            color = palette.red -- FIXME:
+          },
+          TODO = {
+            icon = " ",
+            color = palette.mauve -- TODO:
+          },
+          HACK = {
+            icon = "⋅",
+            color = palette.maroon -- HACK:
+          },
+          WARN = {
+            icon = " ",
+            color = palette.peach -- WARN:
+          },
+          PERF = {
+            icon = "⋅",
+            alt = { "OPTIM", "OPTIMIZE" },
+            color = palette.teal -- PERF:
+          },
+          NOTE = {
+            icon = "󰍨⋅",
+            alt = { "INFO" },
+            color = palette.green -- NOTE:
+          },
+          TEST = {
+            icon = "⋅",
+            alt = { "PASSED", "FAILED" },
+            color = palette.blue -- TEST:
+          }
+        },
+        colors = {}
+      })
+
+      vim.keymap.set("n", "]t", function() todo.jump_next() end, { desc = "Next todo comment" })
+      vim.keymap.set("n", "[t", function() todo.jump_prev() end, { desc = "Previous todo comment" })
+    end
   },
 
   {
@@ -445,21 +483,49 @@ require("lazy").setup({
     dependencies = {
       "MunifTanjim/nui.nvim"
     },
-    opts = {
-      health = {
-        checker = false
-      },
-      lsp = {
-        override = {
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true,
+    config = function()
+      require("noice").setup({
+        health = {
+          checker = false
         },
-      },
-      popupmenu = {
-        enabled = true
-      }
-    }
+        lsp = {
+          override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true
+          },
+        },
+        popupmenu = {
+          enabled = true,
+          kind_icons = kind_icons
+        }
+      })
+
+      set_highlight({
+        NoiceCmdlinePopup = { bg = palette.surface0 },
+        NoiceCmdlineIconCalculator = { bg = palette.surface0, fg = palette.flamingo },
+        NoiceCmdlineIconCmdLine = { bg = palette.surface0, fg = palette.pink },
+        NoiceCmdlineIconFilter = { bg = palette.surface0, fg = palette.lavender },
+        NoiceCmdlineIconHelp = { bg = palette.surface0, fg = palette.green },
+        NoiceCmdlineIconInput = { bg = palette.surface0, fg = palette.red },
+        NoiceCmdlineIconLua = { bg = palette.surface0, fg = palette.blue },
+        NoiceCmdlineIconSearch = { bg = palette.surface0, fg = palette.mauve },
+        NoiceCmdlinePopupBorderCalculator = { bg = palette.surface0, fg = palette.surface0 },
+        NoiceCmdlinePopupBorderCmdLine = { bg = palette.surface0, fg = palette.surface0 },
+        NoiceCmdlinePopupBorderFilter = { bg = palette.surface0, fg = palette.surface0 },
+        NoiceCmdlinePopupBorderHelp = { bg = palette.surface0, fg = palette.surface0 },
+        NoiceCmdlinePopupBorderInput = { bg = palette.surface0, fg = palette.surface0 },
+        NoiceCmdlinePopupBorderLua = { bg = palette.surface0, fg = palette.surface0 },
+        NoiceCmdlinePopupBorderSearch = { bg = palette.surface0, fg = palette.surface0 },
+        NoiceCmdlinePopupTitleCalculator = { bg = palette.flamingo, fg = palette.mantle },
+        NoiceCmdlinePopupTitleCmdLine = { bg = palette.pink, fg = palette.mantle },
+        NoiceCmdlinePopupTitleFilter = { bg = palette.lavender, fg = palette.mantle },
+        NoiceCmdlinePopupTitleHelp = { bg = palette.green, fg = palette.mantle },
+        NoiceCmdlinePopupTitleInput = { bg = palette.red, fg = palette.mantle },
+        NoiceCmdlinePopupTitleLua = { bg = palette.blue, fg = palette.mantle },
+        NoiceCmdlinePopupTitleSearch = { bg = palette.mauve, fg = palette.mantle }
+      })
+    end
   },
 
   {
@@ -469,8 +535,9 @@ require("lazy").setup({
       "echasnovski/mini.nvim"
     },
     config = function()
-      local wk = require("which-key")
-      wk.add({
+      local whichkey = require("which-key")
+
+      whichkey.add({
         {
           "<leader>g",
           group = "Glance"
@@ -487,7 +554,7 @@ require("lazy").setup({
           "<leader>t",
           group = "Telescope"
         },
-        {
+      {
           "<leader>x",
           group = "Trouble"
         }
@@ -620,7 +687,6 @@ require("lazy").setup({
   {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
-      "nvim-treesitter/nvim-treesitter-context",
       "nvim-treesitter/nvim-treesitter-textobjects"
     },
     build = ":TSUpdate",
@@ -628,7 +694,9 @@ require("lazy").setup({
       local configs = require("nvim-treesitter.configs")
 
       configs.setup({
-        ensure_installed = { "c", "cpp", "json", "lua", "perl", "python", "markdown", "markdown_inline", "vim" },
+        ensure_installed = {
+          "bash", "c", "cpp", "json", "lua", "markdown", "markdown_inline", "perl", "python", "regex", "vim" -- markdown/inline, regex, bash are needed by packages
+        },
         auto_install = true,
         highlight = {
           enable = true
@@ -649,18 +717,30 @@ require("lazy").setup({
             enable = true,
             set_jumps = true,
             goto_next = {
-              ["]]"] = { query = "@function.outer", desc = "Go to the next function" }
+              ["]]"] = {
+                query = "@function.outer",
+                desc = "Go to the next function"
+              }
             },
             goto_previous = {
-              ["[["] = { query = "@function.outer", desc = "Go to the previous function" }
+              ["[["] = {
+                query = "@function.outer",
+                desc = "Go to the previous function"
+              }
             }
           },
           select = { -- delete: dfc; select: vfc
             enable = true,
             lookahead = true,
             keymaps = {
-              ["fc"] = { query = "@function.inner", desc = "Select inner part of a function" },
-              ["ff"] = { query = "@function.outer", desc = "Select whole function" }
+              ["fc"] = {
+                query = "@function.inner",
+                desc = "Select inner part of a function"
+              },
+              ["ff"] = {
+                query = "@function.outer",
+                desc = "Select whole function"
+              }
             }
           }
         }
@@ -668,26 +748,8 @@ require("lazy").setup({
     end
   },
 
+  { "nvim-treesitter/nvim-treesitter-context" }, -- shows the context of the currently visible buffer contents
   { "RRethy/nvim-treesitter-endwise" },
-
-  {
-    "nvim-telescope/telescope.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim"
-    },
-    opts = {
-      defaults = {
-        prompt_prefix = "   ",
-        selection_caret = " ❯ ",
-        entry_prefix = "   ",
-        layout_config = {
-          horizontal = {
-            prompt_position = "top"
-          }
-        }
-      }
-    }
-  },
 
   {
     "hrsh7th/nvim-cmp",
@@ -719,12 +781,12 @@ require("lazy").setup({
           { name = "path" }
         },
         mapping = cmp.mapping.preset.insert {
-          ["<Up>"] = cmp.mapping.select_prev_item(),
-          ["<Down>"] = cmp.mapping.select_next_item(),
-          ["<Page-Up>"] = cmp.mapping.scroll_docs(-1),
-          ["<Page-Down>"] = cmp.mapping.scroll_docs(1),
-          ["<Tab>"] = cmp.mapping.select_next_item(),
-          ["<S-Tab>"] = cmp.mapping.select_prev_item()
+          ["<up>"] = cmp.mapping.select_prev_item(),
+          ["<down>"] = cmp.mapping.select_next_item(),
+          ["<page-up>"] = cmp.mapping.scroll_docs(-1),
+          ["<page-down>"] = cmp.mapping.scroll_docs(1),
+          ["<tab>"] = cmp.mapping.select_next_item(),
+          ["<s-tab>"] = cmp.mapping.select_prev_item()
         }
       })
 
@@ -753,27 +815,25 @@ require("lazy").setup({
   {
     "neovim/nvim-lspconfig",
     config = function()
-      local lspcfg = require("lspconfig")
-      local lspcap = require("cmp_nvim_lsp").default_capabilities()
+      local cap = require("cmp_nvim_lsp").default_capabilities()
 
-      lspcap.textDocument.foldingRange = {
+      cap.textDocument.foldingRange = {
         dynamicRegistration = false,
         lineFoldingOnly = true
       }
 
-      lspcfg.clangd.setup({
-        capabilities = lspcap
+      local config = require("lspconfig")
+
+      config.clangd.setup({
+        capabilities = cap
       })
 
-      lspcfg.lua_ls.setup({
+      config.lua_ls.setup({
         cmd = { "/usr/local/libexec/lsp-lua/bin/lua-language-server" },
-        capabilities = lspcap
+        capabilities = cap
       })
     end
   },
 
-  {
-    "DNLHC/glance.nvim",
-    config = true
-  },
+  { "DNLHC/glance.nvim" },
 })
