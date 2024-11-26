@@ -1,0 +1,16 @@
+#!/bin/rc
+
+notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync</b>' 'Copying personal data to a USB'
+usb = `{ udisksctl info -b /dev/sdb1 | grep MountPoints: | awk '{print $2}' }
+if (~ $usb ()) {
+  usb = `{ udisksctl mount -b /dev/sdb1 | awk '{print $4}' }
+}
+
+rsync -a --delete /home/$USER/documents $usb
+rsync -a --delete /home/$USER/.local/share/evolution/addressbook/system $usb'/documents/priv'
+rsync -a /home/$USER/.local/share/evolution/calendar/system $usb'/documents/priv'
+rsync -a /home/$USER/.local/share/evolution/memos/system $usb'/documents/priv'
+rsync -a /home/$USER/.local/share/evolution/tasks/system $usb'/documents/priv'
+
+notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync</b>' 'Copying personal data is complete'
+paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
