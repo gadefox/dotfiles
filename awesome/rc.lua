@@ -54,7 +54,7 @@ local function msg_muted()
 end
 
 local function msg_mpd_stop(msg)
-  notify_music = theme.show_notify(notify_music, "playerctl_toggle", "Music player:", msg)
+  notify_music = theme.show_notify(notify_music, "toggle", "Music player:", msg)
 end
 
 local function msg_mpd(out, icon)
@@ -71,7 +71,7 @@ local function msg_mpd(out, icon)
       song = "N/A"
     end
 
-    notify_music = theme.show_notify(notify_music, "playerctl_" .. icon, artist, song)
+    notify_music = theme.show_notify(notify_music, icon, artist, song)
   else
     msg_mpd_stop(status == "paused" and status or "stopped")
   end
