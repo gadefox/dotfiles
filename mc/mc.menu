@@ -52,6 +52,30 @@ G  Gzip or gunzip tagged files
      gzip $DECOMP -v "$i"
    done
 
++ t r & ! t t
+i  Resize current image
+   value=%{Ender new size}
+   width=`identify -ping -format '%w' %f`
+   height=`identify -ping -format '%h' %f`
+   if [ $width -ge $height ]; then
+     `mogrify -resize ${value}x %f`
+   else
+     `mogrify -resize x$value %f`
+   fi
+
++ t t
+I  Resize tagged images
+   value=%{Ender new size}
+   for i in %t; do
+     width=`identify -ping -format '%w' $i`
+     height=`identify -ping -format '%h' $i`
+     if [ $width -ge $height ]; then
+       `mogrify -resize ${value}x $i`
+     else
+       `mogrify -resize x$value $i`
+     fi
+   done
+
 + ! t t
 l  View shared library dependencies
    %view{ascii,nroff} ldd -v %f
