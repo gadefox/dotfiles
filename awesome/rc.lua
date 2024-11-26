@@ -53,10 +53,6 @@ local function msg_muted()
   end)
 end
 
-local function msg_mpd_stop(msg)
-  notify_music = theme.show_notify(notify_music, "toggle", "Music player:", msg)
-end
-
 local function msg_mpd(out, icon)
   local status = out:match("%[(.*)%]")
 
@@ -73,12 +69,8 @@ local function msg_mpd(out, icon)
 
     notify_music = theme.show_notify(notify_music, icon, artist, song)
   else
-    msg_mpd_stop(status == "paused" and status or "stopped")
+    notify_music = theme.show_notify(notify_music, "toggle", "Music player:", status == "paused" and status or "stopped")
   end
-end
-
-local function msg_now()
-  theme.create_notify("alarm", "Now:", os.date("%a %d %b, %H:%M"))
 end
 
 -- rules
@@ -225,36 +217,34 @@ awesome.connect_signal("launch::settings", function(option)
   end
 end)
 
-local function timer()
-  theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
-end
-
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
     awful.spawn(term())
   elseif option == 2 then
     theme.launch("scrot", { "", "󰩭" })
   elseif option == 3 then
-    timer()
+    theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
   elseif option == 4 then
     awful.spawn(term("htop"))
   end
 end)
 
-local function irssi()
-  awful.spawn(term("irssi --home=~/.local/share/irssi"))
-end
-
-awesome.connect_signal("launch::web", function(option)
+awesome.connect_signal("launch::browser", function(option)
   if option == 1 then
     awful.spawn("qutebrowser")
   elseif option == 2 then
     awful.spawn("firefox")
-  elseif option == 3 then
+  end
+end)
+
+awesome.connect_signal("launch::web", function(option)
+  if option == 1 then
+    theme.launch("browser", { "󰇩", "󰈹" })
+  elseif option == 2 then
     awful.spawn("evolution")
+  elseif option == 3 then
+    awful.spawn(term("irssi --home=~/.local/share/irssi"))
   elseif option == 4 then
-    irssi()
-  elseif option == 5 then
     awful.spawn("transmission-gtk")
   end
 end)
@@ -279,7 +269,7 @@ awesome.connect_signal("launch::misc", function(option)
   elseif option == 3 then
     theme.launch("calendar", { "󰸘", "󱁳" })
   elseif option == 4 then
-    msg_now()
+    theme.create_notify("alarm", "Now:", os.date("%a %d %b, %H:%M"))
   end
 end)
 
@@ -315,7 +305,7 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 4 then
     theme.launch("image", { "󱇤", "󰈋" })
   elseif option == 5 then
-    theme.launch("web", { "󰘯", "󰈹", "", "", "󰄠" })
+    theme.launch("web", { "󰈹", "", "", "󰄠" })
   elseif option == 6 then
     theme.launch("music", { "󰝚", "󰋍" })
   elseif option == 7 then
@@ -344,12 +334,10 @@ awful.keyboard.append_global_keybindings {
     { description = "quit", group = "awesome" }),
   awful.key({ "Mod4" }, "Escape", theme.lock,
     { description = "quit", group = "awesome" }),
-
   awful.key({ "Mod4" }, "Up", function() awful.screen.focus_relative(1) end,
     { description = "next", group = "screen" }),
   awful.key({ "Mod4" }, "Down", function() awful.screen.focus_relative(-1) end,
     { description = "previous", group = "screen" }),
-
   awful.key({ "Mod4" }, "Left", awful.tag.viewprev,
     { description = "previous", group = "tag" }),
   awful.key({ "Mod4" }, "Right", awful.tag.viewnext,
@@ -369,7 +357,6 @@ awful.keyboard.append_global_keybindings {
     {description = "increment gaps", group = "tags" }),
   awful.key({ "Mod4" }, "space", awful.client.urgent.jumpto,
     { description = "jump to urgent client", group = "client" }),
-
   awful.key({ "Mod4" }, "Return", function() awful.spawn(term()) end,
     { description = "open a terminal", group = "launch" }),
   awful.key({ }, "Menu", function() theme.launch("menu", { "󰊲", "󰉕", "󰧭", "", "󰖟", "󰽴", "", "" }) end,
@@ -378,12 +365,11 @@ awful.keyboard.append_global_keybindings {
     { description = "printscreen", group = "launch" }),
   awful.key({ "Shift" }, "Print", function() slop_shot() end,
     { description = "printscreen area", group = "launch" }),
-
   awful.key({ }, "XF86Mail", function() awful.spawn("evolution") end,
     { description = "email", group = "launch" }),
-  awful.key({ }, "XF86HomePage", function() awful.spawn("qutebrowser") end,
+  awful.key({ }, "XF86HomePage", function() theme.launch("browser", { "󰇩", "󰈹" }) end,
     { description = "browser", group = "launch" }),
-  awful.key({ }, "XF86Messenger", function() irssi() end,
+  awful.key({ }, "XF86Messenger", function() awful.spawn(term("irssi --home=~/.local/share/irssi")) end,
     { description = "messenger", group = "launch" }),
   awful.key({ }, "XF86Tools", function() awful.spawn(term("ncmpc")) end,
     { description = "browser", group = "launch" }),
@@ -393,13 +379,12 @@ awful.keyboard.append_global_keybindings {
     { description = "file manager", group = "launch" }),
   awful.key({ }, "XF86Launch7", function() awful.spawn(term("htop")) end,
     { description = "process monitor", group = "launch" }),
-  awful.key({ }, "XF86Favorites", function() timer() end,
+  awful.key({ }, "XF86Favorites", function() theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" }) end,
     { description = "timer", group = "launch" }),
   awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
     { description = "neovim", group = "launch" }),
   awful.key({ }, "XF86Calculator", function() awful.spawn(term("calc")) end,
     { description = "calc", group = "launch" }),
-
   awful.key({ }, "XF86AudioLowerVolume", function()
     awful.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%")
     msg_volume("volume1")
@@ -415,7 +400,6 @@ awful.keyboard.append_global_keybindings {
     msg_muted()
   end,
     { description = "(un)mute", group = "volume" }),
-
   awful.key({ }, "XF86AudioPlay", function()
     awful.spawn.easy_async("mpc toggle", function(out)
       msg_mpd(out, "toggle")
@@ -436,7 +420,7 @@ awful.keyboard.append_global_keybindings {
     { description = "next", group = "music" }),
   awful.key({ }, "XF86AudioStop", function()
     awful.spawn("mpc stop")
-    msg_mpd_stop("stopped")
+    notify_music = theme.show_notify(notify_music, "toggle", "Music player:", "stopped")
   end,
     { description = "stop", group = "music" })
 }
