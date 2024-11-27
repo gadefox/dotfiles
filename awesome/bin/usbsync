@@ -7,10 +7,10 @@ if (~ $usb ()) {
 }
 
 rsync -a --delete /home/$USER/documents $usb
-rsync -a --delete /home/$USER/.local/share/evolution/addressbook/system $usb'/documents/priv'
-rsync -a /home/$USER/.local/share/evolution/calendar/system $usb'/documents/priv'
-rsync -a /home/$USER/.local/share/evolution/memos/system $usb'/documents/priv'
-rsync -a /home/$USER/.local/share/evolution/tasks/system $usb'/documents/priv'
+rsync -a /home/$USER/.local/share/evolution/addressbook/system $usb
+rsync -a /home/$USER/.local/share/evolution/calendar/system $usb
+rsync -a /home/$USER/.local/share/evolution/memos/system $usb
+rsync -a /home/$USER/.local/share/evolution/tasks/system $usb
 
 notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync</b>' 'Copying personal data is complete'
 paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
