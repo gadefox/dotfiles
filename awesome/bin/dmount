@@ -4,8 +4,10 @@ blk = `{ lsblk -nr -o PATH,LABEL,MOUNTPOINT | grep $1 }
 if (~ $blk(3) ()) {
   mount = `{ udisksctl mount -b $blk(1) }
   msg = ' mounted on '^$mount(4)
+  echo $mount(4)
 } else {
   msg = ' is already mounted at '^$blk(3)
+  echo $blk(3)
 }
 
-notify-send --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '^$blk(2)^'</b>' $blk(1)^$msg
+notify-send --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '^$blk(1)^'</b>' $blk(2)^$msg
