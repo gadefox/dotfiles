@@ -1,16 +1,14 @@
 #!/bin/rc
 
-notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync</b>' 'Copying personal data to a USB'
-usb = `{ udisksctl info -b /dev/sdb1 | grep MountPoints: | awk '{print $2}' }
-if (~ $usb ()) {
-  usb = `{ udisksctl mount -b /dev/sdb1 | awk '{print $4}' }
-}
+mount = `{ dmount sdc1 }
 
-rsync -a --delete /home/$USER/documents $usb
-rsync -a /home/$USER/.local/share/evolution/addressbook/system $usb
-rsync -a /home/$USER/.local/share/evolution/calendar/system $usb
-rsync -a /home/$USER/.local/share/evolution/memos/system $usb
-rsync -a /home/$USER/.local/share/evolution/tasks/system $usb
+notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync: '$mount(1)^'</b>' 'Copying personal data to a USB'
 
-notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync</b>' 'Copying personal data is complete'
+rsync -a --delete /home/$USER/documents $mount(2)
+rsync -a /home/$USER/.local/share/evolution/addressbook/system $mount(2)
+rsync -a /home/$USER/.local/share/evolution/calendar/system $mount(2)
+rsync -a /home/$USER/.local/share/evolution/memos/system $mount(2)
+rsync -a /home/$USER/.local/share/evolution/tasks/system $mount(2)
+
+notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync: '$mount(1)^'</b>' 'Copying personal data is complete'
 paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
