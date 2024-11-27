@@ -404,7 +404,7 @@ awful.keyboard.append_global_keybindings {
     { description = "(un)mute", group = "volume" }),
   awful.key({ }, "XF86AudioPlay", function()
     awful.spawn.easy_async("mpc toggle", function(out)
-      msg_mpd(out, "toggle")
+      msg_mpd(out, "music")
     end)
   end,
     { description = "play", group = "music" }),
