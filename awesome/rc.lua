@@ -225,6 +225,8 @@ awesome.connect_signal("launch::tool", function(option)
   elseif option == 3 then
     theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
   elseif option == 4 then
+    awful.spawn("usbsync")
+  elseif option == 5 then
     awful.spawn(term("htop"))
   end
 end)
@@ -309,7 +311,7 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 6 then
     theme.launch("music", { "󰝚", "󰋍" })
   elseif option == 7 then
-    theme.launch("tool", { "", "󰭪", "󰔛", "" })
+    theme.launch("tool", { "", "󰭪", "󰔛", "󱤛", "" })
   elseif option == 8 then
     theme.launch("settings", { "󰃟", "󰍺" })
   end
