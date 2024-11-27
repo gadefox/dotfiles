@@ -143,7 +143,8 @@ require("lazy").setup({
           semantic_tokens = false,
           telescope = {
             enabled = false
-          }
+          },
+          ufo = false
         }
       })
 
@@ -206,62 +207,6 @@ require("lazy").setup({
         eol = "gce"
       }
     }
-  },
-
-  {
-    "kevinhwang91/nvim-ufo",
-    dependencies = {
-      "kevinhwang91/promise-async"
-    },
-    config = function()
-      local ufo = require("ufo")
-
-      ufo.setup({
-        provider_selector = function()
-          return { "treesitter", "indent" }
-        end,
-        fold_virt_text_handler = function(text, lnum, endlnum, width, truncate)
-          local virt = {}
-          local suffix = string.format(" 󰁂 %d ", endlnum - lnum)
-          local sufwidth = vim.fn.strdisplaywidth(suffix)
-          local targetwidth = width - sufwidth
-          local curwidth = 0
-
-          for _, chunk in ipairs(text) do
-            local chunktext = chunk[1]
-            local chunkwidth = vim.fn.strdisplaywidth(chunktext)
-
-            if targetwidth > curwidth + chunkwidth then
-              table.insert(virt, chunk)
-            else
-              local hlgroup = chunk[2]
-
-              chunktext = truncate(chunktext, targetwidth - curwidth)
-              table.insert(virt, { chunktext, hlgroup })
-              chunkwidth = vim.fn.strdisplaywidth(chunktext)
-
-              -- str width returned from truncate() may less than 2nd argument, need padding
-              if curwidth + chunkwidth < targetwidth then
-                suffix = suffix .. string.rep(" ", targetwidth - curwidth - chunkwidth)
-              end
-              break
-            end
-            curwidth = curwidth + chunkwidth
-          end
-
-          table.insert(virt, { suffix, "MoreMsg" })
-          return virt
-        end
-      })
-
-      vim.keymap.set("n", "zR", ufo.openAllFolds)
-      vim.keymap.set("n", "zM", ufo.closeAllFolds)
-
-      vim.opt.foldcolumn = "1" -- enable fold column (1 columns)
-      vim.opt.foldlevel = 99
-      vim.opt.foldlevelstart = 99
-      vim.opt.fillchars = "foldsep: ,foldopen:,foldclose:"
-    end
   },
 
   { -- VS Code like winbar
