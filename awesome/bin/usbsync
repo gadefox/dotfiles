@@ -1,6 +1,9 @@
 #!/bin/rc
 
 mount = `{ dmount sdc1 }
+if (~ $mount ()) {
+  exit
+}
 
 notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync: '$mount(1)^'</b>' 'Copying personal data to a USB'
 
