@@ -47,6 +47,7 @@ vim.opt.shiftwidth = 2 -- block shift (>> << keys) indent
 vim.opt.tabstop = 4 -- number of spaces that a <tab> in the file counts for
 
 vim.opt.cursorline = true -- highlight the text line of the cursor
+vim.opt.fillchars = "eob: " -- eob: empty lines at the end of a buffer
 vim.opt.list = true
 vim.opt.listchars = { extends = "▸", precedes = "◂", space = "⋅", tab = "→ ", trail = "·", eol = "↴", nbsp = "◇" } -- nbsp -> non-breakable space character; trail -> trailing spaces
 vim.opt.number = true -- line numbers
