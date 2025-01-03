@@ -1,5 +1,5 @@
 network={
  ssid="UPC5164096"
- scan_ssid=1
+ # scan_ssid=1
  psk=05c725adef0fbe2b933cf214bdf5fe23c704dfc07310db114e3e9558a36dd1a0
 }
