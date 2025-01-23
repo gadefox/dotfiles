@@ -6,12 +6,12 @@ fn filename {
 }
 
 fn notify {
-  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>'$1'</b>' $2
+  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>YouTube</b>' $1
 }
 
-notify YouTube 'Video is downloading'
+notify 'Video is downloading'
 name = `{ yt-dlp --print after_move:filepath $1 }
 name = `{ filename $name }
 
-notify YouTube 'Video downloading is completed:<br>'$^name
+notify 'Video downloading is completed:<br>'$^name
 exit 0
