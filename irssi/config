@@ -12,7 +12,7 @@ servers = (
     chatnet = "oftc";
     port = "6697";
     use_tls = "yes";
-    tls_cert = "~/.irssi/nick.pem";
+    tls_cert = "~/.local/share/irssi/nick.pem";
     tls_verify = "yes";
   }
 );
@@ -23,14 +23,15 @@ chatnets = {
 };
 
 channels = (
+  { name = "#awesome"; chatnet = "oftc"; autojoin = "No"; },
   { name = "#debian"; chatnet = "libera"; autojoin = "No"; },
   { name = "#gnome"; chatnet = "libera"; autojoin = "No"; },
   { name = "#irssi"; chatnet = "libera"; autojoin = "No"; },
   { name = "#linux"; chatnet = "libera"; autojoin = "No"; },
   { name = "#neomutt"; chatnet = "libera"; autojoin = "No"; },
+  { name = "#openwrt"; chatnet = "oftc"; autojoin = "No"; },
+  { name = "#qt"; chatnet = "libera"; autojoin = "No"; },
   { name = "#qutebrowser"; chatnet = "libera"; autojoin = "No"; },
-  { name = "#debian-kde"; chatnet = "oftc"; autojoin = "No"; },
-  { name = "#linux"; chatnet = "oftc"; autojoin = "No"; },
   { name = "#suckless"; chatnet = "oftc"; autojoin = "No"; },
   { name = "#xorg"; chatnet = "oftc"; autojoin = "No"; }
 );
