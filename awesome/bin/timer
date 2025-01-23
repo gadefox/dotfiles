@@ -1,23 +1,34 @@
 #!/bin/rc
 
 fn minstr {
-  str = $*' minute'
-  ~ $* 1 || str = $str's'
+  str = $1' minute'
+  ~ $1 1 || str = $str's'
   echo -n $str
 }
 
-if (~ $* ()) {
+fn notify {
+  notify-send --icon=/etc/xdg/awesome/icons/timer.png '<b>'$1'</b>' $2
+}
+
+if (~ $1 ()) {
   ps = `{ ps -d -o command,etimes | grep '^sleep' }
   ~ $ps () && exit 0
+
   parts = `` (' ') { echo -n $ps }
   rest = `{ calc 'round(('$parts(2)'-'$parts(3)')/60)' }
+
   min = `{ minstr $rest }
-  notify-send --icon=/etc/xdg/awesome/icons/timer.png '<b>Timer</b>' $^min' left'
+  notify Timer $^min' left'
+
   exit 0
 }
 
-min = `{ minstr $* }
-notify-send --icon=/etc/xdg/awesome/icons/timer.png '<b>Timer</b>' 'Starting '$^min' countdown'
-sleep `{ calc 60*$* }
-notify-send --icon=/etc/xdg/awesome/icons/timer.png '<b>Time is up!</b>' $^min' countdown finished'
+min = `{ minstr $1 }
+notify Timer 'Starting '$^min' countdown'
+
+sleep `{ calc 60*$1 }
+
+notify 'Time is up!' $^min' countdown is finished'
 paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
+
+exit 0
