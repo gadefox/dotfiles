@@ -221,7 +221,7 @@ awesome.connect_signal("launch::settings", function(option)
   elseif option == 2 then
     awful.spawn("lxrandr")
   elseif option == 3 then
-    theme.launch("wifi", { "󰸋", "󱚼", "󱛄", "󱛃", "󱛂" })
+    theme.launch("wifi", { "󰸋", "󱚼", "󱛄", "󱛃", "󱛂", "󱛆" })
   end
 end)
 
