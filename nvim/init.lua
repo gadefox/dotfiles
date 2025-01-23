@@ -54,8 +54,8 @@ vim.opt.number = true -- line numbers
 vim.opt.pumheight = 20 -- maximum number of items to show in the popup menu
 vim.opt.scrolloff = 10 -- min nr of lines to keep above and below the cursor
 vim.opt.signcolumn = "yes" -- diagnostic signs
-vim.opt.sidescrolloff = 15 -- the minimal number of screen columns to keep to the left and to the	right of the cursor if `nowrap is set
-vim.opt.wrap = false -- lines will not wrap	and only part of long lines will be displayed
+vim.opt.sidescrolloff = 15 -- the minimal number of screen columns to keep to the left and to the right of the cursor if `nowrap is set
+vim.opt.wrap = false -- lines will not wrap and only part of long lines will be displayed
 vim.opt.laststatus = 0 -- hide statusbar
 vim.opt.statusline = string.rep("-", vim.api.nvim_win_get_width(0))
 
@@ -384,7 +384,7 @@ require("lazy").setup({
         keywords = {
           FIX = {
             icon = " ",
-            alt = { "FIXME", "BUG", "ISSUE" },
+            alt = { "FIXME" },
             color = palette.red -- FIXME:
           },
           TODO = {
@@ -401,7 +401,7 @@ require("lazy").setup({
           },
           PERF = {
             icon = "⋅",
-            alt = { "OPTIM", "OPTIMIZE" },
+            alt = { "OPTIM" },
             color = palette.teal -- PERF:
           },
           NOTE = {
@@ -411,7 +411,7 @@ require("lazy").setup({
           },
           TEST = {
             icon = "⋅",
-            alt = { "PASSED", "FAILED" },
+            alt = { "PASS", "FAIL" },
             color = palette.blue -- TEST:
           }
         },
