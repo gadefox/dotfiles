@@ -103,4 +103,25 @@ if (~ $1 5) {
   exit 0
 }
 
+if (~ $1 6) {
+  net = `{ iwctl station $sta show }
+
+#  for (i in `{ seq $#net }) { echo $i' '$net($i) }; exit 0
+
+  if (~ $n(14) disconnected) {
+    notify 'Network is disconnected'
+    exit 0
+  }
+
+  msg = 'Channel: '$net(26)^', '$net(30)^' dBm, Rx('$net(38)^'): '$net(36)^', '
+  if (~ $net(39) RxBitrate) {
+    msg = $msg$net(40)^' '$net(41)
+  } else {
+    msg = $msg$net(47)^' '$net(48)^', Tx('$net(42)^'): '$net(40)^', '$net(44)^' '$net(45)
+  }
+ 
+  notify $msg $info(17)
+  exit 0
+}
+
 exit 1
