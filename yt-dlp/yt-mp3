@@ -1,11 +1,17 @@
 #!/bin/rc
 
 fn filename {
-  parts = `` (/) { echo -n $* }
+  parts = `` (/) { echo -n $1 }
   echo -n $parts($#parts)
 }
 
-notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>Download</b>' 'Youtube video added'
-file = `{ yt-dlp --print after_move:filepath --extract-audio --audio-format mp3 $* }
-name = `{ filename $file }
-notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>Download Complete</b>' $^name
+fn notify {
+  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>'$1'</b>' $2
+}
+
+notify YouTube 'Audio is downloading..'
+name = `{ yt-dlp --print after_move:filepath --extract-audio --audio-format mp3 $1 }
+name = `{ filename $name }
+
+notify YouTube 'Audio downloading is completed:<br>'$^name
+exit 0
