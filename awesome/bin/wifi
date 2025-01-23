@@ -116,7 +116,7 @@ if (~ $1 6) {
     msg = $msg$net(47)^' '$net(48)^', Tx('$net(42)^'): '$net(40)^', '$net(44)^' '$net(45)
   }
  
-  notify $msg $info(17)
+  notify $msg $net(17)
   exit 0
 }
 
