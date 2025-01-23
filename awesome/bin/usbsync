@@ -1,11 +1,35 @@
 #!/bin/rc
 
-mount = `{ dmount sdc1 }
-if (~ $mount ()) {
-  exit
+fn notify {
+  msg = '</b>'
+  if (!~ $2 ())
+    msg = $msg': '$2
+
+  notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync'$msg $1
 }
 
-notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync: '$mount(1)^'</b>' 'Copying personal data to a USB'
+fn count {
+  lines = `` ($nl) { echo -n $1 }
+  echo -n $#lines
+}
+
+usbs = `{ readlink ls /dev/disk/by-id/usb-* | grep -o sdc[0-9] }
+if (~ $usbs ()) {
+  notify 'No USB device found'
+  exit 1
+}
+
+if (~ `{ count $usbs } 1) {
+  set = $usbs(1)
+} else {
+  set = `{ echo -n $usbs | dmenu -p 'Select USB' }
+  ~ $set () && exit 0
+}
+
+mount = `{ dmount $set }
+~ $mount () && exit 1
+
+notify 'Personal data is copied to USB' $mount(1)
 
 rsync -a --delete /home/$USER/documents $mount(2)
 rsync -a /home/$USER/.local/share/evolution/addressbook/system $mount(2)
@@ -13,5 +37,7 @@ rsync -a /home/$USER/.local/share/evolution/calendar/system $mount(2)
 rsync -a /home/$USER/.local/share/evolution/memos/system $mount(2)
 rsync -a /home/$USER/.local/share/evolution/tasks/system $mount(2)
 
-notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync: '$mount(1)^'</b>' 'Copying personal data is complete'
+notify 'Copying personal data is complete' $mount(1)
 paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
+
+exit 0
