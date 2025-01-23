@@ -47,7 +47,7 @@ end
 
 local function msg_muted()
   awful.spawn.easy_async_with_shell("pactl list sinks | grep 'Mute:' | awk '{print $2}'", function(out)
-   notify_volume = out == "no\n"
+    notify_volume = out == "no\n"
       and theme.show_notify(notify_volume, "volume", "Volume:", "unmuted")
       or theme.show_notify(notify_volume, "muted", "Volume:", "muted")
   end)
@@ -113,6 +113,8 @@ awesome.connect_signal("launch::image", function(option)
   if option == 1 then
     awful.spawn("gimp")
   elseif option == 2 then
+    awful.spawn("xsane")
+  elseif option == 3 then
     awful.spawn("gpick")
   end
 end)
@@ -190,6 +192,10 @@ awesome.connect_signal("launch::scrot", function(option)
   end
 end)
 
+awesome.connect_signal("launch::wifi", function(option)
+  awful.spawn.with_shell("wifi " .. option)
+end)
+
 awesome.connect_signal("launch::settings", function(option)
   if option == 1 then
     awful.spawn.easy_async_with_shell("ddcutil -t getvcp 10 | awk '{print $4}'", function(out)
@@ -214,6 +220,8 @@ awesome.connect_signal("launch::settings", function(option)
     end)
   elseif option == 2 then
     awful.spawn("lxrandr")
+  elseif option == 3 then
+    theme.launch("wifi", { "󰸋", "󱚼", "󱛄", "󱛃", "󱛂" })
   end
 end)
 
@@ -228,6 +236,8 @@ awesome.connect_signal("launch::tool", function(option)
     awful.spawn("usbsync")
   elseif option == 5 then
     awful.spawn(term("htop"))
+  elseif option == 6 then
+    awful.spawn(term("wavemon"))
   end
 end)
 
@@ -305,15 +315,20 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 3 then
     theme.launch("office", { "󱩽", "󱖦", "󱎒", "󱎏" })
   elseif option == 4 then
-    theme.launch("image", { "󱇤", "󰈋" })
+    theme.launch("image", { "󱇤", "󰚫", "󰈋" })
   elseif option == 5 then
     theme.launch("web", { "󰈹", "", "", "󰄠" })
   elseif option == 6 then
     theme.launch("music", { "󰝚", "󰋍" })
   elseif option == 7 then
-    theme.launch("tool", { "", "󰭪", "󰔛", "󱤛", "" })
+    theme.launch("tool", { "", "󰭪", "󰔛", "󱤛", "", "󱚻" })
   elseif option == 8 then
-    theme.launch("settings", { "󰃟", "󰍺" })
+    awful.spawn.easy_async_with_shell("iwctl station wlan0 show | grep State | awk '{print $2}'", function(out)
+      local wifi = out == "connected\n" and "󰖩" or
+                   out == "disconnected\n" and "󰖪" or "󱚵"
+
+      theme.launch("settings", { "󰃟", "󰍺", wifi })
+    end)
   end
 end)
 
@@ -331,8 +346,8 @@ awesome.connect_signal("launch::power", function(option)
   end
 end)
 
-awful.keyboard.append_global_keybindings {
-  awful.key({ }, "XF86PowerOff", function() theme.launch("power", { "󰐥", "󰜉", "󰍁", "󰗽", "󱣲" }) end,
+awful.keyboard.append_global_keybindings({
+  awful.key({ }, "XF86PowerOff", theme.launch_power,
     { description = "quit", group = "awesome" }),
   awful.key({ "Mod4" }, "Escape", theme.lock,
     { description = "quit", group = "awesome" }),
@@ -381,6 +396,8 @@ awful.keyboard.append_global_keybindings {
     { description = "file manager", group = "launch" }),
   awful.key({ }, "XF86Launch7", function() awful.spawn(term("htop")) end,
     { description = "process monitor", group = "launch" }),
+  awful.key({ }, "XF86Launch8", function() awful.spawn(term("wavemon")) end,
+    { description = "wifi monitor", group = "launch" }),
   awful.key({ }, "XF86Favorites", function() theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" }) end,
     { description = "timer", group = "launch" }),
   awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
@@ -425,7 +442,7 @@ awful.keyboard.append_global_keybindings {
     notify_music = theme.show_notify(notify_music, "toggle", "Music player:", "stopped")
   end,
     { description = "stop", group = "music" })
-}
+})
 
 -- start
 awful.spawn("dex -a")
