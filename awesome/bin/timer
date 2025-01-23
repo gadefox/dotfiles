@@ -18,13 +18,13 @@ if (~ $1 ()) {
   rest = `{ calc 'round(('$parts(2)'-'$parts(3)')/60)' }
 
   min = `{ minstr $rest }
-  notify Timer $^min' left'
+  notify Timer: $^min' left'
 
   exit 0
 }
 
 min = `{ minstr $1 }
-notify Timer 'Starting '$^min' countdown'
+notify Timer: 'Starting '$^min' countdown'
 
 sleep `{ calc 60*$1 }
 
