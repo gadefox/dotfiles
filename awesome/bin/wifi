@@ -1,0 +1,106 @@
+#!/bin/rc
+
+sta = wlan0
+
+fn notify {
+  msg = '</b>'
+  if (!~ $2 ())
+    msg = $msg': '$2
+
+  notify-send --icon=/etc/xdg/awesome/icons/wifi.png '<b>Wi-Fi'$msg $1
+}
+
+fn count {
+  lines = `` ($nl) { echo -n $1 }
+  echo -n $#lines
+}
+
+fn getknown {
+  nets = `{ iwctl known-networks list | grep psk | awk '{print $2}' | sort -f }
+  if (~ $nets ()) {
+    notify 'No known networks found'
+    return
+  }
+  echo -n $nets
+}
+
+fn disconnect {
+  net = `{ iwctl station $sta show | grep 'Connected network' | awk '{print $3}' }
+  if (~ $net ()) {
+    notify 'No connection found'
+    return
+  }
+
+  iwctl station $sta disconnect
+  notify 'Disconnected from network' $net
+
+  echo -n $net
+}
+
+fn connect {
+  if (~ $2 ()) {
+    iwctl station $sta connect $1
+    notify 'Connected to known network' $1
+  } else {
+    iwctl --passphrase $2 station $sta connect $1
+    notify 'Connected to new network' $1
+  }
+}
+
+if (~ $1 1) {
+  nets = `getknown
+  ~ $nets () && exit 0
+
+  if (~ `{ count $nets } 1) {
+    set = $nets(1)
+  } else {
+    set = `{ echo -n $nets | dmenu -p 'Connect network' }
+    ~ $set () && exit 0
+  }
+
+  connect $set
+  exit 0
+}
+
+if (~ $1 2) {
+  `disconnect
+  exit 0
+}
+
+if (~ $1 3) {
+  net = `disconnect
+  ~ $net () && exit 0
+
+  connect $net
+  exit 0
+}
+
+if (~ $1 4) {
+  set = `{ iwctl station $sta get-networks | grep psk | grep -v '>' | sort -f | awk '{print $1}' | dmenu -p 'Connect network' }
+  ~ $set () && exit 0
+
+  pass = `{ dmenu -P -p 'Passphrase' }
+  ~ $pass () && exit 0
+
+  connect $set $pass
+  exit 0
+}
+
+if (~ $1 5) {
+  nets = `getknown
+  ~ $nets () && exit 0
+
+  if (~ `{ count $nets } 1) {
+    set = $nets(1)
+  } else {
+    set = `{ echo -n $nets | dmenu -p 'Forget network' }
+    ~ $set () && exit 0
+  }
+
+  iwctl known-networks $set forget
+  notify 'Removed network from known list' $set
+
+  exit 0
+}
+
+exit 1
