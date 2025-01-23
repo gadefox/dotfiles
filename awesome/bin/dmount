@@ -1,19 +1,28 @@
 #!/bin/rc
 
-blk = `{ lsblk -nr -o PATH,LABEL,MOUNTPOINT | grep $1 }
-if (~ $blk ()) {
-  exit
+~ $1 () && exit 1
+
+fn notify {
+  notify-send --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '$1'</b>' $2
 }
 
-echo -n $blk(2)^' '
+blk = `{ lsblk -nr -o PATH,LABEL,MOUNTPOINT | grep $1 }
+if (~ $blk ()) {
+  notify $1 'Not found'
+  exit 1
+}
+
+echo -n $blk(2)''
 
 if (~ $blk(3) ()) {
   mount = `{ udisksctl mount -b $blk(1) }
-  msg = ' mounted on '$mount(4)
+  notify $blk(2) $blk(1)^' is mounted at '$mount(4)
+
   echo -n $mount(4)
-} else {
-  msg = ' is already mounted at '$blk(3)
-  echo -n $blk(3)
+  echo 0
 }
 
-notify-send --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '$blk(1)^'</b>' $blk(2)^$msg
+notify $blk(2) $blk(1)^' already mounted at '$blk(3)
+
+echo -n $blk(3)
+exit 0
