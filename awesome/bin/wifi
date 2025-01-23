@@ -3,11 +3,7 @@
 sta = wlan0
 
 fn notify {
-  msg = '</b>'
-  if (!~ $2 ())
-    msg = $msg': '$2
-
-  notify-send --icon=/etc/xdg/awesome/icons/wifi.png '<b>Wi-Fi'$msg $1
+  notify-send --icon=/etc/xdg/awesome/icons/wifi.png '<b>Wi-Fi: '$2'</b>' $1
 }
 
 fn count {
