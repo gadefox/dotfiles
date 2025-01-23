@@ -1,11 +1,7 @@
 #!/bin/rc
 
 fn notify {
-  msg = '</b>'
-  if (!~ $2 ())
-    msg = $msg': '$2
-
-  notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync'$msg $1
+  notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync: '$msg'</b>' $1
 }
 
 fn count {
