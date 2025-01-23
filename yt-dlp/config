@@ -4,14 +4,8 @@
 # file name format
 --output %(title)s.%(ext)s
 
-# download all the available subtitles
---all-subs
-
 # embed metadata to the video file; add chapters to file
 --embed-metadata
-
-# merge subtitles into video file
---embed-subs
 
 # do not overwrite existing output files
 --no-overwrites
@@ -21,6 +15,3 @@
 
 # ignore warnings
 --no-warnings
-
-# restrict filenames to only ASCII characters, and avoid "&" and spaces in filenames
---restrict-filenames
