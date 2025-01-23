@@ -123,8 +123,10 @@ c.zoom.default = '130%'
 c.zoom.levels = ["100%", "110%", "120%", "130%", "140%", "150%"]
 
 c.url.searchengines = {
-  'DEFAULT': 'https://www.google.com/search?q={}',
-  'r': 'https://reddit.com/r/{}',
+  'DEFAULT': 'https://www.google.com/search?hl=en&q={}',
+  'd': 'https://duckduckgo.com/?ia=web&q={}',
+  'm': 'https://www.google.com/maps/search/{}',
+  'r': 'https://reddit.com/search?q={}',
   's': 'https://stackoverflow.com/search?q={}',
   'w': 'https://en.wikipedia.org/wiki/{}',
   'y': 'https://www.youtube.com/results?search_query={}'
