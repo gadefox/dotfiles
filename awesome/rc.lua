@@ -229,7 +229,7 @@ end)
 
 awesome.connect_signal("launch::webcam", function(option)
   if option == 1 then
-    awful.spawn("cheese-shot")
+    awful.spawn("v4l2-preload cheese")
   else
     awful.spawn.with_shell("webcam " .. option)
   end
