@@ -11,19 +11,17 @@ fn devnr {
 
 nr = `{ devnr }
 
-if (~ $1 --play || ~ $1 1) { 
-  ffplay /dev/video$nr
-  exit 0
+if (~ $1 --play || ~ $1 1) {
+  exec ffplay /dev/video$nr
 }
 
 if (~ $1 --flip || ~ $1 2) {
   if (~ $nr 0) {
     notify 'The image is turned upside down'
-    ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video20
-  } else {
-    notify 'The image is already turned upside down'
+    exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video20
   }
 
+  notify 'The image is already turned upside down'
   exit 0
 }
 
