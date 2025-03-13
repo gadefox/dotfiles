@@ -1,4 +1,5 @@
 #!/bin/rc
 
-exec env LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libv4l/v4l1compat.so $*
+LD_PRELOAD = `{ dpkg -L libv4l-0t64 | grep compat }
+exec env --unset=nl --unset=tab $*
 exit 0
