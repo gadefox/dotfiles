@@ -128,13 +128,13 @@ awesome.connect_signal("launch::light", function(option)
     bright1 = 0
     contrast1 = 0
   elseif option == 2 then
-    bright0 = -0.9
-    contrast0 = -0.9
+    bright0 = -0.6
+    contrast0 = -0.6
     bright1 = 20
     contrast1 = 20
   elseif option == 3 then
-    bright0 = -0.3
-    contrast0 = -0.3
+    bright0 = -0.2
+    contrast0 = -0.2
     bright1 = 40
     contrast1 = 40
   elseif option == 4 then
@@ -176,6 +176,8 @@ awesome.connect_signal("launch::office", function(option)
     awful.spawn("swriter")
   elseif option == 4 then
     awful.spawn("scalc")
+  elseif option == 5 then
+    awful.spawn("librecad")
   end
 end)
 
@@ -225,18 +227,29 @@ awesome.connect_signal("launch::settings", function(option)
   end
 end)
 
+awesome.connect_signal("launch::webcam", function(option)
+  if option == 1 then
+    awful.spawn("cheese-shot")
+  else
+    awful.spawn.with_shell("webcam " .. option)
+  end
+end)
+
+
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
     awful.spawn(term())
   elseif option == 2 then
-    theme.launch("scrot", { "", "󰩭" })
-  elseif option == 3 then
     theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
+  elseif option == 3 then
+    theme.launch("scrot", { "", "󰩭" })
   elseif option == 4 then
-    awful.spawn("usbsync")
+    theme.launch("webcam", { "", "󱃨", "󱜷" })
   elseif option == 5 then
-    awful.spawn(term("htop"))
+    awful.spawn("usbsync")
   elseif option == 6 then
+    awful.spawn(term("htop"))
+  elseif option == 7 then
     awful.spawn(term("wavemon"))
   end
 end)
@@ -246,12 +259,14 @@ awesome.connect_signal("launch::browser", function(option)
     awful.spawn("qutebrowser")
   elseif option == 2 then
     awful.spawn("firefox")
+  elseif option == 3 then
+    awful.spawn("chromium")
   end
 end)
 
 awesome.connect_signal("launch::web", function(option)
   if option == 1 then
-    theme.launch("browser", { "󰇩", "󰈹" })
+    theme.launch("browser", { "󰇩", "󰈹", "󰊯" })
   elseif option == 2 then
     awful.spawn("evolution")
   elseif option == 3 then
@@ -313,15 +328,15 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 2 then
     theme.launch("file", { "", "󱗁", "󰖔", "" })
   elseif option == 3 then
-    theme.launch("office", { "󱩽", "󱖦", "󱎒", "󱎏" })
+    theme.launch("office", { "󱩽", "󱖦", "󱎒", "󱎏", "󰻫" })
   elseif option == 4 then
     theme.launch("image", { "󱇤", "󰚫", "󰈋" })
   elseif option == 5 then
-    theme.launch("web", { "󰈹", "", "", "󰄠" })
+    theme.launch("web", { "󰌀", "", "", "󰄠" })
   elseif option == 6 then
     theme.launch("music", { "󰝚", "󰋍" })
   elseif option == 7 then
-    theme.launch("tool", { "", "󰭪", "󰔛", "󱤛", "", "󱚻" })
+    theme.launch("tool", { "", "󰔛", "󰹑", "󰖠", "󱤛", "", "󱚻" })
   elseif option == 8 then
     awful.spawn.easy_async_with_shell("iwctl station wlan0 show | grep State | awk '{print $2}'", function(out)
       local wifi = out == "connected\n" and "󰖩" or
@@ -384,7 +399,7 @@ awful.keyboard.append_global_keybindings({
     { description = "printscreen area", group = "launch" }),
   awful.key({ }, "XF86Mail", function() awful.spawn("evolution") end,
     { description = "email", group = "launch" }),
-  awful.key({ }, "XF86HomePage", function() theme.launch("browser", { "󰇩", "󰈹" }) end,
+  awful.key({ }, "XF86HomePage", function() theme.launch("browser", { "󰇩", "󰈹", "󰊯" }) end,
     { description = "browser", group = "launch" }),
   awful.key({ }, "XF86Messenger", function() awful.spawn(term("irssi --home=~/.local/share/irssi")) end,
     { description = "messenger", group = "launch" }),
@@ -446,3 +461,4 @@ awful.keyboard.append_global_keybindings({
 
 -- start
 awful.spawn("dex -a")
+theme.create_notify("calendar", nil, 0, 15)
