@@ -7,4 +7,3 @@ if (~ $LD_PRELOAD ()) {
 }
 
 exec env --unset=nl --unset=tab $*
-exit 0
