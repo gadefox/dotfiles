@@ -289,10 +289,8 @@ awesome.connect_signal("launch::calendar", function(option)
 end)
 
 awesome.connect_signal("launch::misc", function(option)
-  if option == 1 then
-    awful.spawn("dmenu_run")
-  elseif option == 2 then
-    awful.spawn("dmenu_run -")
+  if option < 3 then
+    awful.spawn("dmenu-run " .. option)
   elseif option == 3 then
     theme.launch("calendar", { "󰸘", "󱁳" })
   elseif option == 4 then
