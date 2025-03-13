@@ -1,9 +1,6 @@
 #!/bin/rc
 
-LD_PRELOAD = `{ dpkg --listfiles libv4l | grep compat }
-if (~ $LD_PRELOAD ()) {
-  LD_PRELOAD = `{ dpkg --listfiles libv4l-0t64 | grep compat }
-  ~ $LD_PRELOAD () && exit 1
-}
+LD_PRELOAD = `{ dpkg --listfiles libv4l-0t64 | grep compat }
+~ $LD_PRELOAD () && exit 1
 
 exec env --unset=nl --unset=tab $*
