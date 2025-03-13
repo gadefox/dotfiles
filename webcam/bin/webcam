@@ -4,25 +4,28 @@ fn notify {
   notify-send --icon=/etc/xdg/awesome/icons/camera.png '<b>Web camera</b>' $1
 }
 
-fn devnr {
-  sta = `{ cat /sys/devices/virtual/video4linux/video20/state }
-  ~ $sta capture && echo -n 20 || echo -n 0
+fn state {
+  val = `{ cat /sys/devices/virtual/video4linux/video20/state }
+  echo -n $val
 }
 
-nr = `{ devnr }
-
 if (~ $1 --play || ~ $1 1) {
-  exec ffplay /dev/video$nr
+  val = `{ state }
+  if (~ $val capture) {
+    exec ffplay /dev/video20
+  }
+  exec v4l2-flip ffplay /dev/video0
 }
 
 if (~ $1 --flip || ~ $1 2) {
-  if (~ $nr 0) {
-    notify 'The image is turned upside down'
-    exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video20
+  val = `{ state }
+  if (~ $val capture) {
+    notify 'The image is already turned upside down'
+    exit 0
   }
 
-  notify 'The image is already turned upside down'
-  exit 0
+  notify 'The image is turned upside down'
+  exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video20
 }
 
 if (~ $1 --stop || ~ $1 3) {
