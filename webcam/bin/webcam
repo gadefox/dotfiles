@@ -1,7 +1,7 @@
 #!/bin/rc
 
 fn notify {
-  notify-send --icon=/etc/xdg/awesome/icons/camera.png '<b>Web camera</b>' $1
+  notify-send --icon=/etc/xdg/awesome/icons/camera.png '<b>Virtual camera</b>' $1
 }
 
 fn state {
@@ -24,15 +24,29 @@ if (~ $1 --flip || ~ $1 2) {
     exit 0
   }
 
-  notify 'The image is turned upside down'
+  notify 'Launching ffmpeg'
   exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10
 }
 
 if (~ $1 --stop || ~ $1 3) {
-  pkill --full 'ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10'
-  notify 'Image flipping has been stopped'
+  val = `{ state }
+  if (~ $val capture) {
+    pkill --full 'ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10'
+    notify 'Image flipping has been stopped'
+  } else {
+    notify 'The image is not turned upside down'
+  }
   exit 0
 }
 
-echo parms: --play --flip --stop
+if (~ $1 --info || ~ $1 4) {
+  val = `{ state }
+  if (!~ $val capture) {
+    msg = 'not '
+  }
+  notify 'The image is '$msg'turned upside down'
+  exit 0
+}
+
+echo parms: --play --flip --stop --info
 exit 1
