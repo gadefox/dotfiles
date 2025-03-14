@@ -40,7 +40,7 @@ if (~ $1 --stop || ~ $1 3) {
   val = `{ isflip }
   if (~ $val ()) {
     pkill --full 'ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10'
-    notify 'Turning the image upside down has been stopped (ffmpeg)'
+    notify 'Turning the image upside down has stopped (ffmpeg)'
   }
   exit 0
 }
