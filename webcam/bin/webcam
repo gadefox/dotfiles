@@ -5,14 +5,14 @@ fn notify {
 }
 
 fn state {
-  val = `{ cat /sys/devices/virtual/video4linux/video20/state }
+  val = `{ cat /sys/devices/virtual/video4linux/video10/state }
   echo -n $val
 }
 
 if (~ $1 --play || ~ $1 1) {
   val = `{ state }
   if (~ $val capture) {
-    exec ffplay /dev/video20
+    exec ffplay /dev/video10
   }
   exec v4l2-flip ffplay /dev/video0
 }
@@ -25,11 +25,11 @@ if (~ $1 --flip || ~ $1 2) {
   }
 
   notify 'The image is turned upside down'
-  exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video20
+  exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10
 }
 
 if (~ $1 --stop || ~ $1 3) {
-  pkill --full 'ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video20'
+  pkill --full 'ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10'
   notify 'Image flipping has been stopped'
   exit 0
 }
