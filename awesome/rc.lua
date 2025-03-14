@@ -244,7 +244,7 @@ awesome.connect_signal("launch::tool", function(option)
   elseif option == 3 then
     theme.launch("scrot", { "", "󰩭" })
   elseif option == 4 then
-    theme.launch("webcam", { "", "󱃨", "󱜷" })
+    theme.launch("webcam", { "", "󱃨", "󱜷", "󱂸" })
   elseif option == 5 then
     awful.spawn("usbsync")
   elseif option == 6 then
