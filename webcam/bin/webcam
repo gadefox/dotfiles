@@ -9,6 +9,14 @@ fn state {
   echo -n $val
 }
 
+fn isflip {
+  val = `{ state }
+  if (!~ $val capture) {
+    notify 'The image is not turned upside down (ffmpeg)'
+    echo -n $val
+  }
+}
+
 if (~ $1 --play || ~ $1 1) {
   val = `{ state }
   if (~ $val capture) {
@@ -19,32 +27,29 @@ if (~ $1 --play || ~ $1 1) {
 
 if (~ $1 --flip || ~ $1 2) {
   val = `{ state }
-  if (~ $val capture) {
-    notify 'The image is already turned upside down'
-    exit 0
+  if (!~ $val capture) {
+    notify 'Turning the image upside down (ffmpeg)'
+    exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10
   }
 
-  notify 'Launching ffmpeg'
-  exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10
+  notify 'The image is already turned upside down (ffmpeg)'
+  exit 0
 }
 
 if (~ $1 --stop || ~ $1 3) {
-  val = `{ state }
-  if (~ $val capture) {
+  val = `{ isflip }
+  if (~ $val ()) {
     pkill --full 'ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10'
-    notify 'Image flipping has been stopped'
-  } else {
-    notify 'The image is not turned upside down'
+    notify 'Turning the image upside down has been stopped (ffmpeg)'
   }
   exit 0
 }
 
 if (~ $1 --info || ~ $1 4) {
-  val = `{ state }
-  if (!~ $val capture) {
-    msg = 'not '
+  val = `{ isflip }
+  if (~ $val ()) {
+    notify 'The image is turned upside down (ffmpeg)'
   }
-  notify 'The image is '$msg'turned upside down'
   exit 0
 }
 
