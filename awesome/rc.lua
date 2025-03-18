@@ -282,6 +282,8 @@ awesome.connect_signal("launch::music", function(option)
   if option == 1 then
     awful.spawn(term("ncmpc"))
   elseif option == 2 then
+    awful.spawn(term("cava"))
+  elseif option == 3 then
     awful.spawn(term("pulsemixer"))
   end
 end)
@@ -334,7 +336,7 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 5 then
     theme.launch("web", { "󰌀", "", "", "󰄠" })
   elseif option == 6 then
-    theme.launch("music", { "󰝚", "󰋍" })
+    theme.launch("music", { "󰝚", "󰺢", "󰋍" })
   elseif option == 7 then
     theme.launch("tool", { "", "󰔛", "󰹑", "󰖠", "󱤛", "", "󱚻" })
   elseif option == 8 then
