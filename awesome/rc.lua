@@ -106,6 +106,8 @@ awesome.connect_signal("launch::file", function(option)
     awful.spawn(term("mc"))
   elseif option == 4 then
     awful.spawn("xarchiver")
+  elseif option == 5 then
+    awful.spawn("evince")
   end
 end)
 
@@ -324,7 +326,7 @@ awesome.connect_signal("launch::menu", function(option)
   if option == 1 then
     theme.launch("misc", { "󱓟", "", "", "󱑒" })
   elseif option == 2 then
-    theme.launch("file", { "", "󱗁", "󰖔", "" })
+    theme.launch("file", { "", "󱗁", "󰖔", "", "" })
   elseif option == 3 then
     theme.launch("office", { "󱩽", "󱖦", "󱎒", "󱎏", "󰻫" })
   elseif option == 4 then
