@@ -17,12 +17,10 @@ echo -n $blk(2)''
 if (~ $blk(3) ()) {
   mount = `{ udisksctl mount -b $blk(1) }
   notify $blk(2) $blk(1)^' is mounted at '$mount(4)
-
-  echo -n $mount(4)
-  echo 0
+  echo -n $mount(4)  
+} else {
+  notify $blk(2) $blk(1)^' already mounted at '$blk(3)
+  echo -n $blk(3)
 }
 
-notify $blk(2) $blk(1)^' already mounted at '$blk(3)
-
-echo -n $blk(3)
 exit 0
