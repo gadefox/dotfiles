@@ -224,7 +224,7 @@ end
 
 local function btn_create(color)
   local wibtn = wibox {
-ontop = true,
+    ontop = true,
     type = "menu",
     shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(25)) end,
   }
@@ -365,11 +365,15 @@ function theme.launch_power()
   end
 end
 
+function theme.launch_menu()
+  theme.launch("menu", { "󰊲", "󰉕", "󰧭", "", "󰖟", "󰽴", "", "" })
+end
+
 awful.mouse.append_global_mousebindings({
   awful.button({}, awful.button.names.LEFT, btns_hide),
   awful.button({}, awful.button.names.RIGHT, function()
     if not btns_hide() then
-      theme.launch("menu", { "󰊲", "󰉕", "󰧭", "", "󰖟", "󰽴", "", "" })
+      theme.launch_menu()
     end
   end),
   awful.button({}, awful.button.names.MIDDLE, btns_hide),
@@ -495,6 +499,28 @@ local rainbow_widget = wibox.widget {
   layout = wibox.layout.flex.horizontal
 }
 
+local function cal_embed(widget, flag)
+  if flag == "focus" then
+    local markup = theme.bold(widget:get_text())
+    widget:set_markup(markup)
+
+    return wibox.widget({
+      widget,
+      shape = function(cr, width, height) gears.shape.partially_rounded_rect(cr, width, height, false, true, false, true, 5) end,
+      fg = "#000000",
+      bg = "#dc461d",
+      widget = wibox.container.background
+    })
+  end
+
+  if flag == "header" or flag == "monthheader" or flag == "yearheader" then
+    local markup = theme.bold(widget:get_text())
+    widget:set_markup(markup)
+  end
+
+  return widget
+end
+
 naughty.connect_signal("request::display", function(n)
   local actions = wibox.widget {
     notification = n,
@@ -559,27 +585,7 @@ naughty.connect_signal("request::display", function(n)
                   widget = naughty.widget.message
                 } or {
                   date = os.date("*t"),
-                  fn_embed = function(widget, flag)
-                    if flag == "focus" then
-                      local markup = theme.bold(widget:get_text())
-                      widget:set_markup(markup)
-
-                      return wibox.widget({
-                        widget,
-                        shape = function(cr, width, height) gears.shape.partially_rounded_rect(cr, width, height, false, true, false, true, 5) end,
-                        fg = "#000000",
-                        bg = "#dc461d",
-                        widget = wibox.container.background
-                      })
-                    end
-
-                    if flag == "header" or flag == "monthheader" or flag == "yearheader" then
-                      local markup = theme.bold(widget:get_text())
-                      widget:set_markup(markup)
-                    end
-
-                    return widget
-                  end,
+                  fn_embed = cal_embed,
                   widget = n.message == 0 and wibox.widget.calendar.month or wibox.widget.calendar.year
                 },
                 layout = wibox.layout.fixed.vertical
