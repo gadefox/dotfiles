@@ -1,0 +1,19 @@
+#!/bin/rc
+
+fn notify {
+  notify-send --icon=/etc/xdg/awesome/icons/screenshot.png '<b>Screenshot:</b>' $1
+}
+
+notify 'Select a window or rectangle'
+area = `{ slop --bordersize=3 --shader=boxzoom --color='0.86,0.27,0.11,0.5' --nodrag --quiet --highlight }
+if (~ $area ()) {
+  notify 'Selection was cancelled by keystroke or right-click'
+  exit 1
+}
+
+dest = `{ xdg-user-dir PICTURES } || $HOME
+name = `{ date +%F_%H-%M }^.png
+import -window root -crop $area $dest/$name
+notify 'Selection was saved to '$name
+
+exit 0
