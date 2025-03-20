@@ -12,6 +12,7 @@ fd
 feh
 firejail
 fish
+flameshot
 fonts-roboto-unhinted
 fzf
 gir1.2-freedesktop
@@ -84,6 +85,7 @@ tftp-hpa
 tftpd-hpa
 tmux
 transmission-gtk
+trayer
 xarchiver
 usbutils
 v4l-utils
