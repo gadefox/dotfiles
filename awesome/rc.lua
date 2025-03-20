@@ -183,14 +183,23 @@ awesome.connect_signal("launch::office", function(option)
   end
 end)
 
+awesome.connect_signal("launch::flame", function(option)
+  if option == 1 then
+    awful.spawn("flameshot gui")
+  elseif option == 2 then
+    awful.spawn("flameshot launcher")
+  elseif option == 3 then
+    awful.spawn("flameshot config")
+  end
+end)
+
 awesome.connect_signal("launch::scrot", function(option)
   if option == 1 then
     awful.spawn("scrot")
   elseif option == 2 then
-    theme.create_notify("screenshot", "Screenshot:", "select a window or rectangle", 3)
-    awful.spawn("slop-shot")
+    awful.spawn("slop-area")
   elseif option == 3 then
-    awful.spawn("flameshot")
+    theme.launch("flame", { "󰩭", "󰌧", "" })
   end
 end)
 
@@ -347,7 +356,7 @@ end)
 
 awesome.connect_signal("launch::menu", function(option)
   if option == 1 then
-    theme.launch("misc", { "󱓟", "", "", "󱤛", "󰔛", "󱑒" })
+    theme.launch("misc", { "󰌧", "", "", "󱤛", "󰔛", "󱑒" })
   elseif option == 2 then
     theme.launch("file", { "", "󱗁", "󰖔", "", "" })
   elseif option == 3 then
