@@ -183,16 +183,14 @@ awesome.connect_signal("launch::office", function(option)
   end
 end)
 
-local function slop_shot()
-  theme.create_notify("screenshot", "Screenshot:", "select a window or rectangle", 3)
-  awful.spawn("slop-shot")
-end
-
 awesome.connect_signal("launch::scrot", function(option)
   if option == 1 then
     awful.spawn("scrot")
   elseif option == 2 then
-    slop_shot()
+    theme.create_notify("screenshot", "Screenshot:", "select a window or rectangle", 3)
+    awful.spawn("slop-shot")
+  elseif option == 3 then
+    awful.spawn("flameshot")
   end
 end)
 
@@ -237,21 +235,32 @@ awesome.connect_signal("launch::webcam", function(option)
   end
 end)
 
+local function launch_scrot()
+  theme.launch("scrot", { "", "󰩭", "" })
+end
+
+awesome.connect_signal("launch::systray", function(option)
+  local trayer = "trayer --align right --distance -26 --distancefrom bottom --monitor 1 --widthtype requst"
+
+  if option == 1 then
+    awful.spawn(trayer)
+  elseif option == 2 then
+    awful.spawn("pkill --full '" .. trayer .. "'")
+  end
+end)
 
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
     awful.spawn(term())
   elseif option == 2 then
-    theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
+    launch_scrot()
   elseif option == 3 then
-    theme.launch("scrot", { "", "󰩭" })
+    theme.launch("systray", { "󱊔", "󱊙" })
   elseif option == 4 then
     theme.launch("webcam", { "", "󱃨", "󱜷", "󱂸" })
   elseif option == 5 then
-    awful.spawn("usbsync")
-  elseif option == 6 then
     awful.spawn(term("htop"))
-  elseif option == 7 then
+  elseif option == 6 then
     awful.spawn(term("wavemon"))
   end
 end)
@@ -266,9 +275,13 @@ awesome.connect_signal("launch::browser", function(option)
   end
 end)
 
+local function launch_browser()
+  theme.launch("browser", { "󰇩", "󰈹", "󰊯" })
+end
+
 awesome.connect_signal("launch::web", function(option)
   if option == 1 then
-    theme.launch("browser", { "󰇩", "󰈹", "󰊯" })
+    launch_browser()
   elseif option == 2 then
     awful.spawn("evolution")
   elseif option == 3 then
@@ -292,12 +305,20 @@ awesome.connect_signal("launch::calendar", function(option)
   theme.create_notify("calendar", nil, option - 1, 15)
 end)
 
+local function launch_timer()
+  theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
+end
+
 awesome.connect_signal("launch::misc", function(option)
   if option < 3 then
     awful.spawn("dmenu-run " .. option)
   elseif option == 3 then
     theme.launch("calendar", { "󰸘", "󱁳" })
   elseif option == 4 then
+    awful.spawn("usbsync")
+  elseif option == 5 then
+    launch_timer()
+  elseif option == 6 then
     theme.create_notify("alarm", "Now:", os.date("%a %d %b, %H:%M"))
   end
 end)
@@ -326,7 +347,7 @@ end)
 
 awesome.connect_signal("launch::menu", function(option)
   if option == 1 then
-    theme.launch("misc", { "󱓟", "", "", "󱑒" })
+    theme.launch("misc", { "󱓟", "", "", "󱤛", "󰔛", "󱑒" })
   elseif option == 2 then
     theme.launch("file", { "", "󱗁", "󰖔", "", "" })
   elseif option == 3 then
@@ -338,7 +359,7 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 6 then
     theme.launch("music", { "󰝚", "󰺢", "󰋍" })
   elseif option == 7 then
-    theme.launch("tool", { "", "󰔛", "󰹑", "󰖠", "󱤛", "", "󱚻" })
+    theme.launch("tool", { "", "󰹑", "󱊖", "󰖠", "", "󱚻" })
   elseif option == 8 then
     awful.spawn.easy_async_with_shell("iwctl station wlan0 show | grep State | awk '{print $2}'", function(out)
       local wifi = out == "connected\n" and "󰖩" or
@@ -393,15 +414,13 @@ awful.keyboard.append_global_keybindings({
     { description = "jump to urgent client", group = "client" }),
   awful.key({ "Mod4" }, "Return", function() awful.spawn(term()) end,
     { description = "open a terminal", group = "launch" }),
-  awful.key({ }, "Menu", function() theme.launch("menu", { "󰊲", "󰉕", "󰧭", "", "󰖟", "󰽴", "", "" }) end,
+  awful.key({ }, "Menu", theme.launch_menu,
     { description = "show menubar", group = "launch" }),
-  awful.key({ }, "Print", function() awful.spawn("scrot") end,
+  awful.key({ }, "Print", launch_scrot,
     { description = "printscreen", group = "launch" }),
-  awful.key({ "Shift" }, "Print", function() slop_shot() end,
-    { description = "printscreen area", group = "launch" }),
   awful.key({ }, "XF86Mail", function() awful.spawn("evolution") end,
     { description = "email", group = "launch" }),
-  awful.key({ }, "XF86HomePage", function() theme.launch("browser", { "󰇩", "󰈹", "󰊯" }) end,
+  awful.key({ }, "XF86HomePage", launch_browser,
     { description = "browser", group = "launch" }),
   awful.key({ }, "XF86Messenger", function() awful.spawn(term("irssi --home=~/.local/share/irssi")) end,
     { description = "messenger", group = "launch" }),
@@ -415,7 +434,7 @@ awful.keyboard.append_global_keybindings({
     { description = "process monitor", group = "launch" }),
   awful.key({ }, "XF86Launch8", function() awful.spawn(term("wavemon")) end,
     { description = "wifi monitor", group = "launch" }),
-  awful.key({ }, "XF86Favorites", function() theme.launch("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" }) end,
+  awful.key({ }, "XF86Favorites", launch_timer,
     { description = "timer", group = "launch" }),
   awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
     { description = "neovim", group = "launch" }),
