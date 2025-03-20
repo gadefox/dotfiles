@@ -19,16 +19,14 @@ if (~ $1 ()) {
 
   min = `{ minstr $rest }
   notify Timer: $^min' left'
+} else {
+  min = `{ minstr $1 }
+  notify Timer: 'Starting '$^min' countdown'
 
-  exit 0
+  sleep `{ calc 60*$1 }
+
+  notify 'Time is up!' $^min' countdown is finished'
+  paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
 }
-
-min = `{ minstr $1 }
-notify Timer: 'Starting '$^min' countdown'
-
-sleep `{ calc 60*$1 }
-
-notify 'Time is up!' $^min' countdown is finished'
-paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
 
 exit 0
