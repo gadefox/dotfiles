@@ -3,10 +3,9 @@
 ~ $1 () && exit 1
 
 fn handle {
-  echo -n $1
-  echo -n $3
+  echo -n $1' '$2
 
-  opt = `{ notify-send --action=1='Open Folder' --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '$1'</b>' $2 }
+  opt = `{ notify-send --action=1='Open Folder' --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '$1'</b>' $3 }
   if (~ $opt 1) {
     xdg-open $3
   }
@@ -20,9 +19,9 @@ if (~ $blk ()) {
 
 if (~ $blk(3) ()) {
   mount = `{ udisksctl mount -b $blk(1) }
-  handle $blk(2) $blk(1)^' is mounted at '$mount(4)^'.' $mount(4)
+  handle $blk(2) $mount(4) $blk(1)^' is mounted at '$mount(4)^'.'
 } else {
-  handle $blk(2) $blk(1)^' is already mounted at '$blk(3)^'.' $blk(3)
+  handle $blk(2) $blk(3) $blk(1)^' is already mounted at '$blk(3)^'.'
 }
 
 exit 0
