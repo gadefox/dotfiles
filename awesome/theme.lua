@@ -61,8 +61,39 @@ beautiful.init({
   useless_gap = 1,  -- the gap between clients
   calendar_font = "Roboto Mono 11",
   notification_font = "Roboto Mono 11",
-  notification_max_width = 850
+  notification_max_width = dpi(850)
 })
+
+-- tags
+tag.connect_signal("request::default_layouts", function()
+  awful.layout.append_default_layouts({
+    awful.layout.suit.fair,
+    awful.layout.suit.max,
+    awful.layout.suit.floating
+  })
+end)
+
+-- rules
+local ruled = require("ruled")
+
+ruled.client.connect_signal("request::rules", function()
+  ruled.client.append_rule({
+    rule = { },
+    properties = {
+      focus = awful.client.focus.filter,
+      raise = true,
+      screen = awful.screen.preferred,
+      placement = awful.placement.no_overlap + awful.placement.no_offscreen
+    }
+  })
+end)
+
+client.connect_signal("mouse::enter", function(c)
+  c:activate({
+    context = "mouse_enter",
+    raise = false
+  })
+end)
 
 -- lock screen
 local dirs = { "north", "west", "south", "east" }
@@ -132,14 +163,14 @@ function theme.lock()
 end
 
 function theme.lock_create(s)
-  s.wilock = wibox {
+  s.wilock = wibox({
     screen = s,
     ontop = true,
     type = "splash",
     bg = "#000000a0"
-  }
+  })
   if s == screen.primary then
-    s.wilock:setup {
+    s.wilock:setup({
       {
         {
           {
@@ -161,7 +192,7 @@ function theme.lock_create(s)
         layout = wibox.layout.stack
       },
       widget = wibox.container.place
-    }
+    })
   end
 end
 
@@ -223,12 +254,12 @@ local function btn_hilight(w)
 end
 
 local function btn_create(color)
-  local wibtn = wibox {
+  local wibtn = wibox({
     ontop = true,
     type = "menu",
     shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(25)) end,
-  }
-  wibtn:setup {
+  })
+  wibtn:setup({
     {
       id = "frame",
       shape = function(cr, width, height) gears.shape.rounded_rect(cr, width, height, dpi(14)) end,
@@ -243,7 +274,7 @@ local function btn_create(color)
       widget = wibox.widget.textbox
     },
     layout = wibox.layout.stack
-  }
+  })
 
   wibtn:connect_signal("mouse::enter", btn_hilight)
   wibtn:connect_signal("mouse::move", btn_hilight)
@@ -400,7 +431,7 @@ local function tag_update(item, tag, index)
 end
 
 function theme.tags_create(s)
-  s.taglist = awful.widget.taglist {
+  s.taglist = awful.widget.taglist({
     screen = s,
     filter = awful.widget.taglist.filter.all,
     buttons = {
@@ -452,8 +483,8 @@ function theme.tags_create(s)
         tag_update(self, tag, index)
       end
     }
-  }
-  s.wibar = awful.wibar {
+  })
+  s.wibar = awful.wibar({
     screen = s,
     visible = true,
     ontop = false,
@@ -461,16 +492,16 @@ function theme.tags_create(s)
     position = "top",
     height = dpi(7),
     bg = theme.opacity
-  }
-  s.wibar:setup {
+  })
+  s.wibar:setup({
     widget = s.taglist
-  }
+  })
 end
 
 -- notifications
 local naughty = require("naughty")
 
-local rainbow_widget = wibox.widget {
+local rainbow_widget = wibox.widget({
   {
     bg = "#cb15c9",
     widget = wibox.container.background
@@ -497,7 +528,7 @@ local rainbow_widget = wibox.widget {
   },
   forced_height = dpi(5),
   layout = wibox.layout.flex.horizontal
-}
+})
 
 local function cal_embed(widget, flag)
   if flag == "focus" then
@@ -522,12 +553,12 @@ local function cal_embed(widget, flag)
 end
 
 naughty.connect_signal("request::display", function(n)
-  local actions = wibox.widget {
+  local actions = wibox.widget({
     notification = n,
-    base_layout = wibox.widget {
-      spacing = 10,
+    base_layout = wibox.widget({
+      spacing = dpi(5),
       layout = wibox.layout.flex.horizontal
-    },
+    }),
     widget_template = {
       {
         {
@@ -536,20 +567,19 @@ naughty.connect_signal("request::display", function(n)
           font = beautiful.notification_font,
           widget = wibox.widget.textbox
         },
-        margins = dpi(7),
+        margins = dpi(2),
         widget = wibox.container.margin
       },
-      bg = "#232d35",
+      bg = "#384751",
       widget = wibox.container.background
     },
     style = {
-      underline_normal = false,
-      underline_selected = true
+      underline_normal = false
     },
     widget = naughty.list.actions
-  }
+  })
 
-  naughty.layout.box {
+  naughty.layout.box({
     notification = n,
     position = "top_right",
     border_width = 0,
@@ -559,12 +589,9 @@ naughty.connect_signal("request::display", function(n)
         {
           {
             {
-              {
-                n.icon and {
-                  forced_height = 42,
-                  widget = naughty.widget.icon
-                },
-                widget = wibox.container.place
+              n.icon and {
+                forced_height = 42,
+                widget = naughty.widget.icon
               },
               margins = dpi(8),
               widget = wibox.container.margin
@@ -590,7 +617,7 @@ naughty.connect_signal("request::display", function(n)
                 },
                 layout = wibox.layout.fixed.vertical
               },
-              margins = dpi(10),
+              margins = dpi(8),
               widget = wibox.container.margin
             },
             bg = "#232d35",
@@ -620,7 +647,7 @@ naughty.connect_signal("request::display", function(n)
       height = beautiful.notification_maxwidth,
       widget = wibox.container.constraint
     }
-  }
+  })
 end)
 
 function theme.create_notify(icon, title, message, timeout)
