@@ -14,7 +14,7 @@ fn count {
 fn getknown {
   nets = `{ iwctl known-networks list | grep psk | awk '{print $2}' | sort -f }
   if (~ $nets ()) {
-    notify 'No known networks found'
+    notify 'No known networks found.'
     return
   }
   echo -n $nets
@@ -23,12 +23,12 @@ fn getknown {
 fn disconnect {
   net = `{ iwctl station $sta show | grep 'Connected network' | awk '{print $3}' }
   if (~ $net ()) {
-    notify 'No connection found'
+    notify 'No connection found.'
     return
   }
 
   iwctl station $sta disconnect
-  notify 'Disconnected from network' $net
+  notify 'Disconnected from the network: ' $net
 
   echo -n $net
 }
@@ -36,11 +36,16 @@ fn disconnect {
 fn connect {
   if (~ $2 ()) {
     iwctl station $sta connect $1
-    notify 'Connected to known network' $1
+    notify 'Connected to a known network.' $1
   } else {
     iwctl --passphrase $2 station $sta connect $1
-    notify 'Connected to new network' $1
+    notify 'Connected to a new network.' $1
   }
+}
+
+if (~ `{ iwctl station list | grep $sta } ()) {
+  notify 'The device is turned off.'
+  exit 1
 }
 
 if (~ $1 --start || ~ $1 1) {
@@ -94,7 +99,7 @@ if (~ $1 --remove || ~ $1 5) {
   }
 
   iwctl known-networks $set forget
-  notify 'Removed network from known list' $set
+  notify 'Removed network from known list.' $set
 
   exit 0
 }
@@ -105,7 +110,7 @@ if (~ $1 --info || ~ $1 6) {
 #  for (i in `{ seq $#net }) { echo $i' '$net($i) }; exit 0
 
   if (!~ $net(14) connected) {
-    notify 'Network is disconnected'
+    notify 'The network is disconnected.'
     exit 0
   }
 
