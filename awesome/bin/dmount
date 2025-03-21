@@ -2,25 +2,27 @@
 
 ~ $1 () && exit 1
 
-fn notify {
-  notify-send --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '$1'</b>' $2
+fn handle {
+  echo -n $1
+  echo -n $3
+
+  opt = `{ notify-send --action=1='Open Folder' --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '$1'</b>' $2 }
+  if (~ $opt 1) {
+    xdg-open $3
+  }
 }
 
 blk = `{ lsblk -nr -o PATH,LABEL,MOUNTPOINT | grep $1 }
 if (~ $blk ()) {
-  notify $1 'Not found'
+  notify-send --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '$1'</b>' 'Can not be found.'
   exit 1
 }
 
-echo -n $blk(2)''
-
 if (~ $blk(3) ()) {
   mount = `{ udisksctl mount -b $blk(1) }
-  notify $blk(2) $blk(1)^' is mounted at '$mount(4)
-  echo -n $mount(4)  
+  handle $blk(2) $blk(1)^' is mounted at '$mount(4)^'.' $mount(4)
 } else {
-  notify $blk(2) $blk(1)^' already mounted at '$blk(3)
-  echo -n $blk(3)
+  handle $blk(2) $blk(1)^' is already mounted at '$blk(3)^'.' $blk(3)
 }
 
 exit 0
