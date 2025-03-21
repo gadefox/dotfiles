@@ -1,7 +1,13 @@
 #!/bin/rc
 
+nid = ()
+
 fn notify {
-  notify-send --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync: '$2'</b>' $1
+  if (~ $nid ()) {
+    nid = `{ notify-send --print-id --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync: '$2'</b>' $1 }
+  } else {
+    notify-send --replace-id=$nid --icon=/etc/xdg/awesome/icons/sync.png '<b>Sync: '$2'</b>' $1
+  }
 }
 
 fn count {
@@ -11,7 +17,7 @@ fn count {
 
 usbs = `{ readlink ls /dev/disk/by-id/usb-* | grep -o sdc[0-9] }
 if (~ $usbs ()) {
-  notify 'No USB device found'
+  notify 'No USB device found.'
   exit 1
 }
 
@@ -25,7 +31,7 @@ if (~ `{ count $usbs } 1) {
 mount = `{ dmount $set }
 ~ $mount () && exit 1
 
-notify 'Personal data is copied to USB' $mount(1)
+notify 'Personal files are updating to USB..' $mount(1)
 
 rsync -a --delete /home/$USER/documents $mount(2)
 rsync -a /home/$USER/.local/share/evolution/addressbook/system $mount(2)
@@ -33,7 +39,7 @@ rsync -a /home/$USER/.local/share/evolution/calendar/system $mount(2)
 rsync -a /home/$USER/.local/share/evolution/memos/system $mount(2)
 rsync -a /home/$USER/.local/share/evolution/tasks/system $mount(2)
 
-notify 'Copying personal data is complete' $mount(1)
+notify 'Personal files backup is complete.' $mount(1)
 paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
 
 exit 0
