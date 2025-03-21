@@ -1,19 +1,39 @@
 #!/bin/rc
 
+nid = ()
+
 fn notify {
-  notify-send --icon=/etc/xdg/awesome/icons/screenshot.png '<b>Screenshot:</b>' $1
+  if (~ $nid ()) {
+    nid = `{ notify-send --print-id --icon=/etc/xdg/awesome/icons/screenshot.png '<b>Screenshot:</b>' $1 }
+  } else {
+    notify-send --replace-id=$nid --icon=/etc/xdg/awesome/icons/screenshot.png '<b>Screenshot:</b>' $1
+  }
 }
 
-notify 'Select a window or rectangle'
+notify 'Select a window or region with two clicks.'
 area = `{ slop --bordersize=3 --shader=boxzoom --color='0.86,0.27,0.11,0.5' --nodrag --quiet --highlight }
 if (~ $area ()) {
-  notify 'Selection was cancelled by keystroke or right-click'
+  notify 'Selection was cancelled by keystroke or right-click.'
   exit 1
 }
 
 dest = `{ xdg-user-dir PICTURES } || $HOME
 name = `{ date +%F_%H-%M }^.png
-import -window root -crop $area $dest/$name
-notify 'Selection was saved to '$name
+file = $dest/$name
+import -window root -crop $area $file
+
+opt = `{ notify-send --action=1=Open --action=2=Folder --action=3=Delete --icon=/etc/xdg/awesome/icons/screenshot.png '<b>Screenshot:</b>' 'Selection was saved to '$name' file.' }
+if (~ $opt 1) {
+  exec xdg-open $file
+}
+
+if (~ $opt 2) {
+  exec xdg-open $dest
+}
+
+if (~ $opt 3) {
+  rm $file
+  notify 'The file has been deleted.'
+}
 
 exit 0
