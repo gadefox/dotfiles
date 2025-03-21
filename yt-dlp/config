@@ -3,9 +3,7 @@
 
 # file name format
 --output %(title)s.%(ext)s
-
-# embed metadata to the video file; add chapters to file
---embed-metadata
+--restrict-filenames
 
 # do not overwrite existing output files
 --no-overwrites
