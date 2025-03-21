@@ -571,6 +571,7 @@ naughty.connect_signal("request::display", function(n)
         widget = wibox.container.margin
       },
       bg = "#384751",
+      shape = function(cr, width, height) gears.shape.partially_rounded_rect(cr, width, height, true, false, true, false, dpi(5)) end,
       widget = wibox.container.background
     },
     style = {
