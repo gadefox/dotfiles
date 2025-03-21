@@ -6,12 +6,26 @@ fn filename {
 }
 
 fn notify {
-  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>YouTube</b>' $1
+  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>YouTube:</b>' $1
 }
 
-notify 'Video is downloading'
-name = `{ yt-dlp --print after_move:filepath $1 }
-name = `{ filename $name }
+notify 'Video is downloading..'
+file = `{ yt-dlp --print after_move:filepath $1 }
+name = `{ filename $file }
 
-notify 'Video downloading is completed:<br>'$^name
+opt = `{ notify-send --icon=/etc/xdg/awesome/icons/download.png --action=1=Open --action=2=Folder --action=3=Delete '<b>YouTube:</b>' 'Video downloading is completed:<br>'$name }
+if (~ $opt 1) {
+  exec xdg-open $file
+}
+
+if (~ $opt 2) {
+  dir = `{ dirname $file }
+  exec xdg-open $dir
+}
+
+if (~ $opt 3) {
+  rm $file
+  notify 'The file has been deleted.'
+}
+
 exit 0
