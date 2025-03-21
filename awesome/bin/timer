@@ -1,9 +1,9 @@
 #!/bin/rc
 
 fn minstr {
-  str = $1' minute'
-  ~ $1 1 || str = $str's'
-  echo -n $str
+  s = $1' minute'
+  ~ $1 1 || s = $s's'
+  echo -n $s
 }
 
 fn notify {
@@ -21,11 +21,11 @@ if (~ $1 ()) {
   notify Timer: $^min' left'
 } else {
   min = `{ minstr $1 }
-  notify Timer: 'Starting '$^min' countdown'
+  notify Timer: 'Starting '$^min' countdown.'
 
   sleep `{ calc 60*$1 }
 
-  notify 'Time is up!' $^min' countdown is finished'
+  notify 'Time is up!' $^min' countdown is finished.'
   paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
 }
 
