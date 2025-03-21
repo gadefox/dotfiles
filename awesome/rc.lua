@@ -18,19 +18,6 @@ awful.screen.connect_for_each_screen(function(s)
   theme.tags_create(s)
 end)
 
-tag.connect_signal("request::default_layouts", function()
-  awful.layout.append_default_layouts {
-    awful.layout.suit.fair
-  }
-end)
-
-client.connect_signal("mouse::enter", function(c)
-  c:activate {
-    context = "mouse_enter",
-    raise = false
-  }
-end)
-
 -- notifications
 local notify_kblayout, notify_volume, notify_music
 local widget_kblayout = awful.widget.keyboardlayout()
@@ -73,24 +60,9 @@ local function msg_mpd(out, icon)
   end
 end
 
--- rules
-local ruled = require("ruled")
-
-ruled.client.connect_signal("request::rules", function()
-  ruled.client.append_rule {
-    rule = { },
-    properties = {
-      focus = awful.client.focus.filter,
-      raise = true,
-      screen = awful.screen.preferred,
-      placement = awful.placement.no_overlap + awful.placement.no_offscreen
-    }
-  }
-end)
-
 -- key bindings
 local function term(cmd)
-  local ret = "st"
+  local ret = "kitty --single-instance"
   if cmd then
     ret = ret .. " -e " .. cmd
   end
