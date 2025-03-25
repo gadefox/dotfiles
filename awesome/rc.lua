@@ -90,7 +90,9 @@ awesome.connect_signal("launch::image", function(option)
     awful.spawn("xsane")
   elseif option == 3 then
     awful.spawn("gpick")
-  end
+   elseif option == 4 then
+    awful.spawn("zint-qt")
+ end
 end)
 
 awesome.connect_signal("launch::light", function(option)
@@ -334,7 +336,7 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 3 then
     theme.launch("office", { "󱩽", "󱖦", "󱎒", "󱎏", "󰻫" })
   elseif option == 4 then
-    theme.launch("image", { "󱇤", "󰚫", "󰈋" })
+    theme.launch("image", { "󱇤", "󰚫", "󰈋", "󰁱" })
   elseif option == 5 then
     theme.launch("web", { "󰌀", "", "", "󰄠" })
   elseif option == 6 then
