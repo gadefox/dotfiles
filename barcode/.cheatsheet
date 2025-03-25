@@ -1,8 +1,8 @@
 # Check barcode
 zbarimg [img file]
 
-# Code 2 of 5 Interleaved (ISO 16390)
+# Code 2 of 5 Interleaved
 zint --quietzones --barcode=3 --height=30 --vwhitesp=30 --data=[XXX] --output=kaufland-poukaz.png
 
 # Code 128
-zint --quietzones --barcode=3 --height=30 --vwhitesp=30 --data=[63400XXX->979XXX] --output=tesco.png
+zint --quietzones --barcode=20 --height=30 --vwhitesp=30 --data=[63400XXX->979XXX] --output=tesco.png
