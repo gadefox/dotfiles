@@ -10,17 +10,13 @@ font: Caskaydia Nerd (terminal), Ubuntu (gtk)
 
 apps:
 arandr
-calc
-colortest
 deborphan (unused deb packages)
 dragon (drag & drop)
-lxrandr
-gpick
+lxpolkit
 mupdf
 pcmanfm-gtk3
 sxiv
 yt-dlp
-xarchiver
 
 systemd/logind.conf:
 HandlePowerKey=ignore
