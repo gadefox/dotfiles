@@ -12,7 +12,6 @@ apps:
 arandr
 deborphan (unused deb packages)
 dragon (drag & drop)
-lxpolkit
 mupdf
 pcmanfm-gtk3
 sxiv
