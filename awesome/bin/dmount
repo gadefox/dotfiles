@@ -7,7 +7,7 @@ fn handle {
 
   opt = `{ notify-send --action=1='Open Folder' --icon=/etc/xdg/awesome/icons/usb.png '<b>Device: '$1'</b>' $3 }
   if (~ $opt 1) {
-    xdg-open $3
+    xdg-open $2
   }
 }
 
