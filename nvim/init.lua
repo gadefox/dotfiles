@@ -32,11 +32,16 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 vim.cmd("filetype plugin indent on")
 
-vim.fn.sign_define("DiagnosticSignError", { text = "", texthl = "DiagnosticSignError", numhl = "" })
-vim.fn.sign_define("DiagnosticSignWarn", { text = "", texthl = "DiagnosticSignWarn", numhl = "" })
-vim.fn.sign_define("DiagnosticSignInfo", { text = "", texthl = "DiagnosticSignInfo", numhl = "" })
-vim.fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint", numhl = "" })
-vim.fn.sign_define("DiagnosticSignOk", { text = "", texthl = "DiagnosticSignOk", numhl = "" })
+vim.diagnostic.config({
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "",
+      [vim.diagnostic.severity.WARN] = "",
+      [vim.diagnostic.severity.INFO] = "",
+      [vim.diagnostic.severity.HINT] = ""
+    }
+  }
+})
 
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
 vim.opt.ignorecase = true  -- ignore case in search patterns
