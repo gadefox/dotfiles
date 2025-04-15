@@ -60,6 +60,7 @@ pcmanfm
 picom
 pkg-config
 pulsemixer
+python3-cffi-backend
 python3-colorama
 python3-gi
 python3-jinja2
@@ -80,6 +81,7 @@ ripgrep
 rsync
 scrot
 slop
+subliminal
 sudo
 sxiv
 tftp-hpa
