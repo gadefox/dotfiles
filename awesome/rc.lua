@@ -71,11 +71,11 @@ end
 
 awesome.connect_signal("launch::file", function(option)
   if option == 1 then
-    awful.spawn("pcmanfm")
-  elseif option == 2 then
     awful.spawn(term("nnn"))
-  elseif option == 3 then
+  elseif option == 2 then
     awful.spawn(term("mc"))
+  elseif option == 3 then
+    awful.spawn("pcmanfm")
   elseif option == 4 then
     awful.spawn("xarchiver")
   elseif option == 5 then
@@ -319,7 +319,7 @@ awesome.connect_signal("launch::timer", function(option)
     awful.spawn("timer 25")
   elseif option == 6 then
     awful.spawn("timer 30")
-  elseif option == 7 then
+elseif option == 7 then
     awful.spawn("timer 45")
   elseif option == 8 then
     awful.spawn("timer 55")
@@ -328,11 +328,15 @@ awesome.connect_signal("launch::timer", function(option)
   end
 end)
 
+local function launch_file()
+  theme.launch("file", { "󱗁", "󰖔", "", "", "" })
+end
+
 awesome.connect_signal("launch::menu", function(option)
   if option == 1 then
     theme.launch("misc", { "󰌧", "", "", "󱤛", "󰔛", "󱑒" })
   elseif option == 2 then
-    theme.launch("file", { "", "󱗁", "󰖔", "", "" })
+    launch_file()
   elseif option == 3 then
     theme.launch("office", { "󱩽", "󱖦", "󱎒", "󱎏", "󰻫" })
   elseif option == 4 then
@@ -409,14 +413,10 @@ awful.keyboard.append_global_keybindings({
     { description = "messenger", group = "launch" }),
   awful.key({ }, "XF86Tools", function() awful.spawn(term("ncmpc")) end,
     { description = "browser", group = "launch" }),
-  awful.key({ }, "XF86Launch5", function() awful.spawn(term("nnn")) end,
-    { description = "terminal fm", group = "launch" }),
-  awful.key({ }, "XF86Launch6", function() awful.spawn("pcmanfm") end,
-    { description = "file manager", group = "launch" }),
-  awful.key({ }, "XF86Launch7", function() awful.spawn(term("htop")) end,
+  awful.key({ }, "XF86Launch5", function() launch_file() end,
+    { description = "files", group = "launch" }),
+  awful.key({ }, "XF86Launch9", function() awful.spawn(term("htop")) end,
     { description = "process monitor", group = "launch" }),
-  awful.key({ }, "XF86Launch8", function() awful.spawn(term("wavemon")) end,
-    { description = "wifi monitor", group = "launch" }),
   awful.key({ }, "XF86Favorites", launch_timer,
     { description = "timer", group = "launch" }),
   awful.key({ }, "XF86Documents", function() awful.spawn(term("nvim")) end,
