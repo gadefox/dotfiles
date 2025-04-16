@@ -1,4 +1,4 @@
-local utils = require "mp.utils"
+local utils = require("mp.utils")
 
 function subliminal()
   mp.osd_message("Searching subtitle..")
