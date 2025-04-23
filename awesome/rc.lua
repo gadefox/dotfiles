@@ -206,6 +206,8 @@ awesome.connect_signal("launch::settings", function(option)
   elseif option == 2 then
     awful.spawn("lxrandr")
   elseif option == 3 then
+    awful.spawn("gnome-disks")
+  elseif option == 4 then
     theme.launch("wifi", { "󰸋", "󱚼", "󱛄", "󱛃", "󱛂", "󱛆" })
   end
 end)
@@ -352,7 +354,7 @@ awesome.connect_signal("launch::menu", function(option)
       local wifi = out == "connected\n" and "󰖩" or
                    out == "disconnected\n" and "󰖪" or "󱚵"
 
-      theme.launch("settings", { "󰃟", "󰍺", wifi })
+      theme.launch("settings", { "󰃟", "󰍺", "󱊞", wifi })
     end)
   end
 end)
