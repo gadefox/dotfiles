@@ -1,0 +1,15 @@
+#!/bin/rc
+
+fn notify {
+  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>Subtitle:</b>' $1
+}
+
+name = `{ dmenu -i -p Movie }
+~ $name () && exit 1
+
+notify 'Subtitle is downloading..'
+dest = `{ xdg-user-dir VIDEOS } || $HOME
+res = `{ subliminal download $^name --single --force --language=en --directory=$dest }
+notify $^res
+
+exit 0
