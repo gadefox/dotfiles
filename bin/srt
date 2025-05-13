@@ -5,7 +5,7 @@ if (~ $1 ()) {
   ~ $res () && exit 1
   name = $^res
 } else {
-  name = $^1
+  name = $1
 }
 
 nid = ()
@@ -20,7 +20,7 @@ fn notify {
 
 notify 'The file is downloading..'
 dest = `{ xdg-user-dir VIDEOS } || $HOME
-file = `{ subliminal --debug download $name --single --force --language=en --directory=$dest >[2=1] | grep INFO:subliminal.core:Saving | sed 's/INFO:subliminal.core:Saving <[^<>]*> to //' | tr --delete '''' }
+file = `{ subliminal --debug download $name --directory=$dest --single --force --language=en >[2=1] | grep INFO:subliminal.core:Saving | sed 's/.$//' | sed 's/INFO:subliminal.core:Saving <[^<>]*> to ''//' }
 if (~ $file ()) {
   notify 'Can not be found.'
   exit 1
