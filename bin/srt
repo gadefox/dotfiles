@@ -7,31 +7,32 @@ fn msg {
 }
 
 if (~ $1 ()) {
-  name = `{ dmenu -i -p Movie }
-  ~ $name () && exit 1
+  res = `{ dmenu -i -p Movie }
+  ~ $res () && exit 1
+  name = $^res
 } else {
-  name = $1
+  name = $^1
 }
 
 fn notify {
-  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>Subtitle: '$^name'</b>' $1
+  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>Subtitle: '$name'</b>' $1
 }
 
 notify 'Subtitle is downloading..'
 dest = `{ xdg-user-dir VIDEOS } || $HOME
-res = `{ subliminal download $^name --single --force --language=en --directory=$dest | tail -1 }
+res = `{ subliminal download $name --single --force --language=en --directory=$dest | tail -1 }
 msg = `{ msg $res }
 if (~ $res(2) 0) {
   notify $^msg
   exit 1
 }
 
-opt = `{ notify-send --icon=/etc/xdg/awesome/icons/download.png --action=1=Folder --action=2=Delete '<b>Subtitle: '$^name'</b>' $^msg }
+opt = `{ notify-send --icon=/etc/xdg/awesome/icons/download.png --action=1=Folder --action=2=Delete '<b>Subtitle: '$name'</b>' $^msg }
 if (~ $opt 1) {
   exec xdg-open $dest
 }
 
-file = $dest/$^name.srt
+file = $dest/$name.srt
 if (~ $opt 2) {
   rm $file
   notify 'The file has been deleted.'
