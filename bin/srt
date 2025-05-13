@@ -9,9 +9,13 @@ fn msg {
 fn notify {                                                                                                                                                                   
   notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>Subtitle:</b>' $1                                                                                                
 }                                                                                                                                                                             
-                                                                                                                                                                              
-name = `{ dmenu -i -p Movie }                                                                                                                                                 
-~ $name () && exit 1                                                                                                                                                          
+
+if (~ $1 ()) {
+  name = `{ dmenu -i -p Movie }                                                                                                                                               
+  ~ $name () && exit 1                                                                                                                                                        
+} else {                                                                                                                                                                      
+  name = $1
+}
                                                                                                                                                                               
 notify 'Subtitle is downloading..'                                                                                                                                            
 dest = `{ xdg-user-dir VIDEOS } || $HOME                                                                                                                                      
@@ -19,4 +23,4 @@ res = `{ subliminal download $^name --single --force --language=en --directory=$
 msg = `{ msg $res }                                                                                                                                                           
 notify $^msg                                                                                                                                                                  
                                                                                                                                                                               
-exit 0                                                                                                                                                                        
+~ $res(2) 1 && exit 0 || exit 1                                                                                                                                               
