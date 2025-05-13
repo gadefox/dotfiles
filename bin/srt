@@ -18,21 +18,21 @@ fn notify {
   }
 }
 
-notify 'Subtitle is downloading..'
+notify 'The file is downloading..'
 dest = `{ xdg-user-dir VIDEOS } || $HOME
-file = `{ subliminal --debug download $name --single --force --language=en --directory=$dest >[2=1] | grep INFO:subliminal.core:Saving | awk '{print $6}' | tr --delete '''' }
+file = `{ subliminal --debug download $name --single --force --language=en --directory=$dest >[2=1] | grep INFO:subliminal.core:Saving | sed 's/INFO:subliminal.core:Saving <[^<>]*> to //' | tr --delete '''' }
 if (~ $file ()) {
-  notify 'Subtitle can not be found.'
+  notify 'Can not be found.'
   exit 1
 }
 
-opt = `{ notify-send --icon=/etc/xdg/awesome/icons/download.png --action=1=Folder --action=2=Delete '<b>Subtitle: '$name'</b>' 'Downloaded 1 subtitle.' }
+opt = `{ notify-send --icon=/etc/xdg/awesome/icons/download.png --action=1=Folder --action=2=Delete '<b>Subtitle: '$name'</b>' 'The file has been downloaded.' }
 if (~ $opt 1) {
   exec xdg-open $dest
 }
 
 if (~ $opt 2) {
-  rm $file
+  rm $^file
   notify 'The file has been deleted.'
   exit 1
 }
