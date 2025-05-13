@@ -10,7 +10,8 @@ local function srt()
   function(success, result, _)
     if success then
       if mp.commandv("sub_add", result.stdout) then
-        mp.osd_message("Subtitle has been added.")
+        local sub = string.gsub(result.stdout, "^.*()/", "")
+        mp.osd_message("Subtitle " .. sub .. " has been added.", 3)
       end
     end
   end)
