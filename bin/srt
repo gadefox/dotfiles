@@ -1,26 +1,30 @@
-#!/bin/rc                                                                                                                                                                     
-                                                                                                                                                                              
-fn msg {                                                                                                                                                                      
-  s = $^*                                                                                                                                                                     
-  ~ $2 1 || s = $s's'                                                                                                                                                         
-  echo -n $s.                                                                                                                                                                 
-}                                                                                                                                                                             
-                                                                                                                                                                              
-fn notify {                                                                                                                                                                   
-  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>Subtitle:</b>' $1                                                                                                
-}                                                                                                                                                                             
+#!/bin/rc
+
+fn msg {
+  s = $^*
+  ~ $2 1 || s = $s's'
+  echo -n $s.
+}
+
+fn notify {
+  notify-send --icon=/etc/xdg/awesome/icons/download.png '<b>Subtitle: '$2'</b>' $1
+}
 
 if (~ $1 ()) {
-  name = `{ dmenu -i -p Movie }                                                                                                                                               
-  ~ $name () && exit 1                                                                                                                                                        
-} else {                                                                                                                                                                      
+  name = `{ dmenu -i -p Movie }
+  ~ $name () && exit 1
+} else {
   name = $1
 }
-                                                                                                                                                                              
-notify 'Subtitle is downloading..'                                                                                                                                            
-dest = `{ xdg-user-dir VIDEOS } || $HOME                                                                                                                                      
-res = `{ subliminal download $^name --single --force --language=en --directory=$dest | tail -1 }                                                                              
-msg = `{ msg $res }                                                                                                                                                           
-notify $^msg                                                                                                                                                                  
-                                                                                                                                                                              
-~ $res(2) 1 && exit 0 || exit 1                                                                                                                                               
+
+notify 'Subtitle is downloading..' $^name
+dest = `{ xdg-user-dir VIDEOS } || $HOME
+res = `{ subliminal download $^name --single --force --language=en --directory=$dest | tail -1 }
+msg = `{ msg $res }
+notify $^msg $^name
+
+if (~ $res(2) 1) {
+  echo -n $dest/$name.srt
+  exit 0
+}
+exit 1
