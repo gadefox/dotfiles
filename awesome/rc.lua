@@ -90,9 +90,19 @@ awesome.connect_signal("launch::image", function(option)
     awful.spawn("gpick")
   elseif option == 3 then
     awful.spawn("xsane")
-   elseif option == 4 then
+  end
+end)
+
+awesome.connect_signal("launch::dev", function(option)
+  if option == 1 then
+    awful.spawn("arduino")
+  elseif option == 2 then
+    awful.spawn("fritzing")
+  elseif option == 3 then
+    awful.spawn("librecad")
+  elseif option == 4 then
     awful.spawn("zint-qt")
- end
+  end
 end)
 
 awesome.connect_signal("launch::light", function(option)
@@ -152,8 +162,6 @@ awesome.connect_signal("launch::office", function(option)
     awful.spawn("swriter")
   elseif option == 4 then
     awful.spawn("scalc")
-  elseif option == 5 then
-    awful.spawn("librecad")
   end
 end)
 
@@ -340,21 +348,23 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 2 then
     launch_file()
   elseif option == 3 then
-    theme.launch("office", { "󱩽", "󱖦", "󱎒", "󱎏", "󰻫" })
+    theme.launch("office", { "󱩽", "󱖦", "󱎒", "󱎏" })
   elseif option == 4 then
-    theme.launch("image", { "󱇤", "󰈋", "󰚫", "󰁱" })
+    theme.launch("image", { "󱇤", "󰈋", "󰚫" })
   elseif option == 5 then
-    theme.launch("web", { "󰌀", "", "", "󰄠" })
+    theme.launch("dev", { "", "", "󰻫", "󰁱" })
   elseif option == 6 then
-    theme.launch("music", { "󰝚", "󰺢", "󰋍" })
+    theme.launch("web", { "󰌀", "", "", "󰄠" })
   elseif option == 7 then
-    theme.launch("tool", { "", "󰹑", "󱊖", "󰖠", "", "󱚻" })
+    theme.launch("music", { "󰝚", "󰺢", "󰋍" })
   elseif option == 8 then
+    theme.launch("tool", { "", "󰹑", "󱊖", "󰖠", "", "󱚻" })
+  elseif option == 9 then
     awful.spawn.easy_async_with_shell("iwctl station wlan0 show | grep State | awk '{print $2}'", function(out)
       local wifi = out == "connected\n" and "󰖩" or
                    out == "disconnected\n" and "󰖪" or "󱚵"
 
-      theme.launch("settings", { "󰃟", "󰍺", "󱊞", wifi })
+      theme.launch("settings", { "󰃟", "󰍺", "󱊟", wifi })
     end)
   end
 end)
