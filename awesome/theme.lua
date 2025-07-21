@@ -397,7 +397,7 @@ function theme.launch_power()
 end
 
 function theme.launch_menu()
-  theme.launch("menu", { "󰊲", "󰉕", "󰧭", "", "󰖟", "󰽴", "", "" })
+  theme.launch("menu", { "󰊲", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "" })
 end
 
 awful.mouse.append_global_mousebindings({
