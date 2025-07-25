@@ -1,1 +1,3 @@
 git config --global credential.helper !git-credential-gpg
+git config --global user.name gadefox
+git config --global user.email [email]
