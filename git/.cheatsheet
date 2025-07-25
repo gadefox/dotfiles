@@ -1,1 +1,1 @@
-git config --global credential.helper $HOME/.local/bin/git-credential-gpg
+git config --global credential.helper !git-credential-gpg
