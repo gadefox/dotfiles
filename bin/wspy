@@ -1,19 +1,21 @@
 #!/bin/rc
 
 cache = $HOME/.cache/wspy
-mkdir -p $cache
+mkdir --parents $cache
 
 config = $HOME/.config/wspy
-mkdir -p $config
+mkdir --parents $config
 
-rec = `{ cat $config/recipient }
-if (~ $rec ())
-  exit 1
+config = $config/config
+recipient = `{ jq --raw-output '.recipient' $config }
+subject = `{ jq --raw-output '.subject' $config }
+body = `{ jq --raw-output '.html_body' $config }
+webs = `{ jq --raw-output '.web_list[]' $config }
 
 fn handle {
-  name = `{ echo -n $* | sed -e 's|https\?://||' -e 's|^www\.||' -e 's|/$||' -e 's|/|_|g' -e 's|\.|_|g' }
+  name = `{ echo -n $1 | sed -e 's|https\?://||' -e 's|^www\.||' -e 's|/$||' -e 's|/|_|g' -e 's|\.|_|g' }
   tmp = /tmp/$name.html
-  wget -q -O $tmp $*
+  wget --quiet --output-document=$tmp $1
 
   md5cur = `{ md5sum $tmp | awk '{print $1}' }
   rm $tmp
@@ -24,12 +26,10 @@ fn handle {
     exit
 
   echo -n $md5cur > $md5file
-  echo 'Subject: The webpage '$1' has changed.' | msmtp gade@gmx.us
-}
 
-webs = `{ cat $config/webs }
-if (~ $webs ())
-  exit 1
+  replace = `{ echo -n $body | sed -e 's|%HREF%|'$1'|g' -e 's|%TEXT%|'$1'|g' }
+  echo -n 'Subject: '$^subject$nl'Content-Type: text/html; charset=UTF-8'$nl$nl$^replace | msmtp $recipient
+}
 
 for (url in $webs)
   handle $url
