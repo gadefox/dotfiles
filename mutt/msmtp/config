@@ -9,6 +9,6 @@ account gmx
 host mail.gmx.com
 from gade@gmx.us
 user gade@gmx.us
-passwordeval "gpg --no-tty -q -d ~/.config/msmtp/gade@gmx.us.gpg"
+passwordeval "pass mail/gmx/gade"
 
 account default : gmx
