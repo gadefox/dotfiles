@@ -1,0 +1,37 @@
+#!/bin/rc
+
+cache = $HOME/.cache/wspy
+mkdir -p $cache
+
+config = $HOME/.config/wspy
+mkdir -p $config
+
+rec = `{ cat $config/recipient }
+if (~ $rec ())
+  exit 1
+
+fn handle {
+  name = `{ echo -n $* | sed -e 's|https\?://||' -e 's|^www\.||' -e 's|/$||' -e 's|/|_|g' -e 's|\.|_|g' }
+  tmp = /tmp/$name.html
+  wget -q -O $tmp $*
+
+  md5cur = `{ md5sum $tmp | awk '{print $1}' }
+  rm $tmp
+
+  md5file = $cache/$name
+  md5old = `{ cat $md5file >[2]/dev/null }
+  if (~ $md5old = $md5cur)
+    exit
+
+  echo -n $md5cur > $md5file
+  echo 'Subject: The webpage '$1' has changed.' | msmtp gade@gmx.us
+}
+
+webs = `{ cat $config/webs }
+if (~ $webs ())
+  exit 1
+
+for (url in $webs)
+  handle $url
+
+exit 0
