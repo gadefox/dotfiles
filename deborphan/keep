@@ -28,6 +28,7 @@ iputils-ping
 irssi
 isc-dhcp-client
 iwd
+jq
 lame
 libcurl4t64
 libflac12t64
