@@ -476,5 +476,5 @@ awful.keyboard.append_global_keybindings({
 })
 
 -- start
-awful.spawn("dex -a")
+awful.spawn("dex --autostart")
 theme.create_notify("calendar", nil, 0, 15)
