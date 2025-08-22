@@ -4,6 +4,7 @@ cava
 cmake
 clangd-19
 cheese
+dconf-editor
 ddcutil
 deborphan
 dex
