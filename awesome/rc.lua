@@ -80,6 +80,8 @@ awesome.connect_signal("launch::file", function(option)
     awful.spawn("xarchiver")
   elseif option == 5 then
     awful.spawn("evince")
+  elseif option == 6 then
+    awful.spawn("meld")
   end
 end)
 
@@ -341,7 +343,7 @@ elseif option == 7 then
 end)
 
 local function launch_file()
-  theme.launch("file", { "󱗁", "󰖔", "", "", "" })
+  theme.launch("file", { "󱗁", "󰖔", "", "", "", "" })
 end
 
 awesome.connect_signal("launch::menu", function(option)
