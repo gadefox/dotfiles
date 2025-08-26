@@ -16,6 +16,7 @@ fish
 flameshot
 fonts-roboto-unhinted
 fzf
+gitg
 gir1.2-freedesktop
 gir1.2-gtk-3.0
 gir1.2-pango-1.0
@@ -98,5 +99,3 @@ v4l-utils
 v4l2loopback-dkms
 wavemon
 zbar-tools
-zint
-zint-qt

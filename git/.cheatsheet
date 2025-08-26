@@ -1,5 +1,5 @@
 gpg --list-secret-keys --keyid-format LONG | grep sec  # rsa4096/[id]
-echo [pwd] | gpg --encrypt --recipient [id] --output ~/.local/share/gnupg/user/git.gpg
+echo [pwd] | gpg --encrypt --recipient [id] --output $GNUPGHOME/user/git.gpg
 
 git config --global credential.helper $HOME/.local/libexec/gnupg/git-credential
 git config --global user.name gadefox
