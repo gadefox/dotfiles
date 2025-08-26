@@ -1,10 +1,37 @@
 shell_patterns=0
 
-# %% The % character | %f The current file (if non-local vfs, file will be copied locally and %f will be full path to it) | %p The current file | %d The current working directory | %s "Selected files"; the tagged files if any, otherwise the current file | %t Tagged files | %u Tagged files (and they are untagged on return from expand_format)
-# %x  Selected file’s extension | %b  Selected file’s name stripped of extension (basename) | %view Runs the commands and pipes standard output to the view command. If %view is immediately followed by '{', recognize keywords ascii, hex, nroff and unform. If the format letter is in uppercase, it refers to the other panel
+# %% The % character
+# %f The current file (if non-local vfs, file will be copied locally and %f will be full path to it)
+# %p The current file | %d The current working directory
+# %s "Selected files"; the tagged files if any, otherwise the current file
+# %t Tagged files
+# %u Tagged files (and they are untagged on return from expand_format)
+# %x Selected file’s extension
+# %b Selected file’s name stripped of extension (basename)
+# %view Runs the commands and pipes standard output to the view command.
+#  If %view is immediately followed by '{', recognize keywords ascii, hex, nroff and unform.
+#  If the format letter is in uppercase, it refers to the other panel
+#
 # With a number followed the % character you can turn quoting on (default) and off. For example: %f quote expanded macro | %1f ditto | %0f don't quote expanded macro
-# f pattern Match currently selected file | F pattern Match last selected in other panel | d pattern Match currently selected directory | D pattern Match last selected directory in other panel | t type Type of currently selected file | T type Type of last selected file in other panel | ! sub-cond Negate result of sub-condition
-# Type is one or more of the following: r regular file | d directory | n not a directory | l link | x executable file | t tagged | c character device | b  block device | f FIFO (pipe) | s socket
+# f pattern Match currently selected file
+# F pattern Match last selected in other panel
+# d pattern Match currently selected directory
+# D pattern Match last selected directory in other panel
+# t type Type of currently selected file
+# T type Type of last selected file in other panel
+# ! sub-cond Negate result of sub-condition
+#
+# Type is one or more of the following:
+# r regular file
+# d directory
+# n not a directory
+# l link
+# x executable file
+# t tagged
+# c character device
+# b block device
+# f FIFO (pipe)
+# s socket
 
 + ! t t
 c Change ownership of selected subdirectory (chown)
@@ -26,14 +53,6 @@ C Change ownership of selected subdirectories (chown)
     chown -R "$value" "$i"
 
 + t r & ! t t
-d Drag & drop current file
-  dragon %f
-
-+ t t
-D Drag & drop tagged files
-  dragon %t
-
-+ t r & ! t t
 g Gzip or gunzip current file
   unset DECOMP
   case %f in
@@ -53,7 +72,7 @@ G Gzip or gunzip tagged files
   done
 
 + t r & ! t t
-i Set current icon's height
+i Set the image height
   value=%{Ender new size}
   height=`identify -ping -format '%h' %f`
   if [ $height -gt $value ]; then
@@ -61,7 +80,7 @@ i Set current icon's height
   fi
 
 + t t
-I Set tagged icons' height
+I Set the height of the tagged images
   value=%{Ender new size}
   for i in %t; do
     height=`identify -ping -format '%h' $i`
@@ -78,18 +97,6 @@ l View shared library dependencies
 o View SONAME information
   %view{ascii,nroff} readelf -d %f | grep SONAME
 
-+ ! t t
-r Do something on the current file
-  CMD=%{Enter command}
-  $CMD %f
-
-+ t t
-R Do something on the tagged files
-  CMD=%{Enter command}
-  for i in %t; do
-    $CMD "$i"
-  done
-
 + t r & ! t t
 s Strip current executable
   strip -s %f
@@ -99,26 +106,6 @@ S Strip tagged executables
   for i in %t; do
     strip -s "$i"
   done
-
-t Create new file
-  File=%{Enter file name}
-  touch $File
-
-=+ f \.tar\.gz$ | f \.tar\.z$ | f \.tgz$ | f \.tpz$ | f \.tar\.lz$ | f \.tar\.lz4$ | f \.tar\.lzma$ | f \.tar\.7z$ | f \.tar\.xz$ | f \.tar\.zst | f \.tar\.Z$ | f \.tar\.bz2$ & t rl
-x Extract the contents of a compressed tar file
-  unset PRG
-  case %f in
-    *.tar.7z) PRG="7za e -so";;
-    *.tar.bz2) PRG="bunzip2 -c";;
-    *.tar.gz|*.tar.z|*.tgz|*.tpz|*.tar.Z) PRG="gzip -dc";;
-    *.tar.lz) PRG="lzip -dc";;
-    *.tar.lz4) PRG="lz4 -dc";;
-    *.tar.lzma) PRG="lzma -dc";;
-    *.tar.xz) PRG="xz -dc";;
-    *.tar.zst) PRG="zstd -dc";;
-    *) exit 1;;
-  esac
-  $PRG %f | tar xvf -
 
 y Create symlinks in the other directory
   if [ %d = %D ]; then
