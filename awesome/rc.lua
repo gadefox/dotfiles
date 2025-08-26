@@ -80,8 +80,6 @@ awesome.connect_signal("launch::file", function(option)
     awful.spawn("xarchiver")
   elseif option == 5 then
     awful.spawn("evince")
-  elseif option == 6 then
-    awful.spawn("meld")
   end
 end)
 
@@ -97,13 +95,15 @@ end)
 
 awesome.connect_signal("launch::dev", function(option)
   if option == 1 then
-    awful.spawn("arduino")
+    awful.spawn("gitg")
   elseif option == 2 then
-    awful.spawn("fritzing")
+    awful.spawn("meld")
   elseif option == 3 then
-    awful.spawn("librecad")
+    awful.spawn("arduino")
   elseif option == 4 then
-    awful.spawn("zint-qt")
+    awful.spawn("fritzing")
+  elseif option == 5 then
+    awful.spawn("librecad")
   end
 end)
 
@@ -343,7 +343,7 @@ elseif option == 7 then
 end)
 
 local function launch_file()
-  theme.launch("file", { "󱗁", "󰖔", "", "", "", "" })
+  theme.launch("file", { "󱗁", "󰖔", "", "", "" })
 end
 
 awesome.connect_signal("launch::menu", function(option)
@@ -356,7 +356,7 @@ awesome.connect_signal("launch::menu", function(option)
   elseif option == 4 then
     theme.launch("image", { "󱇤", "󰈋", "󰚫" })
   elseif option == 5 then
-    theme.launch("dev", { "", "", "󰻫", "󰁱" })
+    theme.launch("dev", { "", "", "", "", "󰻫" })
   elseif option == 6 then
     theme.launch("web", { "󰌀", "", "", "󰄠" })
   elseif option == 7 then

@@ -162,7 +162,7 @@ local function swap_target(target, cltbl, dir, cur)
       cur:swap(other)
     else
       cur.screen = screen[other.screen]
-      cur:tags { screen[other.screen].selected_tag }  --TODO get index
+      cur:tags({ screen[other.screen].selected_tag })  --TODO get index
     end
   else
     -- No client to swap, try to find a screen.
@@ -174,7 +174,7 @@ local function swap_target(target, cltbl, dir, cur)
     target = gears.geometry.rectangle.get_in_direction(dir, screen_geom, cur:geometry())
     if target and target ~= cur.screen then
       cur.screen = target
-      cur:tags { screen[target].selected_tag }
+      cur:tags({ screen[target].selected_tag })
       cur:raise()
     end
   end
@@ -255,43 +255,43 @@ end
 local function create_arc(idx, round_s, round_e)
   local colors = { [0] = "#7cbb00", "#ffbb00", "#f65314", "#00a1f1" }  -- idx <0..3>
 
-  return wibox.widget {
+  return wibox.widget({
     shape = function(cr, width, height) gears.shape.arc(cr, width, height, dpi(12), math.pi * idx / 2, math.pi * (idx + 1) / 2, round_s, round_e) end,
     bg = colors[idx],
     widget = wibox.container.background
-  }
+  })
 end
 
 function focus.init()
   for k = 1, 4 do
     local i_s = (k + 1) % 4
 
-    wiboxes[k] = wibox {
+    wiboxes[k] = wibox({
       width = 100,
       height = 100,
       ontop = true,
       shape = function(cr, width, height) gears.shape.arc(cr, width, height, dpi(12), math.pi * i_s / 2, math.pi * ((k + 3) % 4) / 2, true, true) end,
-    }
-    wiboxes[k]:setup {
+    })
+    wiboxes[k]:setup({
       create_arc(i_s, true, false),
       create_arc((k + 2) % 4, false, true),
       layout = wibox.layout.stack
-    }
+    })
   end
 
-  wiboxes[5] = wibox {
+  wiboxes[5] = wibox({
     width = 100,
     height = 100,
     ontop = true,
     shape = function(cr, width, height) gears.shape.arc(cr, width, height, dpi(12), 0, math.pi * 2) end,
-  }
-  wiboxes[5]:setup {
+  })
+  wiboxes[5]:setup({
     create_arc(0, false, false),
     create_arc(1, false, false),
     create_arc(2, false, false),
     create_arc(3, false, false),
     layout = wibox.layout.stack
-  }
+  })
 
   local aw = {}
 
