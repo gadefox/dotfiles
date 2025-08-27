@@ -9,6 +9,6 @@ account gmx
 host mail.gmx.com
 from gade@gmx.us
 user gade@gmx.us
-passwordeval "pass mail/gmx/gade"
+passwordeval "pass gmx/gade"
 
 account default : gmx
