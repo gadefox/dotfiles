@@ -1,0 +1,14 @@
+#!/bin/rc
+
+. /usr/local/libexec/rc/notify
+
+notify_icon = youtube
+notify_title = Youtube:
+
+show_notify 'Video is downloading..'
+file = `(yt-dlp --print after_move:filepath $1)
+name = `(get_filename $file)
+
+notify_actions $file 'Video downloading is completed:<br>'$name 1 2 3
+
+exit 0

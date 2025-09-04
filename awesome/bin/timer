@@ -1,0 +1,29 @@
+#!/bin/rc
+
+. /usr/local/libexec/rc/notify
+. /usr/local/libexec/rc/string
+
+notify_icon = timer
+notify_title = Timer:
+
+if (~ $1 ()) {
+  ps = `{ ps -d -o command,etimes | grep '^sleep' }
+  ~ $ps () && exit 0
+
+  ps = `{ bc <<< $ps(2)/60-$ps(3)/60$nl }
+  min = `(plural_str $ps minute)
+  show_notify $^min' left.'
+
+  exit 0
+}
+
+min = `(plural_str $1 minute)
+show_notify 'Starting '$^min' countdown.'
+
+sleep `{ bc <<< 60*$1$nl }
+
+notify_title = 'Time is up!'
+show_notify $^min' countdown is finished.'
+paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
+
+exit 0

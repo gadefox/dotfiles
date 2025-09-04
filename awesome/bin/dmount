@@ -1,0 +1,27 @@
+#!/bin/rc
+
+. /usr/local/libexec/rc/notify
+
+notify_icon = usb
+notify_title = Device:
+
+~ $1 () && exit 1
+
+blk = `{ lsblk -nr -o PATH,LABEL,MOUNTPOINT | grep $1 }
+if (~ $blk ()) {
+  show_notify 'Can not be found.' $1
+  exit 1
+}
+
+echo -n $blk(2)''
+
+if (~ $blk(3) ()) {
+  mount = `(udisksctl mount -b $blk(1))
+  notify_actions $mount(4) $blk(2) $blk(1)^' is mounted at '$mount(4)^'.' $blk(2) 2
+  echo -n $mount(4)
+} else {
+  notify_actions $blk(3) $blk(1)^' is already mounted at '$blk(3)^'.' $blk(2) 2
+  echo -n $blk(3)
+}
+
+exit 0

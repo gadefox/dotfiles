@@ -1,0 +1,35 @@
+#!/bin/rc
+
+. /usr/local/libexec/rc/notify
+
+notify_icon = sync
+notify_title = Sync:
+
+usbs = `{ readlink ls /dev/disk/by-id/usb-* | grep -o sdc[0-9] }
+if (~ $usbs ()) {
+  show_notify 'No USB device found.'
+  exit 1
+}
+
+if (~ $#usbs 1) {
+  set = $usbs
+} else {
+  set = `{ dmenu -p 'Select USB' <<< $usbs }
+  ~ $set () && exit 0
+}
+
+mount = `(dmount $set)
+~ $mount () && exit 1
+
+show_notify 'Personal files are updating to USB..' $mount(1)
+
+rsync -a --delete /home/$USER/documents $mount(2)
+rsync -a /home/$USER/.local/share/evolution/addressbook/system $mount(2)
+rsync -a /home/$USER/.local/share/evolution/calendar/system $mount(2)
+rsync -a /home/$USER/.local/share/evolution/memos/system $mount(2)
+rsync -a /home/$USER/.local/share/evolution/tasks/system $mount(2)
+
+show_notify 'Personal files backup is complete.' $mount(1)
+paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
+
+exit 0

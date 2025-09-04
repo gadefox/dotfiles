@@ -1,0 +1,5 @@
+#!/bin/sh
+
+gpg --export --export-options backup --output ~/documents/etc/arch/public.gpg
+gpg --export-secret-keys --export-options backup --output ~/documents/etc/arch/private.gpg
+gpg --export-ownertrust > ~/documents/etc/arch/trust.gpg
