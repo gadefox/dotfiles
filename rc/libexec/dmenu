@@ -1,0 +1,15 @@
+fn find_index {
+  val = $1; shift
+  for (i) {
+    tmp = ($tmp +)
+    !~ $i $val && continue
+    echo -n $#tmp
+    return
+  }
+}
+
+fn choose_menu {
+  sel = `{ printf %s$nl $* | dmenu -p Select }
+  ~ $sel () && return
+  echo -n `(find_index $sel $*)
+}

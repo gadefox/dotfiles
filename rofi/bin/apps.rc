@@ -1,0 +1,36 @@
+#!/bin/rc
+
+dir = `(dirname $0)
+opt = `{printf \n󰉕\n󰧭\n\n󰘦\n󰖟\n󰽴\n\n\n󱑒\n | rofi -theme $dir/../theme/applet10 -p Applications -dmenu -theme-str 'textbox-prompt { str: ""; }' -u 9}
+
+switch ($opt) {
+  case 
+    kitty &
+
+  case 󰉕
+    $dir/files.rc &
+
+  case 󰧭
+    $dir/office.rc &
+
+  case 
+    $dir/image.rc &
+
+  case 󰘦
+    $dir/dev.rc &
+
+  case 󰖟
+    $dir/web.rc &
+
+  case 󰽴
+    deadbeef &
+
+  case 
+    $dir/tool.rc &
+
+  case 
+    $dir/settings.rc &
+
+  case 󱑒
+    $dir/now.rc &
+}

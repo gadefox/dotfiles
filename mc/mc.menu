@@ -1,0 +1,130 @@
+shell_patterns=0
+
+# %% The % character
+# %f The current file (if non-local vfs, file will be copied locally and %f will be full path to it)
+# %p The current file | %d The current working directory
+# %s "Selected files"; the tagged files if any, otherwise the current file
+# %t Tagged files
+# %u Tagged files (and they are untagged on return from expand_format)
+# %x Selected file’s extension
+# %b Selected file’s name stripped of extension (basename)
+# %view Runs the commands and pipes standard output to the view command.
+#  If %view is immediately followed by '{', recognize keywords ascii, hex, nroff and unform.
+#  If the format letter is in uppercase, it refers to the other panel
+#
+# With a number followed the % character you can turn quoting on (default) and off. For example: %f quote expanded macro | %1f ditto | %0f don't quote expanded macro
+# f pattern Match currently selected file
+# F pattern Match last selected in other panel
+# d pattern Match currently selected directory
+# D pattern Match last selected directory in other panel
+# t type Type of currently selected file
+# T type Type of last selected file in other panel
+# ! sub-cond Negate result of sub-condition
+#
+# Type is one or more of the following:
+# r regular file
+# d directory
+# n not a directory
+# l link
+# x executable file
+# t tagged
+# c character device
+# b block device
+# f FIFO (pipe)
+# s socket
+
++ ! t t
+c Change ownership of selected subdirectory (chown)
+  value=%{Ender new user:group}
+  case $value in
+    *:*) ;;
+    *) [ $value = "c" ] && value="root:root" || value="$value:$value" ;;
+  esac
+  chown -R "$value" %f
+
++ t t
+C Change ownership of selected subdirectories (chown)
+  value=%{Ender new user:group}
+  case $value in
+    *:*) ;;
+    *) [ $value = "c" ] && value="root:root" || value="$value:$value" ;;
+  esac
+  for i in %t; do
+    chown -R "$value" "$i"
+
++ t r & ! t t
+g Gzip or gunzip current file
+  unset DECOMP
+  case %f in
+    *.gz|*.[zZ]) DECOMP=-d;;
+  esac
+  # Do *not* add quotes around $DECOMP!
+  gzip $DECOMP -v %f
+
++ t t
+G Gzip or gunzip tagged files
+  for i in %t; do
+    unset DECOMP
+    case "$i" in
+      *.gz|*.[zZ]) DECOMP=-d;;
+    esac
+    gzip $DECOMP -v "$i"
+  done
+
++ t r & ! t t
+i Set the image height
+  value=%{Ender new size}
+  height=`identify -ping -format '%h' %f`
+  if [ $height -gt $value ]; then
+    `mogrify -resize x$value %f`
+  fi
+
++ t t
+I Set the height of the tagged images
+  value=%{Ender new size}
+  for i in %t; do
+    height=`identify -ping -format '%h' $i`
+    if [ $height -gt $value ]; then
+      `mogrify -resize x$value $i`
+    fi
+  done
+
++ ! t t
+l View shared library dependencies
+  %view{ascii,nroff} ldd -v %f
+
++ t r & ! t t
+o View SONAME information
+  %view{ascii,nroff} readelf -d %f | grep SONAME
+
++ t r & ! t t
+s Strip current executable
+  strip -s %f
+
++ t t
+S Strip tagged executables
+  for i in %t; do
+    strip -s "$i"
+  done
+
+y Create symlinks in the other directory
+  if [ %d = %D ]; then
+    echo "The two directories must be different."
+    exit 1
+  fi
+  for i in %d/*; do
+    if [ -f "$i" ]; then
+      DEST=%D/`basename "$i"`
+      ln -s "$i" "$DEST" && echo "Symlink $DEST created."
+    fi
+  done
+
+= t d
+z Compress the current subdirectory (tar.gz)
+  Pwd=`basename %d /`
+  echo -n "Name of the compressed file (without extension) [$Pwd]: "
+  read tar
+  [ "$tar"x = x ] && tar="$Pwd"
+  cd .. && \
+  tar cf - "$Pwd" | gzip -f9 > "$tar.tar.gz" && \
+  echo "../$tar.tar.gz created."

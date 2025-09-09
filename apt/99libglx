@@ -1,0 +1,6 @@
+DPkg::Post-Invoke {
+    "if [ ! -L /usr/lib/xorg/modules/extensions/libglx.so ]; then \
+         echo '>>> fixing libglx.so'; \
+         cp -f /usr/lib/xorg/modules/extensions/libglx.so.link /usr/lib/xorg/modules/extensions/libglx.so; \
+     fi";
+};

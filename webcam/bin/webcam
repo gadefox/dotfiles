@@ -1,0 +1,49 @@
+#!/bin/rc
+
+. /usr/local/libexec/rc/notify
+
+notify_icon = camera
+notify_title = Virtual camera:
+
+fn state {
+  echo -n `(cat /sys/devices/virtual/video4linux/video10/state)
+}
+
+fn isflip {
+  val = `state
+  if (!~ $val capture) {
+    show_notify 'The image is not turned upside down. (ffmpeg)'
+    echo -n $val
+  }
+}
+
+if (~ $1 --play || ~ $1 1) {
+  ~ `state capture && exec ffplay /dev/video10
+  exec v4l2-flip ffplay /dev/video0
+}
+
+if (~ $1 --flip || ~ $1 2) {
+  if (!~ `state capture) {
+    show_notify 'Turning the image upside down. (ffmpeg)'
+    exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10
+  }
+
+  show_notify 'The image is already turned upside down. (ffmpeg)'
+  exit 0
+}
+
+if (~ $1 --stop || ~ $1 3) {
+  if (~ `isflip ()) {
+    pkill --full 'ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10'
+    show_notify 'Turning the image upside down has stopped. (ffmpeg)'
+  }
+  exit 0
+}
+
+if (~ $1 --info || ~ $1 4) {
+  ~ `isflip () && show_notify 'The image is turned upside down. (ffmpeg)'
+  exit 0
+}
+
+echo parms: --play --flip --stop --info
+exit 1

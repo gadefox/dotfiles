@@ -1,0 +1,94 @@
+configuration {
+  show-icons: false;
+}
+
+* {
+  background: #282B31;
+  foreground: #FFFFFF;
+  selected: #DC461D;
+  active: #98C379;
+  urgent: #DC9C1D;
+}
+
+window {
+  location: center;
+  x-offset: 0px;
+  y-offset: 0px;
+}
+
+mainbox {
+  spacing: 10px;
+  padding: 20px;
+  background-color: @background;
+  children: [ "inputbar", "listview" ];
+}
+
+inputbar {
+  spacing: 10px;
+  background-color: @background;
+  children: [ "textbox-prompt", "prompt"];
+}
+
+textbox-prompt {
+  expand: false;
+  width: 40px;
+  padding: 7px 13px;
+  border-radius: 12px;
+  background-color: @urgent;
+  text-color: @background;
+  font: "CaskaydiaCove Nerd Font 14";
+}
+
+prompt {
+  padding: 7px;
+  border-radius: 12px;
+  background-color: @active;
+  text-color: @background;
+  font: "CaskaydiaCove Nerd Font 13";
+}
+
+listview {
+  lines: 1;
+  layout: vertical;
+  spacing: 15px;
+  background-color: @background;
+}
+
+element {
+  padding: 25px 10px;
+  border-radius: 12px;
+  text-color: @foreground;
+}
+
+element-text {
+  font: "CaskaydiaCove Nerd Font 28";
+  horizontal-align: 0.5;
+  vertical-align: 0.5;
+  background-color: inherit;
+  text-color: inherit;
+} 
+
+element normal.normal,
+element alternate.normal {
+  background-color: @background;
+  text-color: @foreground;
+}
+
+element normal.urgent,
+element alternate.urgent,
+element selected.active {
+  background-color: @urgent;
+  text-color: @background;
+}
+
+element normal.active,
+element alternate.active,
+element selected.urgent {
+  background-color: @active;
+  text-color: @background;
+}
+
+element selected.normal {
+  background-color: @selected;
+  text-color: @background;
+}

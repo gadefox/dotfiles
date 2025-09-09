@@ -1,0 +1,22 @@
+#!/bin/sh
+
+wifi down
+for l in $(ifconfig | grep "Link encap:" | sed 's/Link.*//'); do
+  ifconfig $l down
+done
+
+killall uhttpd dropbear hostapd odhcpd dnsmasq
+
+for f in /sys/class/leds/*/brightness; do
+  echo 0 > $f
+done
+
+for i in $(seq 0 10); do
+  for m in $(find /lib/modules | grep ko); do
+    rmmod $m
+  done
+done
+
+for s in $(ls /etc/init.d/ | grep -v cron); do
+  /etc/init.d/$s stop
+done

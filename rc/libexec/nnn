@@ -1,0 +1,30 @@
+. /usr/local/libexec/rc/read
+
+fn nnn_read {
+  if (test -s $XDG_CONFIG_HOME/nnn/.selection) {
+    print_red s election/
+    print_red c 'urrent? [default=c]'
+    echo -n `(read c s c)
+    echo >[1]/dev/tty
+  } else {
+    echo -n c
+  }
+}
+
+fn nnn_key {
+  echo 'Press any key to continue...'
+  read
+}
+
+fn nnn_handle {
+  key = $1; shift
+  switch ($key) {
+    case c
+      nnn_handle_dir $*
+
+    case s
+      shift
+      for (dir in `{ xargs -0 -n1 < $XDG_CONFIG_HOME/nnn/.selection })
+        nnn_handle_dir $dir $*
+  }
+}
