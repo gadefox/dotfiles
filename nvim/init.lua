@@ -27,11 +27,16 @@ vim.api.nvim_create_autocmd("BufReadPost", {
     if mark[1] > 0 and mark[1] <= vim.api.nvim_buf_line_count(0) then
       vim.api.nvim_win_set_cursor(0, mark)
     end
+
+    -- set file type
+    vim.defer_fn(function()
+      if vim.bo.filetype == "" then
+        vim.bo.filetype = "text"
+      end
+    end, 0)
   end
 })
-
-vim.cmd("filetype plugin indent on")
-
+ 
 vim.diagnostic.config({
   signs = {
     text = {
@@ -42,6 +47,9 @@ vim.diagnostic.config({
     }
   }
 })
+
+vim.keymap.set("n", "<tab>", "<cmd>bnext<cr>", { silent = true })
+vim.keymap.set("n", "<s-tab>", "<cmd>bprevious<cr>", { silent = true })
 
 vim.opt.clipboard = "unnamedplus" -- use system clipboard
 vim.opt.ignorecase = true  -- ignore case in search patterns
@@ -64,8 +72,7 @@ vim.opt.wrap = false -- lines will not wrap and only part of long lines will be 
 vim.opt.laststatus = 0 -- hide statusbar
 vim.opt.statusline = string.rep("-", vim.api.nvim_win_get_width(0))
 
-vim.keymap.set("n", "<tab>", "<cmd>bnext<cr>", { silent = true })
-vim.keymap.set("n", "<s-tab>", "<cmd>bprevious<cr>", { silent = true })
+vim.lsp.set_log_level("ERROR")
 
 local palette
 local kind_icons = {
@@ -161,7 +168,6 @@ require("lazy").setup({
 
   { -- #cba6f7
     "NvChad/nvim-colorizer.lua",
-    event = "BufReadPre",
     config = true
   },
 
@@ -558,6 +564,11 @@ require("lazy").setup({
         desc = "Info"
       },
       {
+        "<leader>f",
+        "<cmd>lua vim.lsp.buf.format({ async = true })<cr>",
+        desc = "Format"
+      },
+      {
         "<leader>lc",
         "<cmd>lua vim.lsp.buf.declaration()<cr>",
         desc = "Go to declaration"
@@ -776,7 +787,19 @@ require("lazy").setup({
       local config = require("lspconfig")
 
       config.clangd.setup({
-        capabilities = cap
+        cmd = { "clangd" },
+        capabilities = cap,
+        filetypes = { "c", "cpp", "objc", "objcpp" },
+        on_attach = function(_, bufnr)
+          local opts = { buffer = bufnr, noremap = true, silent = true }
+          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+          vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+          vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+          vim.keymap.set("n", "<leader>f", function()
+            vim.lsp.buf.format({ async = true })
+          end, opts)
+        end,
       })
 
       config.lua_ls.setup({

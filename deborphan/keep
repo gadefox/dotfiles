@@ -70,6 +70,7 @@ mpv
 msmtp
 nsxiv
 pass
+pastebinit
 pcmanfm
 picom
 pkg-config
@@ -89,6 +90,7 @@ python3-xdg
 pwgen
 qt5-style-kvantum
 rc
+rclone
 redshift
 rename
 rfkill

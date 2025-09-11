@@ -246,6 +246,10 @@ awesome.connect_signal("launch::systray", function(option)
   end
 end)
 
+local function launch_webcam()
+  theme.launch("webcam", { "", "󱃨", "󱜷", "󱂸" })
+end
+
 awesome.connect_signal("launch::tool", function(option)
   if option == 1 then
     awful.spawn(term())
@@ -254,7 +258,7 @@ awesome.connect_signal("launch::tool", function(option)
   elseif option == 3 then
     theme.launch("systray", { "󱊔", "󱊙" })
   elseif option == 4 then
-    theme.launch("webcam", { "", "󱃨", "󱜷", "󱂸" })
+    launch_webcam()
   elseif option == 5 then
     awful.spawn(term("htop"))
   elseif option == 6 then
@@ -409,10 +413,6 @@ awful.keyboard.append_global_keybindings({
     { description = "last", group = "tag" }),
   awful.key({ "Mod4" }, "BackSpace", awful.tag.history.restore,
     { description = "back & forth", group = "tag" }),
-  awful.key({ "Mod4", "Shift" }, "minus", function () awful.tag.incgap(-1, nil) end,
-    {description = "decrement gap", group = "tags" }),
-  awful.key({ "Mod4" }, "minus", function () awful.tag.incgap(1, nil) end,
-    {description = "increment gaps", group = "tags" }),
   awful.key({ "Mod4" }, "space", awful.client.urgent.jumpto,
     { description = "jump to urgent client", group = "client" }),
   awful.key({ "Mod4" }, "Return", function() awful.spawn(term()) end,
@@ -431,6 +431,8 @@ awful.keyboard.append_global_keybindings({
     { description = "browser", group = "launch" }),
   awful.key({ }, "XF86Launch5", function() launch_file() end,
     { description = "files", group = "launch" }),
+  awful.key({ }, "XF86Launch8", function() launch_webcam() end,
+    { description = "camera", group = "launch" }),
   awful.key({ }, "XF86Launch9", function() awful.spawn(term("htop")) end,
     { description = "process monitor", group = "launch" }),
   awful.key({ }, "XF86Favorites", launch_timer,
