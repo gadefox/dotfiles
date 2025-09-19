@@ -1,0 +1,40 @@
+. /usr/local/libexec/rc/file
+
+fn show_notify {
+  notify-send --icon=/etc/xdg/awesome/icons/$notify_icon.png '<b>'$notify_title' '$2'</b>' $1
+}
+
+fn show_notify_id {
+  ~ $notify_id ()
+    && notify_id = `(notify-send --print-id --icon=/etc/xdg/awesome/icons/$notify_icon.png '<b>'$notify_title' '$2'</b>' $1)
+    || notify-send --replace-id=$notify_id --icon=/etc/xdg/awesome/icons/$notify_icon.png '<b>'$notify_title' '$2'</b>' $1
+}
+
+fn notify_actions {
+  file = $1; shift
+  msg = $1; shift
+  title = $1; shift
+
+  for (action)
+    switch ($action) {
+      case 1
+        parm1 = --action=1=Open
+      case 2
+        parm2 = --action=2=Folder
+      case 3
+        parm3 = --action=3=Delete
+    }
+
+  action = `(notify-send --icon=/etc/xdg/awesome/icons/$notify_icon.png $parm1 $parm2 $parm3 '<b>'$notify_title' '$title'</b>' $msg)
+  xdg_handle $file $action
+}
+
+fn notify_sigexit+ {
+  flag e +
+  fn sigexit { show_notify 'Error: some command have failed.' }
+}
+
+fn notify_sigexit- {
+  flag e -
+  fn sigexit
+}

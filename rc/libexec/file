@@ -1,0 +1,17 @@
+fn get_filename {
+  parts = `` / (echo -n $1)
+  echo -n $parts($#parts)
+}
+
+fn xdg_handle {
+  ~ $2 1 && exec xdg-open $1 >[2]/dev/null
+
+  if (~ $2 2) {
+    dir = `(dirname $1)
+    exec xdg-open $dir >[2]/dev/null
+  }
+  if (~ $2 3) {
+    rm $1
+    show_notify 'The file has been deleted.'
+  }
+}

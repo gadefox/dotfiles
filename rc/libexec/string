@@ -1,0 +1,5 @@
+fn plural_str {
+  s = $1' '$2
+  ~ $1 1 || s = $s's'
+  echo -n $s
+}

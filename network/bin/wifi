@@ -1,0 +1,125 @@
+#!/bin/rc
+
+. /usr/local/libexec/rc/notify
+
+sta = wlan0
+notify_icon = wifi
+notify_title = Wi-Fi:
+
+fn getknown {
+  nets = `{ iwctl known-networks list | grep psk | awk '{print $2}' | sort -f }
+  if (~ $nets ()) {
+    show_notify 'No known networks found.'
+    return
+  }
+  echo -n $nets
+}
+
+fn disconnect {
+  net = `{ iwctl station $sta show | grep 'Connected network' | awk '{print $3}' }
+  if (~ $net ()) {
+    show_notify 'No connection found.'
+    return
+  }
+
+  iwctl station $sta disconnect
+  show_notify 'Disconnected from the network: ' $net
+
+  echo -n $net
+}
+
+fn connect {
+  if (~ $2 ()) {
+    iwctl station $sta connect $1
+    show_notify 'Connected to a known network.' $1
+  } else {
+    iwctl --passphrase $2 station $sta connect $1
+    show_notify 'Connected to a new network.' $1
+  }
+}
+
+if (~ `{ iwctl station list | grep $sta } ()) {
+  show_notify 'The device is turned off.'
+  exit 1
+}
+
+if (~ $1 --start || ~ $1 1) {
+  nets = `getknown
+  ~ $nets () && exit 0
+
+  if (~ $#nets 1) {
+    set = $nets
+  } else {
+    set = `{ dmenu -p 'Connect network' <<< $nets }
+    ~ $set () && exit 0
+  }
+
+  connect $set
+  exit 0
+}
+
+if (~ $1 --stop || ~ $1 2) {
+  `disconnect
+  exit 0
+}
+
+if (~ $1 --restart || ~ $1 3) {
+  net = `disconnect
+  ~ $net () && exit 0
+
+  connect $net
+  exit 0
+}
+
+if (~ $1 --add || ~ $1 4) {
+  set = `{ iwctl station $sta get-networks | grep psk | grep -v '>' | sort -f | awk '{ print $1 }' | dmenu -p 'Connect network' }
+  ~ $set () && exit 0
+
+  pass = `(dmenu -P -p Passphrase)
+  ~ $pass () && exit 0
+
+  connect $set $pass
+  exit 0
+}
+
+if (~ $1 --remove || ~ $1 5) {
+  nets = `getknown
+  ~ $nets () && exit 0
+
+  if (~ $#nets 1) {
+    set = $nets
+  } else {
+    set = `{ dmenu -p 'Forget network' <<< $nets }
+    ~ $set () && exit 0
+  }
+
+  iwctl known-networks $set forget
+  show_notify 'Removed network from known list.' $set
+
+  exit 0
+}
+
+if (~ $1 --info || ~ $1 6) {
+  net = `(iwctl station $sta show)
+
+#  for (i in `(seq $#net)) { echo $i' '$net($i) }; exit 0
+
+  if (!~ $net(14) connected) {
+    show_notify 'The network is disconnected.'
+    exit 0
+  }
+
+  msg = 'Channel: '$net(26)^', '$net(30)^' dBm, Rx('$net(38)^'): '$net(36)^', '
+  if (~ $net(39) RxBitrate) {
+    msg = $msg$net(40)^' '$net(41)
+  } else {
+    ~ $net(46) RxBitrate && msg = $msg$net(47)^' '$net(48)^', '
+    msg = $msg'Tx('$net(42)^'): '$net(40)^', '$net(44)^' '$net(45)
+  }
+
+  show_notify $msg $net(17)
+  exit 0
+}
+
+echo parms: --start --stop --restart --add --remove --info
+exit 1

@@ -1,0 +1,28 @@
+#!/bin/rc
+
+. /usr/local/libexec/rc/notify
+
+notify_icon = search
+notify_title = Subtitle:
+
+if (~ $1 ()) {
+  res = `(dmenu -i -p Movie)
+  ~ $res () && exit 1
+  name = $^res
+} else {
+  name = $1
+}
+
+show_notify_id 'The file is downloading..'
+dest = `(xdg-user-dir VIDEOS) || $HOME
+
+file = `{ subliminal --debug download $name --directory=$dest --single --force --language=en >[2=1] | grep INFO:subliminal.core:Saving | sed 's/.$//' | sed 's/INFO:subliminal.core:Saving <[^<>]*> to ''//' }
+if (~ $file ()) {
+  show_notify_id 'Can not be found.'
+  exit 1
+}
+
+notify_actions $file 'The file has been downloaded.' 2 3
+echo -n $file
+
+exit 0
