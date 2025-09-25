@@ -1,0 +1,18 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+notify_icon = sync
+notify_title = Sync:
+
+mount = `dmount
+~ $mount () && exit 1
+
+notify_show 'Personal files are updating to USB..' $mount(1)
+rsync -a --delete /home/$USER/documents $mount(2)
+rsync -a /home/$USER/.local/share/evolution/addressbook/system $mount(2)
+rsync -a /home/$USER/.local/share/evolution/calendar/system $mount(2)
+rsync -a /home/$USER/.local/share/evolution/memos/system $mount(2)
+rsync -a /home/$USER/.local/share/evolution/tasks/system $mount(2)
+
+notify_show 'Personal files backup is complete.' $mount(1)
+paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
+exit 0

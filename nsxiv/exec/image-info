@@ -1,0 +1,7 @@
+#!/bin/rc
+
+size = `{ stat -c %s $1 | numfmt --to=iec }
+res = `{ identify -format '%wx%h' $1 >[2]/dev/null }
+echo -n $1 '' $res '' $size
+
+exit 0
