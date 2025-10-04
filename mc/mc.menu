@@ -75,15 +75,13 @@ G g(un)zip tagged files
 + t r & ! t t
 i set image height
   new=%{new height}
-  [ `identify -ping -format %h "%f"` -gt $new ]
-    && `mogrify -resize x$new "%f"`
+  [ `identify -ping -format %h "%f"` -gt $new ] && `mogrify -resize x$new "%f"`
 
 + t t
 I set tagged images height
   new=%{new height}
   for i in %t; do
-    [ `identify -ping -format %h "$i"` -gt $new ]
-      && `mogrify -resize x$new "$i"`
+    [ `identify -ping -format %h "$i"` -gt $new ] && `mogrify -resize x$new "$i"`
   done
 
 + ! t t

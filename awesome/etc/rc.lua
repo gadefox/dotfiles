@@ -78,9 +78,9 @@ end
 
 awesome.connect_signal("launch::file", function(option, mods)
   if option == 1 then
-    spawn(term("mc"), mods)
-  elseif option == 2 then
     spawn(term("nnn"), mods)
+  elseif option == 2 then
+    spawn(term("mc"), mods)
   elseif option == 3 then
     spawn("pcmanfm", mods)
   elseif option == 4 then
@@ -358,7 +358,7 @@ elseif option == 7 then
 end)
 
 local function launch_file()
-  theme.launch("file", { "󰖔", "󱗁", "", "", "" })
+  theme.launch("file", { "󱗁", "󰖔", "", "", "" })
 end
 
 awesome.connect_signal("launch::menu", function(option, _)

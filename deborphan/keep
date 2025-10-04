@@ -6,6 +6,7 @@ cmake
 clang-format
 clangd-19
 cheese
+cutecom
 dconf-editor
 ddcutil
 deborphan
@@ -72,7 +73,7 @@ msmtp
 nsxiv
 pass
 pcmanfm
-picocom
+pico-sdk-source
 picom
 pkg-config
 pulsemixer
@@ -91,6 +92,7 @@ python3-pyqt5.qtwebengine
 python3-websockets
 python3-yaml
 python3-xdg
+pulseview
 pwgen
 qt5-style-kvantum
 qt6-style-kvantum
@@ -101,6 +103,7 @@ rfkill
 ripgrep
 rsync
 scrot
+sigrok-cli
 simavr
 slop
 subliminal

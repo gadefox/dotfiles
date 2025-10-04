@@ -62,6 +62,7 @@ if (~ $1 -n || ~ $1 4) {
   git init
   git add .
   git commit -m 'Initial commit'
+  git branch -M main
   git remote add origin https://github.com/$user/$name.git
   git push -u origin main
   notify_sigexit-
