@@ -29,7 +29,7 @@ fn nnn_handle {
     case s
       shift
       for (dir in `{ xargs -0 -n1 < $XDG_CONFIG_HOME/nnn/.selection })
-        nnn_handle_item $dir $*
+        nnn_item $dir $*
   }
 }
 
