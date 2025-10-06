@@ -4,20 +4,19 @@ notify_icon = search
 notify_title = Subtitle:
 
 if (~ $1 ()) {
-  res = ``( ) (dmenu -i -p Movie)
-  ~ $res () && exit 1
-  name = $res
+  name = `(dmenu -i -p Movie)
+  ~ $name () && exit 1
 } else {
   name = $1
 }
 
-notify_showid 'The file is downloading..'
+notify_show 'The file is downloading..' $^name
 dir = `(xdg-user-dir VIDEOS)
-file = `{ subliminal --debug download $name --directory=$dir --single --force --language=en >[2=1] | grep INFO:subliminal.core:Saving | sed 's/.$//' | sed 's/INFO:subliminal.core:Saving <[^<>]*> to ''//' }
-~ $file () && notify_error 'Can not be found.'
+file = `{ subliminal --debug download $^name --directory=$dir --single --force --language=en >[2=1] | grep INFO:subliminal.core:Saving | sed 's/.$//' | sed 's/INFO:subliminal.core:Saving <[^<>]*> to ''//' }
+~ $file () && notify_error 'Can not be found.' $^name
 
-opt = `(notify_show 'The file downloaded.' '' f=Folder d=Delete)
+opt = `(notify_show 'The file downloaded.' $^name f=Folder d=Delete)
 notify_xdg $file $opt
 
-echo $file
+echo -n $file
 exit 0
