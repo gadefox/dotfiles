@@ -1,5 +1,5 @@
 function srtname(s)
-  local patterns = { "%.%w+$", "%b[]", "AAC", "BONE", "HEVC", "MeGusta", "WEB%-DL", "WEBRip", "x264", "x265", "720p" }
+  local patterns = { "%.%w+$", "%b[]", "AAC", "BONE", "HEVC", "MeGusta", "WEB%-DL", "WEBRip", "x264", "x265", "720p", "1080p" }
 
   for _, p in ipairs(patterns) do
     s = string.gsub(s, p, "")
