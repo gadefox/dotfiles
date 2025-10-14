@@ -1,0 +1,17 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+. /usr/local/libexec/rc/util
+notify_icon = youtube
+notify_title = Youtube:
+
+notify_show 'Downloading audio..'
+file = `{ yt-dlp -O after_move:filepath --extract-audio --audio-format mp3 $1 >[2=1] }
+if (~ $file ERROR*) {
+  file = `{ cut -d: -f3- | sed 's/^ *//' <<< $file }
+  notify_error 'Failed to exctract audio.\nError: '$^file
+}
+
+name = ``( ) (lastpart $file /)
+opt = `(notify_show 'Download is complete. Audio saved to:\n'$name '' o=Open f=Folder d=Delete)
+notify_xdg $file $opt
+exit 0

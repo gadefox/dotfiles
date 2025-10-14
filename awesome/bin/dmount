@@ -1,0 +1,35 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+notify_icon = usb
+notify_title = Device:
+
+fn getusb {
+  usb = `{ readlink -f ls /dev/disk/by-id/usb-* | grep -E '[0-9]$' }
+  if (~ $usb ()) {
+    notify_show 'No USB device found.'
+    return
+  }
+  ~ $#usb 1 || usb = `{ printf %s$nl $usb | dmenu -p 'Select USB' }
+  echo $usb
+}
+
+~ $1 () && usb = `getusb || usb = $1
+~ $usb () && exit 1
+
+usb = `{ lsblk -nr -o PATH,LABEL,MOUNTPOINT | grep $usb }
+~ $usb () && notify_error 'Can not be found.' $usb
+
+if (~ $usb(3) ()) {
+  mount = `(udisksctl mount -b $usb(1))
+  file = $mount(4)
+  msg = $usb(1)^' is mounted at '$mount(4)^'.'
+} else {
+  file = $usb(3)
+  msg = $usb(1)^' is already mounted at '$usb(3)^'.'
+}
+
+opt = `(notify_show $msg $usb(2) f=Folder)
+notify_xdg $file $opt
+
+echo $usb(2)$file
+exit 0

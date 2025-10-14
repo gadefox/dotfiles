@@ -1,0 +1,41 @@
+@import "launcher.rasi"
+
+configuration {
+	modi: "drun";
+  show-icons: true;
+  display-drun: "";
+	drun-display-format: "{name}";
+}
+
+window {
+  width: 800px;
+}
+
+mainbox {
+  children: [ "inputbar", "listview" ];
+}
+
+entry {
+  placeholder: "Search";
+}
+
+listview {
+  columns: 6;
+  lines: 3;
+  scrollbar: false;
+  fixed-columns: true;
+  spacing: 10px;
+} 
+
+element {
+  orientation: vertical;
+}
+
+element-icon {
+  size: 64px;
+  background-color: inherit;
+}
+
+element-text {
+  horizontal-align: 0.5;
+} 

@@ -1,0 +1,36 @@
+set attach_save_dir = "~/downloads"
+set certificate_file = "~/.cache/mutt/certs"
+set crypt_autosign
+set crypt_replysign
+set crypt_replysignencrypted
+set charset = "utf-8"
+set date_format = "%d.%m.%Y %H:%M"
+set delete
+set editor = "nvim"
+set fast_reply
+set forward_format = "Fwd: %s"
+set forward_quote
+set include
+set mailcap_path = "/etc/neomuttrc.d/mailcap"
+set mail_check = 180
+unset markers
+set menu_scroll
+set mime_forward
+set new_mail_command="notify-send --icon='/etc/xdg/awesome/icons/mail.png' '<b>New email</b>' '%n new messages, %u unread.' &"
+set pager_context = 3
+set pager_index_lines = 10
+set pager_stop
+set pgp_timeout = 5400
+set reply_to
+set send_charset = "utf-8:iso-8859-1:us-ascii"
+set sendmail = "msmtp"
+set signature = "~/.config/mutt/sign"
+set sort = reverse-threads
+set sort_aux = last-date-received
+set ssl_force_tls
+set status_format = "%f [msgs:%?M?%M/?%m%?n? new:%n?%?o? old:%o?%?d? del:%d?%?F? flag:%F?%?t? tag:%t?%?p? post:%p?%?b? inc:%b?%?l? %l?]%>─(%P)"
+set text_flowed
+set tilde
+set timeout = $mail_check
+unset use_from
+unset wait_key

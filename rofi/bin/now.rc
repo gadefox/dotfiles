@@ -1,0 +1,6 @@
+#!/bin/rc
+
+now = `(date +%a\n%d\n%b\n%H\n%M\n)
+
+dir = `(dirname $0)
+opt = `{printf $now | rofi -theme $dir/../theme/applet5 -p Now -dmenu -theme-str 'textbox-prompt { str: "󱑒"; }' -u 3,4}
