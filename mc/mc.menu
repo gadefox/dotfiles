@@ -58,7 +58,7 @@ C chown tagged files
 + t r & ! t t
 g g(un)zip current file
   case %f in
-    *.gz|*.[zZ]) parm=-d;;
+    *.gz) parm=-d;;
   esac
   gzip $parm -v "%f"
 
@@ -67,7 +67,7 @@ G g(un)zip tagged files
   for i in %t; do
     unset parm
     case "$i" in
-      *.gz|*.[zZ]) parm=-d;;
+      *.gz) parm=-d;;
     esac
     gzip $parm -v "$i"
   done
@@ -102,7 +102,20 @@ S strip tagged executables
     [ -x "%f" ] && strip -s "$i"
   done
 
-= t d
-x Compress current directory
-  name=`basename %d`
-  tar -czf "../$name.tar.gz" .
++ t r & ! t t
+x compress current file
+  case %f in
+    *.xz) parm=-d;;
+    *) parm=-9;;
+  esac
+  xz $parm "%f"
+
++ t r & t t
+X compress tagged files
+  for i in %t; do
+    case %f in
+      *.xz) parm=-d;;
+      *) parm=-9;;
+    esac
+    xz $parm "$i"
+  done
