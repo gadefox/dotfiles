@@ -1,9 +1,5 @@
 package: nvidia-legacy-340xx-340.108
 
-kernel = `(uname -r)
-dkms build -k $kernel -m nvidia -v 340.108
-dkms install -k $kernel -m nvidia -v 340.108
-
 /bin:
 nvidia-debugdump
 nvidia-modprobe
