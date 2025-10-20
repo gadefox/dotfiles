@@ -1,0 +1,1 @@
+echo -n [secret] | pass insert -m [web]/[name]

@@ -1,0 +1,15 @@
+export PATH=/usr/local/bin:/usr/bin
+
+export XDG_CACHE_HOME=$HOME/.cache
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_DATA_HOME=$HOME/.local/share
+export XDG_DATA_DIRS=/usr/local/share:/usr/share
+
+export CALCHISTFILE=$XDG_CACHE_HOME/calc/history
+export NNN_PLUG="d:dragon;g:git"
+export PASSWORD_STORE_DIR=$XDG_DATA_HOME/pass
+
+export NO_AT_BRIDGE=1
+
+export QT_QPA_PLATFORMTHEME=gtk3
+export QT_STYLE_OVERRIDE=kvantum

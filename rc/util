@@ -1,0 +1,29 @@
+fn lastpart {
+  parts = ``($2) (echo -n $1)
+  ~ $parts () || echo -n $parts($#parts)
+}
+
+fn index {
+  val = $1; shift
+  tmp = ()
+  for (i) {
+    tmp = ($tmp +)
+    ~ $i $val || continue
+    echo $#tmp
+    break
+  }
+}
+
+fn lshift {
+  var = $*
+  * = $$1 {
+    shift $var(2)
+    $var(1) = $*
+  }
+}
+
+fn plural {
+  s = $1' '$2
+  ~ $1 1 || s = $s's'
+  echo -n $s
+}
