@@ -268,7 +268,10 @@ awesome.connect_signal("launch::tool", function(option, _)
     launch_webcam()
   elseif option == 5 then
     awful.spawn(term("htop"))
+
   elseif option == 6 then
+    awful.spawn("wireshark")
+  elseif option == 7 then
     awful.spawn(term("wavemon"))
   end
 end)
@@ -375,7 +378,7 @@ awesome.connect_signal("launch::menu", function(option, _)
   elseif option == 7 then
     theme.launch("music", { "󰝚", "󰺢", "󰋍", "" })
   elseif option == 8 then
-    theme.launch("tool", { "", "󰹑", "󱊖", "󰖠", "", "󱚻" })
+    theme.launch("tool", { "", "󰹑", "󱊖", "󰖠", "", "", "󱚻" })
   elseif option == 9 then
     awful.spawn.easy_async_with_shell("iwctl station wlan0 show | grep State | awk '{print $2}'", function(out)
       local wifi = out == "connected\n" and "󰖩" or

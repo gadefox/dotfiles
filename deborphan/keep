@@ -113,6 +113,7 @@ tftpd-hpa
 transmission-gtk
 trayer
 xarchiver
+usb.ids
 usbutils
 v4l-utils
 v4l2loopback-dkms
