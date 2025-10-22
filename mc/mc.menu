@@ -108,6 +108,7 @@ x compress current file
     *.xz) parm=-d;;
     *) parm=-9;;
   esac
+  echo $parm
   xz $parm "%f"
 
 + t r & t t
