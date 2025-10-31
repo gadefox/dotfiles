@@ -1,7 +1,6 @@
 package: nvidia-legacy-340xx-340.108
 
 /bin:
-nvidia-debugdump
 nvidia-modprobe
 nvidia-persistenced
 nvidia-settings
@@ -35,6 +34,11 @@ libnvcuvid.so.340.108
 libnvidia-encode.so.340.108
 libnvidia-ml.so.340.108
 
-/lib/modules/6.1.0-9-amd64/updates/dkms:
+/lib/modules/`(uname -r)/updates/dkms:
 nvidia-uvm.ko
 nvidia.ko
+
+/share/nvidia:
+monitoring.conf
+nvidia-application-profiles-340.108-key-documentation
+nvidia-application-profiles-340.108-rc

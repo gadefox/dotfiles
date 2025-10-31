@@ -89,10 +89,6 @@ l view shared library dependencies
   %view{ascii,nroff} ldd -v "%f"
 
 + t r & ! t t
-o view SONAME information
-  %view{ascii,nroff} readelf -d "%f" | grep SONAME
-
-+ t r & ! t t
 s strip current executable
   [ -x "%f" ] && strip -s "%f"
 
@@ -103,7 +99,7 @@ S strip tagged executables
   done
 
 + t r & ! t t
-x compress current file
+x (un)compress current file
   case %f in
     *.xz) parm=-d;;
     *) parm=-9;;
@@ -111,7 +107,7 @@ x compress current file
   xz $parm "%f"
 
 + t r & t t
-X compress tagged files
+X (un)compress tagged files
   for i in %t; do
     case %f in
       *.xz) parm=-d;;
