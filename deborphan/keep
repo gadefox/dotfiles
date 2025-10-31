@@ -1,3 +1,4 @@
+arandr
 arduino
 atool
 calc
@@ -65,7 +66,6 @@ linux-image-amd64
 lua5.3
 lua-check
 lua-lgi
-lxrandr
 mc
 meld
 meson

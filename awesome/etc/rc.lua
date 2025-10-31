@@ -225,7 +225,7 @@ awesome.connect_signal("launch::settings", function(option, _)
   elseif option == 2 then
     awful.spawn("dconf-editor")
   elseif option == 3 then
-    awful.spawn("lxrandr")
+    awful.spawn("arandr")
   elseif option == 4 then
     awful.spawn("gnome-disks")
   elseif option == 5 then
