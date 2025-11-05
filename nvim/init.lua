@@ -393,9 +393,8 @@ require("lazy").setup({
 
       todo.setup({
         keywords = {
-          FIX = {
+          FIXME = {
             icon = " ",
-            alt = { "FIXME" },
             color = palette.red -- FIXME:
           },
           TODO = {
@@ -412,7 +411,6 @@ require("lazy").setup({
           },
           PERF = {
             icon = "⋅",
-            alt = { "OPTIM" },
             color = palette.teal -- PERF:
           },
           NOTE = {
