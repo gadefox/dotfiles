@@ -1,8 +1,3 @@
-fn lastpart {
-  parts = ``($2) (echo -n $1)
-  ~ $parts () || echo -n $parts($#parts)
-}
-
 fn index {
   val = $1; shift
   tmp = ()
@@ -14,12 +9,23 @@ fn index {
   }
 }
 
+fn lastpart {
+  parts = ``($2) (echo -n $1)
+  ~ $parts () || echo -n $parts($#parts)
+}
+
 fn lshift {
   var = $*
   * = $$1 {
     shift $var(2)
     $var(1) = $*
   }
+}
+
+fn newdir {
+  ~ $2 () && dir = $1 || dir = $2/$1
+  mkdir -p $dir
+  echo -n $dir
 }
 
 fn plural {
