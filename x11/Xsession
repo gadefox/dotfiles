@@ -93,7 +93,7 @@ else
 fi
 
 exec >>"$ERRFILE" 2>&1
-rm -f $ERRFILE.old
+rm -f "$ERRFILE.old"
 
 echo "$PROGNAME: X session started for $LOGNAME at $(date)"
 
