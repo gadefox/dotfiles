@@ -1,9 +1,9 @@
 fn notify_show {
   msg = $1; shift
   ~ $* () && title = () || { title = $1; shift }
-  ~ $* () && args = () || args = --action=$*
+  ~ $* () && action = () || action = --action=$*
 
-  notify-send --icon=/etc/xdg/awesome/icons/$notify_icon.png $args '<b>'$notify_title' '$title'</b>' $msg
+  notify-send --icon=/etc/xdg/awesome/icons/$notify_icon.png $action '<b>'$notify_title' '$title'</b>' $msg
 }
 
 fn notify_showid {

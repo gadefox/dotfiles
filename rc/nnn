@@ -1,6 +1,8 @@
 . /usr/local/libexec/rc/read
 . /usr/local/libexec/rc/util
 
+nul = `(printf \0)
+
 fn nnn_issel { test -s $XDG_CONFIG_HOME/nnn/.selection }
 
 fn nnn_read {
@@ -28,8 +30,8 @@ fn nnn_handle {
       nnn_item $*
     case s
       shift
-      for (dir in `{ xargs -0 -n1 < $XDG_CONFIG_HOME/nnn/.selection })
-        nnn_item $dir $*
+      for (f in ``($nul) { cat $XDG_CONFIG_HOME/nnn/.selection })
+        nnn_item $f $*
   }
 }
 
