@@ -5,7 +5,7 @@ notify_title = Sync:
 
 usb = `(usbmount 3)
 ~ usb () && exit 1
-~ $usb(1) priv || { notify_show 'Insert the correct private USB key to synchronize data.' $usb(1); exit 1 }
+~ $usb(1) priv || notify_error 'Insert the correct private USB key to synchronize data.' $usb(1)
 
 notify_show 'Personal files are updating to USB..' $usb(1)
 
