@@ -13,12 +13,12 @@ fn isflip {
   }
 }
 
-if (~ $1 -p || ~ $1 1) {
+if (~ $1 1) {
   ~ `state capture && exec ffplay /dev/video10
   exec v4l2-flip ffplay /dev/video0
 }
 
-if (~ $1 -f || ~ $1 2) {
+if (~ $1 2) {
   if (!~ `state capture) {
     notify_show 'Turning the image upside down. (ffmpeg)'
     exec ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10
@@ -28,7 +28,7 @@ if (~ $1 -f || ~ $1 2) {
   exit 0
 }
 
-if (~ $1 -s || ~ $1 3) {
+if (~ $1 3) {
   if (~ `isflip ()) {
     pkill -f 'ffmpeg -i /dev/video0 -vf vflip -f v4l2 /dev/video10'
     notify_show 'Turning the image upside down has stopped. (ffmpeg)'
@@ -36,7 +36,7 @@ if (~ $1 -s || ~ $1 3) {
   exit 0
 }
 
-if (~ $1 -i || ~ $1 4) {
+if (~ $1 4) {
   ~ `isflip () && notify_show 'The image is turned upside down. (ffmpeg)'
   exit 0
 }

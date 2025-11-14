@@ -9,9 +9,14 @@ fn index {
   }
 }
 
+fn npart {
+  p = ``($2) (echo -n $1)
+  ~ $p () || echo -n $p($3)
+}
+
 fn lastpart {
-  parts = ``($2) (echo -n $1)
-  ~ $parts () || echo -n $parts($#parts)
+  p = ``($2) (echo -n $1)
+  ~ $p () || echo -n $p($#p)
 }
 
 fn lshift {

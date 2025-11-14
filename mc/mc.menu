@@ -1,117 +1,76 @@
 shell_patterns=0
 
-# %% The % character
-# %f The current file (if non-local vfs, file will be copied locally and %f will be full path to it)
-# %p The current file | %d The current working directory
-# %s "Selected files"; the tagged files if any, otherwise the current file
-# %t Tagged files
-# %u Tagged files (and they are untagged on return from expand_format)
-# %x Selected file’s extension
-# %b Selected file’s name stripped of extension (basename)
-# %view Runs the commands and pipes standard output to the view command.
-#  If %view is immediately followed by '{', recognize keywords ascii, hex, nroff and unform.
-#  If the format letter is in uppercase, it refers to the other panel
-#
-# With a number followed the % character you can turn quoting on (default) and off. For example: %f quote expanded macro | %1f ditto | %0f don't quote expanded macro
-# f pattern Match currently selected file
-# F pattern Match last selected in other panel
-# d pattern Match currently selected directory
-# D pattern Match last selected directory in other panel
-# t type Type of currently selected file
-# T type Type of last selected file in other panel
-# ! sub-cond Negate result of sub-condition
-#
-# Type is one or more of the following:
-# r regular file
-# d directory
-# n not a directory
-# l link
-# x executable file
-# t tagged
-# c character device
-# b block device
-# f FIFO (pipe)
-# s socket
-
 + ! t t
 c chown current file
-  parm=%{user[:group] or `}
-  case "$parm" in
-    '`') parm="root:root";;
-    *:*) ;;
-    *) parm="$parm:$parm";;
-  esac
-  chown -R "$parm" "%f"
+  n=%{user[:group] or `}
+  [ $n = '`' ] && n=root
+  [ $n = ${n#*:} ] && n=$n:$n
+  chown -R $n %f
 
 + t t
 C chown tagged files
-  parm=%{new user[:group] or `}
-  case $parm in
-    '`') parm="root:root";;
-    *:*) ;;
-    *) parm="$parm:$parm";;
-  esac
-  for i in %t; do
-    chown -R "$parm" "$i"
-  done
+  n=%{user[:group] or `}
+  [ $n = '`' ] && n=root
+  [ $n = ${n#*:} ] && n=$n:$n
+  chown -R $n %t
 
 + t r & ! t t
 g g(un)zip current file
-  case %f in
-    *.gz) parm=-d;;
-  esac
-  gzip $parm -v "%f"
+  f=%f
+  [ "${f%.gz}" = %f ] && gzip %f || gunzip %f
 
 + t t
 G g(un)zip tagged files
-  for i in %t; do
-    unset parm
-    case "$i" in
-      *.gz) parm=-d;;
-    esac
-    gzip $parm -v "$i"
+  for f in %t; do
+    [ "${f%.gz}" = "$f" ] && gzip "$f" || gunzip "$f"
   done
 
 + t r & ! t t
 i set image height
-  new=%{new height}
-  [ `identify -ping -format %h "%f"` -gt $new ] && `mogrify -resize x$new "%f"`
+  n=%{new height}
+  h=$(identify -ping -format %h %f)
+  [ $h -gt $n ] && mogrify -resize x$n %f
 
 + t t
 I set tagged images height
-  new=%{new height}
-  for i in %t; do
-    [ `identify -ping -format %h "$i"` -gt $new ] && `mogrify -resize x$new "$i"`
+  n=%{new height}
+  for f in %t; do
+    h=$(identify -ping -format %h "$f")
+    [ $h -gt $n ] && mogrify -resize x$n "$f"
   done
 
 + ! t t
-l view shared library dependencies
-  %view{ascii,nroff} ldd -v "%f"
+l view lib dependencies
+  %view{ascii,nroff} ldd %f
+
++ t r & ! t t
+p shrink current PDF
+  f=%f
+  [ "${f%.pdf}" = %f ] || gs -dBATCH -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -dPDFSETTINGS=/screen -sOutputFile=- %f | sponge %f
+
++ t t
+P shrink tagged PDFs
+  for f in %t; do
+    [ "${f%.pdf}" = "$f" ] || gs -dBATCH -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -dPDFSETTINGS=/screen -sOutputFile=- "$f" | sponge "$f"
+  done
 
 + t r & ! t t
 s strip current executable
-  [ -x "%f" ] && strip -s "%f"
+  [ -x %f ] && strip -s %f
 
 + t t
 S strip tagged executables
-  for i in %t; do
-    [ -x "%f" ] && strip -s "$i"
+  for f in %t; do
+    [ -x "$f" ] && strip -s "$f"
   done
 
 + t r & ! t t
 x (un)compress current file
-  case %f in
-    *.xz) parm=-d;;
-    *) parm=-9;;
-  esac
-  xz $parm "%f"
+  f=%f
+  [ "${f%.xz}" = %f ] && xz %f || unxz %f
 
 + t r & t t
 X (un)compress tagged files
-  for i in %t; do
-    case %f in
-      *.xz) parm=-d;;
-      *) parm=-9;;
-    esac
-    xz $parm "$i"
+  for f in %t; do
+    [ "${f%.xz}" = "$f" ] && xz "$f" || unxz "$f"
   done

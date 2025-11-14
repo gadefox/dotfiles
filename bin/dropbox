@@ -75,8 +75,4 @@ if (~ $1 ls || ~$1 4) {
   exit 0
 }
 
-
 exit 1
-
-#https://www.dropbox.com/oauth2/authorize?client_id=XXX&response_type=code&token_access_type=offline&scope=files.content.write%20sharing.write&redirect_uri=http://localhost/dbcb
-#curl -X POST https://api.dropboxapi.com/oauth2/token -d code=XXX -d grant_type=authorization_code -d client_id=XXX -d client_secret=XXX -d redirect_uri=http://localhost/dbcb

@@ -82,7 +82,7 @@ awesome.connect_signal("launch::file", function(option, mods)
   elseif option == 2 then
     spawn(term("mc"), mods)
   elseif option == 3 then
-    spawn("pcmanfm", mods)
+    spawn("pcmanfm --no-desktop", mods)
   elseif option == 4 then
     awful.spawn("xarchiver")
   elseif option == 5 then

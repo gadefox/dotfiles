@@ -3,16 +3,20 @@
 notify_icon = sync
 notify_title = Sync:
 
-mount = `dmount
-~ $mount () && exit 1
+usb = `(usbmount 3)
+~ usb () && exit 1
+~ $usb(1) priv || { notify_show 'Insert the correct private USB key to synchronize data.' $usb(1); exit 1 }
 
-notify_show 'Personal files are updating to USB..' $mount(1)
-rsync -a --delete /home/$USER/documents $mount(2)
-rsync -a /home/$USER/.local/share/evolution/addressbook/system $mount(2)
-rsync -a /home/$USER/.local/share/evolution/calendar/system $mount(2)
-rsync -a /home/$USER/.local/share/evolution/memos/system $mount(2)
-rsync -a /home/$USER/.local/share/evolution/tasks/system $mount(2)
+notify_show 'Personal files are updating to USB..' $usb(1)
 
-notify_show 'Personal files backup is complete.' $mount(1)
+notify_sigexit+
+rsync -a --delete /home/$USER/documents $usb(2)
+rsync -a /home/$USER/.local/share/evolution/addressbook/system $usb(2)
+rsync -a /home/$USER/.local/share/evolution/calendar/system $usb(2)
+rsync -a /home/$USER/.local/share/evolution/memos/system $usb(2)
+rsync -a /home/$USER/.local/share/evolution/tasks/system $usb(2)
+notify_sigexit-
+
+notify_show 'Personal files backup is complete.' $usb(1)
 paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
 exit 0
