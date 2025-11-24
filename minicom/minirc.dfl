@@ -1,0 +1,8 @@
+# Machine-generated file - use "minicom -s" to change parameters.
+pu port             /dev/ttyACM0
+pu mfcolor          BLACK
+pu mbcolor          GREEN
+pu tfcolor          WHITE
+pu sfcolor          BLACK
+pu sbcolor          MAGENTA
+pu histlines        3000

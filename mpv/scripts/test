@@ -1,0 +1,10 @@
+#!/bin/lua
+
+require("srt")
+
+local p = io.popen("ls ~/videos")
+for file in p:lines() do
+  print(file)
+  print(srtname(file))
+end
+p:close()
