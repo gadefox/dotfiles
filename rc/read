@@ -1,0 +1,29 @@
+cr = `(printf \r)
+esc = `(printf \033)
+
+fn echoc { echo -n $esc[$1'm'$2$esc[0m > /dev/tty }
+
+fn read {
+  ~ $* () && def = $cr || { def = $1; shift }
+
+  old = `(stty -g)
+  stty raw -echo
+
+  while () {
+    key = `{ dd count=1 >[2] /dev/null }
+    ~ $key $esc && break
+    ~ $key $cr && key = $def
+    ~ $* () || ~ $* $key || continue
+
+    echo $key
+    break
+  }
+  stty $old
+}
+
+fn key {
+  old = `(stty -g)
+  stty raw -echo
+  dd count=1 >[2] /dev/null >[1=2]
+  stty $old
+}

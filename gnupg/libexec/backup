@@ -1,0 +1,12 @@
+#!/bin/rc
+
+dest = $HOME/documents/priv/gpg
+
+gpg --yes --export --export-options backup -o $dest/public.gpg
+gpg --yes --export-secret-keys --export-options backup -o $dest/private.gpg
+gpg --export-ownertrust > $dest/trust.gpg
+
+cp -f $PASSWORD_STORE_DIR/*.gpg $dest
+
+mkdir -p $dest/dropbox
+cp -f $PASSWORD_STORE_DIR/dropbox/*.gpg $dest/dropbox

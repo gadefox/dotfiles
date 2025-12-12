@@ -1,0 +1,22 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+notify_icon = toggle
+notify_title = Audio:
+
+fn indices { pacmd list-sink-inputs | grep index: | awk '{print $2}' }
+
+rec = `indices
+~ $rec () && notify_error 'No audio is playing.'
+~ $#rec 1 || notify_error 'Multiple active audio streams.'
+
+name = parec_`(date +%Y%m%d%H%M%S)^.mp3
+file = `(xdg-user-dir DOWNLOAD)^/$name
+notify_show 'Recording started.'
+
+parec --monitor-stream=$rec >[2] /dev/null | lame -r -V0 - $file >[2] /dev/null &
+while () { ~ `indices $rec || break }
+kill $apid >[2] /dev/null
+
+opt = `(notify_show 'Recording stopped.\nStream saved to: '$name '' o=Open f=Folder d=Delete)
+notify_xdg $file $opt
+exit 0
