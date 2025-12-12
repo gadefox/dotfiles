@@ -6,7 +6,10 @@ local M = {}
 local function append_rules()
   ruled.client.append_rule({
     rule = {},
-    properties = { screen = awful.screen.preferred }
+    properties = {
+      screen = awful.screen.preferred,
+      raise  = true
+    }
   })
 
   ruled.client.append_rule({
