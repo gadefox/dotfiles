@@ -1,0 +1,5 @@
+[credential]
+	helper = /home/fox/.local/libexec/gnupg/git-credential
+[user]
+	name = gadefox
+	email = [email]
