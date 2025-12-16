@@ -1,8 +1,13 @@
 function srtname(s)
-  local patterns = { "%.%w+$", "%b[]", "AAC", "BONE", "HEVC", "MeGusta", "WEB%-DL", "WEBRip", "x264", "x265", "720p", "1080p" }
+  local patterns = {
+    "%.%w+$", "%b[]", "720p", "1080p", "10Bit", "5%.1", "AAC", "BluRay", "BONE",
+    "DDP", "HEVC", "HC", "HDRip", "MeGusta", "NeoNoir", "WEB%-DL", "WEBRip",
+    "x264", "x265"
+  }
 
   for _, p in ipairs(patterns) do
     s = string.gsub(s, p, "")
+--    print(s)
   end
   
   s = string.gsub(s, "[._-]", " ")
