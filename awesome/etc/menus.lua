@@ -6,32 +6,32 @@ local util = require("util")
 
 local module = {}
 
-function module.power()
-  menu.show("power", { "󰐥", "󰜉", "󰍁", "󰗽", "" })
+function module.browser()
+  menu.show("browser", { "󰇩", "󰈹", "󰊯" })
+end
+
+function module.file()
+  menu.show("file", { "󱗁", "󰖔", "", "", "", "" })
 end
 
 function module.main()
   menu.show("main", { "󰊲", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "" })
 end
 
+function module.power()
+  menu.show("power", { "󰐥", "󰜉", "󰍁", "󰗽", "" })
+end
+
 function module.scrot()
   menu.show("scrot", { "", "󰩭", "" })
-end
-
-function module.webcam()
-  menu.show("webcam", { "", "󱃨", "󱜷", "󱂸" })
-end
-
-function module.browser()
-  menu.show("browser", { "󰇩", "󰈹", "󰊯" })
 end
 
 function module.timer()
   menu.show("timer", { "󱑋", "󱑌", "󱑍", "󱑎", "󱑏", "󱑐", "󱑓", "󱑕", "󱫍" })
 end
 
-function module.file()
-  menu.show("file", { "󱗁", "󰖔", "", "", "", "" })
+function module.webcam()
+  menu.show("webcam", { "", "󱃨", "󱜷", "󱂸" })
 end
 
 function module.light()
@@ -43,7 +43,7 @@ function module.light()
                 vcp < 70 and 4 or
                 vcp < 90 and 5 or 6
 
-    module.show("light", { "󱩍", "󱩐", "󱩑", "󱩓", "󱩕", "󰛨" }, { idx })
+    menu.show("light", { "󱩍", "󱩐", "󱩑", "󱩓", "󱩕", "󰛨" }, { idx })
   end)
 end
 function module.setup()
@@ -132,7 +132,7 @@ function module.setup()
 
   awesome.connect_signal("menu::settings", function(option, _)
     if option == 1 then
-      menu.light()
+      module.light()
     elseif option == 2 then
       awful.spawn("dconf-editor")
     elseif option == 3 then
