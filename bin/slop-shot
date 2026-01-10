@@ -1,0 +1,6 @@
+#!/bin/rc
+
+slop=`(slop -b 3 -f %g -r boxzoom) || exit 1
+rnd=`(date +%H%M%S)
+image=$HOME/screenshot$rnd.png
+import -window root -crop $slop $image

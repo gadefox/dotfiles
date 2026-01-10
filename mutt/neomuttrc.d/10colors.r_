@@ -1,0 +1,27 @@
+color attachment color9 default
+color hdrdefault magenta default
+color indicator default brightblack
+color normal white black
+color signature color13 default
+color status color14 brightwhite
+color tilde magenta default
+color tree brightgreen default
+
+color body color10 default "[\-\.+_a-zA-Z0-9]+@[\-\.a-zA-Z0-9]+"
+color body color10 default "(https|http|ftp)://[\-\.\,/+=&%~_:?\#a-zA-Z0-9]+"
+color body color10 default "(^| |[-.[:alnum:]]+:+)~?\(/[-_.'[:alnum:]]+\)+/?"
+
+color header color13 default "^From:"
+
+color index magenta default "~N"
+color index magenta default "~O"
+color index color245 default "~D"
+color index color10 default "~Q"
+color index yellow default "~F"
+
+color quoted green default
+color quoted1 blue default
+color quoted2 cyan default
+color quoted3 color11 default
+color quoted4 yellow default
+color quoted5 red default

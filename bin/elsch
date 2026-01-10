@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+import sys
+
+REPLACEMENTS = [
+  ("CC", "┤├"),
+  ("D>", "▶├"),
+  ("<D", "┤"),
+  ("->", "─►"),
+  ("TN", "┤▶"),
+  ("TP", "┤◀"),
+  ("R", ""),
+  ("o", ""),
+]
+
+PLUS_MAP = {
+  (True, True, True, True): "┼",
+  (True, True, False, True): "├",
+  (True, True, True, False): "┤",
+  (False, True, True, True): "┬",
+  (True, False, True, True): "┴",
+  (False, True, False, True): "┌",
+  (True, False, True, False): "┘",
+  (False, True, True, False): "┐",
+  (True, False, False, True): "└"
+}
+
+def vert(c):
+  return c in("|", "+")
+
+def horz(c):
+  return c in("-", "+")
+
+def neighbors(g, r, c, h, w):
+  u = g[r - 1][c] if r > 0 else " "
+  d = g[r + 1][c] if r < h - 1 else " "
+  l = g[r][c - 1] if c > 0 else " "
+  r = g[r][c + 1] if c < w - 1 else " "
+    
+  return (vert(u), vert(d), horz(l), horz(r))
+
+def print_grid(grid):
+  for row in grid:
+    print("".join(row))
+
+def main():
+  text = sys.stdin.read()
+  lines = text.splitlines()
+    
+  max_len = max(len(line) for line in lines)
+  lines = [line.ljust(max_len) for line in lines]
+
+  grid_o = [list(line) for line in lines]
+  h = len(grid_o)
+  w = len(grid_o[0])
+  grid_n = [[None for _ in range(w)] for _ in range(h)]
+
+  for r in range(h):
+    for c in range(w):
+      v = grid_o[r][c]
+      if v == "+":
+        ctx = neighbors(grid_o, r, c, h, w)
+        grid_n[r][c] = PLUS_MAP.get(ctx, "?")
+      else:
+        grid_n[r][c] = v
+#  print_grid(grid_n)
+
+  for r in range(h):
+    for c in range(w):
+      v = grid_n[r][c]
+      if v == "|":
+        grid_n[r][c] = "│"
+      if v == "-":
+        grid_n[r][c] = "─"
+#  print_grid(grid_n)
+
+  out = ["".join(row) for row in grid_n]
+  out = "\n".join(out)
+
+  for old, new in REPLACEMENTS:
+    out = out.replace(old, new)
+
+  print(out)
+
+if __name__ == "__main__":
+    main()

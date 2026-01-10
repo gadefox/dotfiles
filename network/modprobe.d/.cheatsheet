@@ -1,0 +1,2 @@
+modinfo iwlwifi | grep 11n_disable
+modprobe iwlwifi 11n_disable={0, 1, 2, 4, 8}

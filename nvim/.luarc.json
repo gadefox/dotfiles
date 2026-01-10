@@ -1,0 +1,8 @@
+{
+  "runtime": {
+    "version": "LuaJIT"
+  },
+  "diagnostics": {
+    "globals": [ "require", "assert", "string", "table", "math", "pairs", "ipairs", "os", "vim" ]
+  }
+}
