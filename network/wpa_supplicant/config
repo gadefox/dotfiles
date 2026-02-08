@@ -1,0 +1,5 @@
+network={
+ ssid="gade"
+ # scan_ssid=1
+ psk=`{ wpa_passphrase gade <WPA2_AES_password> }
+}

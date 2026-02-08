@@ -1,0 +1,31 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+notify_icon = whatever
+notify_title = 'Web spy:'
+
+cache = $XDG_CACHE_HOME/wspy
+mkdir -p $cache
+
+fn handle {
+  name = `{ sed 's|https\?://||; s|^www\.||; s|/$||; s|/|_|g; s|\.|_|g' <<< $1 }
+  tmp = /tmp/$name.html
+  wget -q -O $tmp $1
+
+  md5cur = `{ md5sum $tmp | awk '{print $1}' }
+  rm $tmp
+
+  md5file = $cache/$name
+  md5old = `{ cat $md5file >[2] /dev/null }
+  ~ $md5old = $md5cur && return
+
+  echo -n $md5cur > $md5file
+  notify_show 'Web '$2' has changed.'
+}
+
+names = ``($nl) (jq -r .webs[].name $XDG_CONFIG_HOME/wspy/config)
+urls = `(jq -r .webs[].url $XDG_CONFIG_HOME/wspy/config)
+
+for (i in `(seq 1 $#urls))
+  handle $urls($i) $names($i)
+
+exit 0

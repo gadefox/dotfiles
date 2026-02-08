@@ -1,0 +1,15 @@
+#!/bin/rc
+
+fs=`(find $1 -name '*.so')
+if (~ $fs ()) {
+  printf empty
+  exit
+}
+
+for (f in $fs) {
+  nf=`{ldd -v $f | grep 'not found'}
+  if (!~ $nf ()) {
+    printf $f$nl
+  }
+}
+

@@ -1,0 +1,8 @@
+-install-
+apt libjs-pdf  // copy missing images
+pip adblock
+
+-spellcheck-
+/usr/share/qutebrowser/scripts/dictcli.py install en-US
+
+https://github.com/iamfugui/YouTube-AD-Blocker

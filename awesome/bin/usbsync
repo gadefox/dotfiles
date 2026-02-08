@@ -1,0 +1,24 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+notify_icon = sync
+notify_title = Sync:
+
+usb = `usbmount
+~ usb () && exit 1
+~ $usb(2) priv || notify_error 'Insert the correct private USB key to synchronize data.' $usb(2)
+
+notify_show 'Personal files are updating to USB..' $usb(2)
+
+notify_sigexit+
+rsync -a --delete /home/$USER/documents $usb(3)
+rsync -a /home/$USER/.local/share/evolution/addressbook/system $usb(3)
+rsync -a /home/$USER/.local/share/evolution/calendar/system $usb(3)
+rsync -a /home/$USER/.local/share/evolution/memos/system $usb(3)
+rsync -a /home/$USER/.local/share/evolution/tasks/system $usb(3)
+notify_sigexit-
+
+notify_show 'Personal files backup is complete.' $usb(2)
+paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
+
+usbmount 3 $usb(1)
+exit 0

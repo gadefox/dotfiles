@@ -1,0 +1,40 @@
+fn index {
+  val = $1; shift
+  tmp = ()
+  for (i) {
+    tmp = ($tmp +)
+    ~ $i $val || continue
+    echo $#tmp
+    break
+  }
+}
+
+fn npart {
+  p = ``($2) (echo -n $1)
+  ~ $p () || echo -n $p($3)
+}
+
+fn lastpart {
+  p = ``($2) (echo -n $1)
+  ~ $p () || echo -n $p($#p)
+}
+
+fn lshift {
+  var = $*
+  * = $$1 {
+    shift $var(2)
+    $var(1) = $*
+  }
+}
+
+fn newdir {
+  ~ $2 () && dir = $1 || dir = $2/$1
+  mkdir -p $dir
+  echo -n $dir
+}
+
+fn plural {
+  s = $1' '$2
+  ~ $1 1 || s = $s's'
+  echo -n $s
+}

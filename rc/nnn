@@ -1,0 +1,41 @@
+. /usr/local/libexec/rc/read
+. /usr/local/libexec/rc/util
+
+nul = `(printf \0)
+
+fn nnn_issel { test -s $XDG_CONFIG_HOME/nnn/.selection }
+
+fn nnn_read {
+  if (nnn_issel) {
+    echoc 31 s
+    echo -n election/ > /dev/tty
+    echoc 31 c
+    echo -n 'urrent? [default=c]' > /dev/tty
+    read c s c
+    echo > /dev/tty
+  } else {
+    echo c
+  }
+}
+
+fn nnn_key {
+  echo 'Press any key to continue...'
+  key
+}
+
+fn nnn_handle {
+  key = $1; shift
+  switch ($key) {
+    case c
+      nnn_item $*
+    case s
+      shift
+      for (f in ``($nul) { cat $XDG_CONFIG_HOME/nnn/.selection })
+        nnn_item $f $*
+  }
+}
+
+fn nnn_dmenu {
+  sel = `{ printf %s$nl $* | dmenu -p Select }
+  ~ $sel () || index $sel $*
+}

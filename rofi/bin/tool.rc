@@ -1,0 +1,21 @@
+#!/bin/rc
+
+dir = `(dirname $0)
+opt = `{printf 󰭪\n󱖦\n󱊟\n\n\n | rofi -theme $dir/../theme/applet5 -p Tools -dmenu -theme-str 'textbox-prompt { str: ""; }'}
+
+switch ($opt) {
+  case 󰭪
+    $dir/scrot.rc &
+
+  case 󱖦
+    qalculate-gtk &
+
+  case 󱊟
+    gnome-multi-writer &
+
+  case 
+    $dir/mount.rc &
+
+  case 
+    gnome-system-monitor &
+}

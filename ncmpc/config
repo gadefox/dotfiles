@@ -1,0 +1,24 @@
+host = "127.0.0.1"
+enable-mouse = yes
+hide-cursor = 10
+seek-time = 5
+scroll-offset = 10
+scroll-sep = "    "
+text-editor = "nvim"
+wide-cursor = no
+set-xterm-title = no
+
+color alert = 14
+color background = none
+color browser-directory = 13
+color browser-playlist = 10
+color line = 8/none
+color list = white
+color list-bold = magenta
+color progressbar = 13/none
+color progressbar-background = 0
+color status-state = 14/none
+color status-song = magenta/none
+color status-time = 13/none
+color title = 14/none
+color title-bold = yellow/none

@@ -1,0 +1,62 @@
+#!/bin/sh
+
+echo fonts
+fc-cache -r
+
+echo icon caches
+update-icon-caches /usr/share/icons/*
+update-icon-caches /usr/local/share/icons/*
+
+echo desktop databases
+update-desktop-database /usr/share/applications
+update-desktop-database /usr/local/share/applications
+
+echo delete shit
+rm -f /var/backups/*.gz
+rm -f /var/cache/apt/archives/partial/*.deb
+rm -f /var/cache/apt/archives/*.deb
+rm -r /usr/games
+rm -r /usr/share/bug
+rm -r /usr/share/doc
+rm -r /usr/share/doc-base
+rm -r /usr/share/emacs
+rm -r /usr/share/emacsen-common
+rm -r /usr/share/help
+rm -r /usr/share/gtk-doc
+rm -r /usr/share/info
+rm -r /usr/share/locale
+rm -r /usr/share/man/cs
+rm -r /usr/share/man/da
+rm -r /usr/share/man/de
+rm -r /usr/share/man/es
+rm -r /usr/share/man/fi
+rm -r /usr/share/man/fr
+rm -r /usr/share/man/hr
+rm -r /usr/share/man/hu
+rm -r /usr/share/man/id
+rm -r /usr/share/man/it
+rm -r /usr/share/man/ja
+rm -r /usr/share/man/ko
+rm -r /usr/share/man/nl
+rm -r /usr/share/man/pl
+rm -r /usr/share/man/pt
+rm -r /usr/share/man/pt_BR
+rm -r /usr/share/man/ro
+rm -r /usr/share/man/ru
+rm -r /usr/share/man/sl
+rm -r /usr/share/man/sr
+rm -r /usr/share/man/sv
+rm -r /usr/share/man/tr
+rm -r /usr/share/man/uk
+rm -r /usr/share/man/zh_CN
+rm -r /usr/share/man/zh_TW
+rm -r /usr/share/metainfo
+rm -r /usr/share/mimeinfo
+rm -r /usr/share/zsh
+
+echo lib cache
+ldconfig
+
+echo create locale.alias
+mkdir /usr/share/locale
+ln -s /etc/locale.alias /usr/share/locale/locale.alias

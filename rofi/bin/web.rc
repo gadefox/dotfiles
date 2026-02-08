@@ -1,0 +1,15 @@
+#!/bin/rc
+
+dir = `(dirname $0)
+opt = `{printf 󰈹\n\n󰄠\n | rofi -theme $dir/../theme/applet3 -p Web -dmenu -theme-str 'textbox-prompt { str: "󰖟"; }'}
+
+switch ($opt) {
+  case 󰈹
+    firefox &
+
+  case 
+    xdg-open 'https://mail.google.com'
+
+  case 󰄠
+    transmission-gtk &
+}

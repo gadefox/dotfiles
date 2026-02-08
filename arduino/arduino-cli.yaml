@@ -1,0 +1,6 @@
+board_manager:
+  additional_urls:
+    - https://raw.githubusercontent.com/dbuezas/lgt8fx/master/package_lgt8fx_index.json
+    - https://arduino.esp8266.com/stable/package_esp8266com_index.json
+directories:
+  user: /home/fox/.arduino15/user

@@ -1,0 +1,33 @@
+%% The % character
+%f The current file (if non-local vfs, file will be copied locally and %f will be full path to it)
+%p The current file | %d The current working directory
+%s "Selected files"; the tagged files if any, otherwise the current file
+%t Tagged files
+%u Tagged files (and they are untagged on return from expand_format)
+%x Selected file’s extension
+%b Selected file’s name stripped of extension (basename)
+%view Runs the commands and pipes standard output to the view command.
+ If %view is immediately followed by '{', recognize keywords ascii, hex, nroff and unform.
+ If the format letter is in uppercase, it refers to the other panel
+
+With a number followed the % character you can turn quoting on (default) and off.
+For example: %f quote expanded macro | %1f ditto | %0f don't quote expanded macro
+ f pattern Match currently selected file
+ F pattern Match last selected in other panel
+ d pattern Match currently selected directory
+ D pattern Match last selected directory in other panel
+ t type Type of currently selected file
+ T type Type of last selected file in other panel
+ ! sub-cond Negate result of sub-condition
+
+Type is one or more of the following:
+ r regular file
+ d directory
+ n not a directory
+ l link
+ x executable file
+ t tagged
+ c character device
+ b block device
+ f FIFO (pipe)
+ s socket

@@ -1,0 +1,10 @@
+#!/bin/lua
+
+local sub = require("sub")
+
+local p = io.popen("ls ~/videos")
+for file in p:lines() do
+  local name = sub.get_name(file)
+  print(name)
+end
+p:close()

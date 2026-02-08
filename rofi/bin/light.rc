@@ -1,0 +1,53 @@
+#!/bin/rc
+
+vcp = `(ddcutil getvcp 10)
+switch ($vcp(9)) {
+  case [0-9],
+    row = 0
+  case 1[0-9], 2[0-9],
+    row = 1
+  case 3[0-9], 4[0-9],
+    row = 2
+  case 5[0-9], 6[0-9],
+    row = 3
+  case 7[0-9], 8[0-9],
+    row = 4
+  case 9[0-9], 100,
+    row = 5
+}
+
+dir = `(dirname $0)
+opt = `{printf 󱩍\n󱩐\n󱩑\n󱩓\n󱩕\n󰛨\n | rofi -theme $dir/../theme/applet6 -p Brightness -dmenu -theme-str 'textbox-prompt { str: "󰃟"; }' -u $row}
+if (~ $opt ())
+  exit 0
+
+switch ($opt) {
+  case 󱩍
+    light = 0
+    bright = 0
+    contrast = 0
+  case 󱩐
+    light = 30
+    bright = 20
+    contrast = 20
+  case 󱩑
+    light = 50
+    bright = 40
+    contrast = 40
+  case 󱩓
+    light = 70
+    bright = 60
+    contrast = 60
+  case 󱩕
+    light = 90
+    bright = 80
+    contrast = 70
+  case 󰛨
+    light = 100
+    bright = 100
+    contrast = 80
+}
+
+light -S $light
+ddcutil setvcp 10 $bright
+ddcutil setvcp 12 $contrast

@@ -1,0 +1,10 @@
+@import "applet.rasi"
+
+window {
+  width: 354px;
+}
+
+listview {
+  columns: 3;
+}
+
