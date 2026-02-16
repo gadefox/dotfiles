@@ -1,3 +1,4 @@
+linux-headers-6.11.10-amd64
 arandr
 arduino
 atool
@@ -21,6 +22,7 @@ fonts-roboto-unhinted
 fritzing
 fzf
 fxload
+g++-14
 galculator
 gcc-riscv64-unknown-elf
 gdb-multiarch

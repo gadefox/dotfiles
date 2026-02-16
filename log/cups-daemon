@@ -1,4 +1,4 @@
-/var/log/*.log {
+/var/log/cups/*log {
  compress
  create 0640 root adm
  missingok

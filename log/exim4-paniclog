@@ -1,6 +1,5 @@
-/var/log/*.log {
+/var/log/exim4/paniclog {
  compress
- create 0640 root adm
  missingok
  notifempty
  rotate 1

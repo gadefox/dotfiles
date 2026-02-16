@@ -1,6 +1,5 @@
-/var/log/*.log {
+/var/log/exim4/mainlog /var/log/exim4/rejectlog {
  compress
- create 0640 root adm
  missingok
  notifempty
  rotate 1
