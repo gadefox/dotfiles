@@ -168,10 +168,12 @@ require("lazy").setup({
 
   { -- #cba6f7
     "NvChad/nvim-colorizer.lua",
-    config = true
+    config = function()
+      require("colorizer").setup({
+        filetypes = { "text", "lua", "markdown" }
+      })
+    end
   },
-
-  { "RRethy/vim-illuminate" }, -- automatically highlights other uses of the word under the cursor
 
   { -- ┊ → ↴
     "lukas-reineke/indent-blankline.nvim",
@@ -354,39 +356,6 @@ require("lazy").setup({
   },
 
   {
-    "folke/trouble.nvim",
-    config = true,
-    cmd = "Trouble",
-    keys = {
-      {
-        "<leader>xd",
-        "<cmd>Trouble lsp toggle focus=false<cr>",
-        desc = "LSP definitions, references ..."
-      },
-      {
-        "<leader>xl",
-        "<cmd>Trouble loclist toggle<cr>",
-        desc = "Location list"
-      },
-      {
-        "<leader>xq",
-        "<cmd>Trouble qflist toggle<cr>",
-        desc = "Quickfix list"
-      },
-      {
-        "<leader>xs",
-        "<cmd>Trouble symbols toggle focus=true win.position=bottom<cr>",
-        desc = "Symbols"
-      },
-      {
-        "<leader>xx",
-        "<cmd>Trouble diagnostics toggle focus=true filter.buf=0<cr>",
-        desc = "Diagnostics"
-      }
-    }
-  },
-
-  {
     "folke/todo-comments.nvim",
     config = function()
      local todo = require("todo-comments")
@@ -426,9 +395,6 @@ require("lazy").setup({
         },
         colors = {}
       })
-
-      vim.keymap.set("n", "]t", function() todo.jump_next() end, { desc = "Next todo comment" })
-      vim.keymap.set("n", "[t", function() todo.jump_prev() end, { desc = "Previous todo comment" })
     end
   },
 
@@ -493,154 +459,25 @@ require("lazy").setup({
       local whichkey = require("which-key")
 
       whichkey.add({
-        {
-          "<leader>g",
-          group = "Glance"
-        },
-        {
-          "<leader>l",
-          group = "LSP"
-        },
-        {
-          "<leader>s",
-          group = "Select"
-        },
-        {
-          "<leader>t",
-          group = "Telescope"
-        },
-      {
-          "<leader>x",
-          group = "Trouble"
-        }
+        { "<leader>t", group = "Telescope" }
       })
     end,
     keys = {
-      {
-        "<leader>c",
-        "<cmd>bdelete<cr>",
-        desc = "Close Buffer"
-      },
-      {
-        "<leader>e",
-        "<cmd>NvimTreeToggle<cr>",
-        desc = "Explorer"
-      },
-      {
-        "<leader>gd",
-        "<cmd>Glance definitions<cr>",
-        desc = "Definition"
-      },
-      {
-        "<leader>gi",
-        "<cmd>Glance implementations<cr>",
-        desc = "Implementation"
-      },
-      {
-        "<leader>gr",
-        "<cmd>Glance references<cr>",
-        desc = "References"
-      },
-      {
-        "<leader>gt",
-        "<cmd>Glance type_definitions<cr>",
-        desc = "Type"
-      },
-      {
-        "<leader>p",
-        "<cmd>Lazy update<cr>",
-        desc = "Update plugins"
-      },
-      {
-        "<leader>q",
-        "<cmd>q<cr>",
-        desc = "Quit"
-      },
-      {
-        "<leader>l?",
-        "<cmd>LspInfo<cr>",
-        desc = "Info"
-      },
-      {
-        "<leader>f",
-        "<cmd>lua vim.lsp.buf.format({ async = true })<cr>",
-        desc = "Format"
-      },
-      {
-        "<leader>lc",
-        "<cmd>lua vim.lsp.buf.declaration()<cr>",
-        desc = "Go to declaration"
-      },
-      {
-        "<leader>ld",
-        "<cmd>lua vim.lsp.buf.definition()<cr>",
-        desc = "Go to definition"
-      },
-      {
-        "<leader>li",
-        "<cmd>lua vim.lsp.buf.implementation()<cr>",
-        desc = "Go to implementation"
-      },
-      {
-        "<leader>lh",
-        "<cmd>lua vim.lsp.buf.hover()<cr>",
-        desc = "Hover"
-      },
-      {
-        "<leader>lr",
-        "<cmd>lua vim.lsp.buf.rename()<cr>",
-        desc = "Rename"
-      },
-      {
-        "<leader>tb",
-        "<cmd>Telescope buffers<cr>",
-        desc = "Buffers"
-      },
-      {
-        "<leader>tc",
-        "<cmd>Telescope commands<cr>",
-        desc = "Commands"
-      },
-      {
-        "<leader>td",
-        "<cmd>Telescope diagnostics<cr>",
-        desc = "Diagnostics"
-      },
-      {
-        "<leader>tf",
-        "<cmd>Telescope find_files<cr>",
-        desc = "Find files"
-      },
-      {
-        "<leader>tg",
-        "<cmd>Telescope live_grep<cr>",
-        desc = "Find text"
-      },
-      {
-        "<leader>th",
-        "<cmd>Telescope help_tags<cr>",
-        desc = "Help tags"
-      },
-      {
-        "<leader>tl",
-        "<cmd>Telescope highlights<cr>",
-        desc = "Highlights"
-      },
-      {
-        "<leader>tr",
-        "<cmd>Telescope oldfiles<cr>",
-        desc = "Recept files"
-      },
-      {
-        "<leader>tv",
-        "<cmd>Telescope vim_options<cr>",
-        desc = "Vim options"
-      },
-      {
-        "<leader>w",
-        "<cmd>write<cr>",
-        desc = "Save Buffer"
-      }
+      { "<leader>c", "<cmd>bdelete<cr>",        desc = "Close Buffer" },
+      { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "Explorer" },
+      { "<leader>p", "<cmd>Lazy update<cr>",    desc = "Update plugins" },
+      { "<leader>q", "<cmd>q<cr>",              desc = "Quit" },
+      { "<leader>w", "<cmd>write<cr>",          desc = "Save Buffer" },
+
+      { "<leader>tb", "<cmd>Telescope buffers<cr>",     desc = "Buffers" },
+      { "<leader>tc", "<cmd>Telescope commands<cr>",    desc = "Commands" },
+      { "<leader>td", "<cmd>Telescope diagnostics<cr>", desc = "Diagnostics" },
+      { "<leader>tf", "<cmd>Telescope find_files<cr>",  desc = "Find files" },
+      { "<leader>tg", "<cmd>Telescope live_grep<cr>",   desc = "Find text" },
+      { "<leader>th", "<cmd>Telescope help_tags<cr>",   desc = "Help tags" },
+      { "<leader>tl", "<cmd>Telescope highlights<cr>",  desc = "Highlights" },
+      { "<leader>tr", "<cmd>Telescope oldfiles<cr>",    desc = "Recept files" },
+      { "<leader>tv", "<cmd>Telescope vim_options<cr>", desc = "Vim options" }
     }
   },
 
@@ -660,56 +497,12 @@ require("lazy").setup({
         auto_install = true,
         highlight = {
           enable = true
-        },
-        endwise = {
-          enable = true
-        },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = "<leader>ss",
-            node_incremental = "<leader>ss",
-            node_decremental = "<leader>sd"
-          },
-        },
-        textobjects = {
-          move = {
-            enable = true,
-            set_jumps = true,
-            goto_next = {
-              ["]]"] = {
-                query = "@function.outer",
-                desc = "Go to the next function"
-              }
-            },
-            goto_previous = {
-              ["[["] = {
-                query = "@function.outer",
-                desc = "Go to the previous function"
-              }
-            }
-          },
-          select = { -- delete: dfc; select: vfc
-            enable = true,
-            lookahead = true,
-            keymaps = {
-              ["fc"] = {
-                query = "@function.inner",
-                desc = "Select inner part of a function"
-              },
-              ["ff"] = {
-                query = "@function.outer",
-                desc = "Select whole function"
-              }
-            }
-          }
         }
       })
     end
   },
 
   { "nvim-treesitter/nvim-treesitter-context" }, -- shows the context of the currently visible buffer contents
-  { "RRethy/nvim-treesitter-endwise" },
 
   {
     "hrsh7th/nvim-cmp",
@@ -724,12 +517,7 @@ require("lazy").setup({
       local cmp = require("cmp")
 
       cmp.setup({
-        enabled = function()
-          if vim.api.nvim_get_mode().mode == "c" then
-            return true
-          end
-          return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
-        end,
+        enabled = true,
         formatting = {
           format = function(_, item)
             item.kind = kind_icons[item.kind]
@@ -783,19 +571,9 @@ require("lazy").setup({
       }
 
       vim.lsp.config("clangd", {
-        cmd = { "clangd" },
+        cmd = { "clangd", "--background-index=false", "--clang-tidy=false", "--completion-style=detailed" },
         capabilities = cap,
-        filetypes = { "c", "cpp", "objc", "objcpp" },
-        on_attach = function(_, bufnr)
-          local opts = { buffer = bufnr, noremap = true, silent = true }
-          vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-          vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
-          vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
-          vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-          vim.keymap.set("n", "<leader>f", function()
-            vim.lsp.buf.format({ async = true })
-          end, opts)
-        end
+        filetypes = { "c", "cpp", "objc", "objcpp" }
       })
 
       vim.lsp.config("lua_ls", {
@@ -803,7 +581,5 @@ require("lazy").setup({
         capabilities = cap
       })
     end
-  },
-
-  { "DNLHC/glance.nvim" },
+  }
 })

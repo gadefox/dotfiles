@@ -77,6 +77,7 @@ meson
 moreutils
 mpv
 msmtp
+node-fancy-log
 nsxiv
 openjdk-21-jdk
 parallel
@@ -122,6 +123,7 @@ tftp-hpa
 tftpd-hpa
 tio
 transmission-gtk
+tree-sitter-cli
 trayer
 xarchiver
 usb.ids
