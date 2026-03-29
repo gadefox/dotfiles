@@ -72,8 +72,6 @@ vim.opt.wrap = false -- lines will not wrap and only part of long lines will be 
 vim.opt.laststatus = 0 -- hide statusbar
 vim.opt.statusline = string.rep("-", vim.api.nvim_win_get_width(0))
 
-vim.lsp.set_log_level("ERROR")
-
 local palette
 local kind_icons = {
   Array = "󰅪",
@@ -178,9 +176,7 @@ require("lazy").setup({
   { -- ┊ → ↴
     "lukas-reineke/indent-blankline.nvim",
     name = "ibl",
-    dependencies = {
-      "HiPhish/rainbow-delimiters.nvim" -- due to `highlight definition otherwise it's not dependent
-    },
+    dependencies = { "HiPhish/rainbow-delimiters.nvim" },
     config = function()
       local config = require("rainbow-delimiters.config")
 
@@ -321,9 +317,7 @@ require("lazy").setup({
 
   {
     "nvim-telescope/telescope.nvim",
-    dependencies = {
-      "nvim-lua/plenary.nvim"
-    },
+    dependencies = { "nvim-lua/plenary.nvim" },
     config = function()
       require("telescope").setup({
         defaults = {
@@ -401,9 +395,7 @@ require("lazy").setup({
   {
     "folke/noice.nvim",
     event = "VeryLazy",
-    dependencies = {
-      "MunifTanjim/nui.nvim"
-    },
+    dependencies = { "MunifTanjim/nui.nvim" },
     config = function()
       require("noice").setup({
         health = {
@@ -452,9 +444,7 @@ require("lazy").setup({
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
-    dependencies = {
-      "echasnovski/mini.nvim"
-    },
+    dependencies = { "echasnovski/mini.nvim" },
     config = function()
       local whichkey = require("which-key")
 
@@ -483,23 +473,14 @@ require("lazy").setup({
 
   {
     "nvim-treesitter/nvim-treesitter",
-    dependencies = {
-      "nvim-treesitter/nvim-treesitter-textobjects"
-    },
+    dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
     build = ":TSUpdate",
-    config = function ()
-      local configs = require("nvim-treesitter.configs")
-
-      configs.setup({
-        ensure_installed = {
-          "bash", "c", "cpp", "json", "lua", "markdown", "markdown_inline", "perl", "python", "regex", "vim" -- markdown/inline, regex, bash are needed by packages
-        },
-        auto_install = true,
-        highlight = {
-          enable = true
-        }
-      })
-    end
+    config = true
+    --function ()
+--      require("nvim-treesitter.configs").setup({
+--        highlight = { enable = true }
+--      })
+--    end
   },
 
   { "nvim-treesitter/nvim-treesitter-context" }, -- shows the context of the currently visible buffer contents
