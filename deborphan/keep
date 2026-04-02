@@ -66,8 +66,7 @@ libxdg-basedir1
 libxml2
 libzzip-0-13t64
 lightdm
-linux-headers-amd64
-linux-image-amd64
+linux-image-6.1.0-44-amd64
 lua5.3
 lua-check
 lua-lgi
