@@ -1,4 +1,4 @@
-package: nvidia-legacy-340xx-340.108
+package: nvidia-legacy-340xx-kernel-dkms
 
 /bin:
 nvidia-modprobe
