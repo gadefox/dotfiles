@@ -65,10 +65,12 @@ function module.setup()
 
   awesome.connect_signal("menu::image", function(option, _)
     if option == 1 then
-      awful.spawn("gimp")
+      awful.spawn("drawing")
     elseif option == 2 then
-      awful.spawn("gpick")
+      awful.spawn("gimp")
     elseif option == 3 then
+      awful.spawn("gpick")
+    elseif option == 4 then
       awful.spawn("xsane")
     end
   end)
@@ -260,7 +262,7 @@ function module.setup()
     elseif option == 3 then
       menu.show("office", { "󱩽", "󱖦", "󱎒", "󱎏" })
     elseif option == 4 then
-      menu.show("image", { "󱇤", "󰈋", "󰚫" })
+      menu.show("image", { "󱇤", "", "󰈋", "󰚫" })
     elseif option == 5 then
       menu.show("dev", { "", "󰙜", "", "", "", "" })
     elseif option == 6 then
