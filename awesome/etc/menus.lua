@@ -262,7 +262,7 @@ function module.setup()
     elseif option == 4 then
       menu.show("image", { "󱇤", "", "󰈋", "󰚫" })
     elseif option == 5 then
-      menu.show("dev", { "", "󱙴", "󱝙", "", "󰥛" })
+      menu.show("dev", { "", "󱙴", "󱝙", "", "󱑻" })
     elseif option == 6 then
       menu.show("web", { "󰌀", "", "", "󰄠" })
     elseif option == 7 then
