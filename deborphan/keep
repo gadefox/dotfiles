@@ -43,6 +43,7 @@ init
 iputils-ping
 irssi
 isc-dhcp-client
+iverilog
 iwd
 jq
 lame
@@ -55,7 +56,6 @@ liblua5.3-0
 libnatpmp1t64
 libnotify-bin
 libpcre3
-librecad
 libssl1.1
 libsnmp40t64
 libstartup-notification0

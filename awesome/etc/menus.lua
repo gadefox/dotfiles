@@ -79,15 +79,13 @@ function module.setup()
     if option == 1 then
       awful.spawn("meld")
     elseif option == 2 then
-      awful.spawn("cutecom")
-    elseif option == 3 then
       awful.spawn("wireshark")
-    elseif option == 4 then
-      awful.spawn("arduino")
-    elseif option == 5 then
+    elseif option == 3 then
       awful.spawn("ghidra")
-    elseif option == 6 then
-      awful.spawn("fritzing")
+    elseif option == 4 then
+      awful.spawn("quartus")
+    elseif option == 5 then
+      awful.spawn("gtkwave")
     end
   end)
 
@@ -264,7 +262,7 @@ function module.setup()
     elseif option == 4 then
       menu.show("image", { "󱇤", "", "󰈋", "󰚫" })
     elseif option == 5 then
-      menu.show("dev", { "", "󰙜", "", "", "", "" })
+      menu.show("dev", { "", "󱙴", "󱝙", "", "󰥛" })
     elseif option == 6 then
       menu.show("web", { "󰌀", "", "", "󰄠" })
     elseif option == 7 then
