@@ -76,9 +76,7 @@ function module.set_ddcutil(option)
     contrast = 80
   end
 
-  awful.spawn.easy_async("ddcutil setvcp 10 " .. bright, function()
-    awful.spawn("ddcutil setvcp 12 " .. contrast)
-  end)
+  awful.spawn("brightctl " .. bright .. " " .. contrast)
 end
 
 function module.set_nvidia(option)

@@ -9,11 +9,11 @@ clang-format
 clangd-19
 cheese
 dconf-editor
-ddcutil
 deborphan
 devscripts
 dex
 dkms
+dos2unix
 drawing
 fd
 firejail
@@ -33,6 +33,7 @@ gir1.2-gtk-3.0
 gir1.2-pango-1.0
 gir1.2-rsvg-2.0
 gnome-disk-utility
+gperf
 gpick
 grafana-enterprise
 gtk2-engines-murrine
@@ -77,6 +78,7 @@ meson
 moreutils
 mpv
 msmtp
+ngspice
 node-fancy-log
 nsxiv
 openfpgaloader

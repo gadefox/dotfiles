@@ -35,7 +35,7 @@ function module.webcam()
 end
 
 function module.light()
-  awful.spawn.easy_async_with_shell("ddcutil -t getvcp 10 | awk '{print $4}'", function(out)
+  awful.spawn.easy_async_with_shell("brightctl | awk '{print $1}'", function(out)
     local vcp = tonumber(out)
     local idx = vcp < 10 and 1 or
                 vcp < 30 and 2 or
@@ -86,6 +86,8 @@ function module.setup()
       awful.spawn("quartus")
     elseif option == 5 then
       awful.spawn("gtkwave")
+    elseif option == 6 then
+      awful.spawn("qucs-s")
     end
   end)
 
@@ -262,7 +264,7 @@ function module.setup()
     elseif option == 4 then
       menu.show("image", { "󱇤", "", "󰈋", "󰚫" })
     elseif option == 5 then
-      menu.show("dev", { "", "󱙴", "󱝙", "", "󱑻" })
+      menu.show("dev", { "", "󱙴", "󱝙", "", "󱑻", "󰥛" })
     elseif option == 6 then
       menu.show("web", { "󰌀", "", "", "󰄠" })
     elseif option == 7 then
