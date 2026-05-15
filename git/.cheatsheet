@@ -1,0 +1,7 @@
+mkdir -p $PASSWORD_STORE_DIR/git
+gpg --list-secret-keys --keyid-format LONG | grep sec  # rsa4096/[id]
+echo [pwd] | gpg --encrypt --recipient [id] --output $PASSWORD_STORE_DIR/git/gadefox.gpg
+
+git config --global credential.helper $HOME/.local/libexec/git/credential
+git config --global user.name gadefox
+git config --global user.email [email]

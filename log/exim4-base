@@ -1,0 +1,7 @@
+/var/log/exim4/mainlog /var/log/exim4/rejectlog {
+ compress
+ missingok
+ notifempty
+ rotate 1
+ weekly
+}

@@ -1,0 +1,3 @@
+DPkg::Post-Invoke {
+    "DIR=/usr/lib/xorg/modules/extensions; [ -L $DIR/libglx.so ] || ln -sf libglx.so.340.108 $DIR/libglx.so";
+};

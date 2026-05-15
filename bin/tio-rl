@@ -1,0 +1,18 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+. /usr/local/libexec/rc/util
+notify_icon = uart
+notify_title = Serial:
+
+dev = ``($nl) { ls /dev/tty* | grep -Ev '/tty($|[0-9]+|S[0-9]+)$' }
+~ $dev () && notify_error 'No device found.'
+~ $#dev 1 || dev = ``($nl) { echo $dev | dmenu -p 'Select device' }
+
+tty = `(lastpart $dev)
+echo $tty
+dir = `(newdir tio $XDG_CACHE_HOME/rlwrap)
+echo $dir
+exit
+rlwrap -a -N -S '❯ ' -pgreen -H $dir/$tty tio $dev
+
+exit 0

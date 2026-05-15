@@ -1,0 +1,7 @@
+#!/bin/rc
+
+dst = org.awesomewm.awful
+
+for (c in $*)
+  dbus-send --type=method_call --print-reply --dest=$dst / $dst.Remote.Eval string:$c | tail -n +2
+exit 0

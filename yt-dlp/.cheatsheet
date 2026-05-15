@@ -1,0 +1,1 @@
+yt-dlp --flat-playlist --print-to-file "%(url)s # %(title)s" "%(playlist_title)s" <url>

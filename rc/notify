@@ -1,0 +1,34 @@
+fn notify_show {
+  msg = $1; shift
+  ~ $* () && title = () || { title = $1; shift }
+  ~ $* () && action = () || action = --action=$*
+
+  notify-send --icon=/etc/xdg/awesome/icons/$notify_icon.png $action '<b>'$notify_title' '$title'</b>' $msg
+}
+
+fn notify_showid {
+  ~ $notify_id ()
+    && notify_id = `(notify-send -p -i /etc/xdg/awesome/icons/$notify_icon.png '<b>'$notify_title' '$2'</b>' $1)
+    || notify-send -r $notify_id -i /etc/xdg/awesome/icons/$notify_icon.png '<b>'$notify_title' '$2'</b>' $1
+}
+
+fn notify_xdg {
+  switch ($2) {
+    case o
+      xdg-open $1 >[2] /dev/null &
+    case f
+      xdg-open `(dirname $1) >[2] /dev/null &
+    case d
+      rm $1 >[2] /dev/null
+      notify_show 'File deleted.'
+  }
+}
+
+fn notify_sigexit+ {
+  flag e +
+  fn sigexit { notify_show 'Error: some command failed.' }
+}
+
+fn notify_sigexit- { flag e -; fn sigexit }
+
+fn notify_error { notify_show $*; exit 1 }

@@ -1,0 +1,81 @@
+shell_patterns=0
+
++ ! t t
+c chown current file
+  n=%{user[:group] or `}
+  [ $n = '`' ] && n=root
+  [ $n = ${n#*:} ] && n=$n:$n
+  chown -R $n %f
+
++ t t
+C chown tagged files
+  n=%{user[:group] or `}
+  [ $n = '`' ] && n=root
+  [ $n = ${n#*:} ] && n=$n:$n
+  chown -R $n %t
+
++ ! t t
+f create new file
+  f=%{file name}
+  touch "$f"
+
++ t r & ! t t
+g g(un)zip current file
+  f=%f
+  [ "${f%.gz}" = %f ] && gzip %f || gunzip %f
+
++ t t
+G g(un)zip tagged files
+  for f in %t; do
+    [ "${f%.gz}" = "$f" ] && gzip "$f" || gunzip "$f"
+  done
+
++ t r & ! t t
+i set image height
+  n=%{new height}
+  h=$(identify -ping -format %h %f)
+  [ $h -gt $n ] && mogrify -resize x$n %f
+
++ t t
+I set tagged images height
+  n=%{new height}
+  for f in %t; do
+    h=$(identify -ping -format %h "$f")
+    [ $h -gt $n ] && mogrify -resize x$n "$f"
+  done
+
++ ! t t
+l view lib dependencies
+  %view{ascii,nroff} ldd %f
+
++ t r & ! t t
+p shrink current PDF
+  f=%f
+  [ "${f%.pdf}" = %f ] || gs -dBATCH -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -dPDFSETTINGS=/screen -sOutputFile=- %f | sponge %f
+
++ t t
+P shrink tagged PDFs
+  for f in %t; do
+    [ "${f%.pdf}" = "$f" ] || gs -dBATCH -dNOPAUSE -dQUIET -sDEVICE=pdfwrite -dPDFSETTINGS=/screen -sOutputFile=- "$f" | sponge "$f"
+  done
+
++ t r & ! t t
+s strip current executable
+  [ -x %f ] && strip -s %f
+
++ t t
+S strip tagged executables
+  for f in %t; do
+    [ -x "$f" ] && strip -s "$f"
+  done
+
++ t r & ! t t
+x (un)compress current file
+  f=%f
+  [ "${f%.xz}" = %f ] && xz %f || unxz %f
+
++ t r & t t
+X (un)compress tagged files
+  for f in %t; do
+    [ "${f%.xz}" = "$f" ] && xz "$f" || unxz "$f"
+  done

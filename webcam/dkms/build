@@ -1,0 +1,6 @@
+#!/bin/rc
+
+kernel = `(uname -r)
+echo 'kernel: '$kernel
+
+dkms build --force -k $kernel -m v4l2loopback -v 0.15.2

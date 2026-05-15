@@ -1,0 +1,12 @@
+#!/bin/rc
+
+dir = `(dirname $0)
+opt = `{printf \n\n | rofi -theme $dir/../theme/applet2 -p Development -dmenu -theme-str 'textbox-prompt { str: "󰘦"; }'}
+
+switch ($opt) {
+  case 
+    nemiver &
+
+  case 
+    meld &
+}

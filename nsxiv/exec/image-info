@@ -1,0 +1,10 @@
+#!/bin/rc
+
+. /usr/local/libexec/rc/util
+
+name = `( lastpart $1 /)
+size = `{ stat -c %s $1 | numfmt --to=iec }
+res = `{ identify -format '%wx%h' $1 >[2] /dev/null }
+
+echo $name'  '$size'  '$res
+exit 0

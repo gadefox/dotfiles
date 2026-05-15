@@ -1,0 +1,12 @@
+#!/bin/rc
+
+dir = `(dirname $0)
+opt = `{printf 󰋊\n\n | rofi -theme $dir/../theme/applet2 -p Mount -dmenu -theme-str 'textbox-prompt { str: ""; }'}
+
+switch ($opt) {
+  case 󰋊
+    gnome-disks &
+
+  case 
+    jmtpfs /media/mtp
+}

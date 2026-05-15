@@ -1,0 +1,9 @@
+directory.default.set = ~/downloads
+dht.mode.set = auto
+dht.port.set = 6881
+method.set_key = event.download.finished,notify_me,"execute2=notify-send,--icon=/etc/xdg/awesome/icons/download.png,<b>Torrent</b>,$d.name="
+pieces.hash.on_completion.set = yes
+protocol.encryption.set = allow_incoming,try_outgoing,enable_retry
+protocol.pex.set = yes
+session.path.set = ~/.cache/rtorrent
+schedule2 = watch_directory,5,5,load.start=/home/fox/downloads/*.torrent

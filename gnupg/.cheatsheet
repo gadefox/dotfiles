@@ -1,0 +1,2 @@
+gpg --list-secret-keys --keyid-format long | grep sec  # sec rsa4096/{.gpg-id} {date} [SC]
+echo -n [secret] | pass insert -m [web]/[name]

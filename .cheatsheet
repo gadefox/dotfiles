@@ -1,0 +1,8 @@
+cursor: Vimix white
+font: Caskaydia Nerd (terminal), Ubuntu (gtk)
+icons: Papirus
+theme: Adapta-Nokto-Eta
+--with-selection_color ~ selected item ~ #DC461D
+--with-accent_color ~ progress bar ~ #DC731D
+--with-suggestion_color ~ login button ~ #11754A
+--with-destruction_color ~ selected X button ~ #DC9C1D

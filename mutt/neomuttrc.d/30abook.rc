@@ -1,0 +1,3 @@
+set query_command = "abook --mutt-query '%s'"
+macro generic,index,pager \ca "<shell-escape>abook<enter>" "launch abook"
+macro index,pager A "<pipe-message>abook --add-email<enter>" "add the sender address to abook"
