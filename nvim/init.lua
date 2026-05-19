@@ -200,6 +200,13 @@ require("lazy").setup({
   },
 
   {
+    "RRethy/vim-illuminate",
+    config = function()
+      require("illuminate").configure()
+    end
+  },
+
+  {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
     config = true
@@ -476,14 +483,17 @@ require("lazy").setup({
     dependencies = { "nvim-treesitter/nvim-treesitter-textobjects" },
     build = ":TSUpdate",
     config = true
-    --function ()
---      require("nvim-treesitter.configs").setup({
---        highlight = { enable = true }
---      })
---    end
   },
 
-  { "nvim-treesitter/nvim-treesitter-context" }, -- shows the context of the currently visible buffer contents
+  {
+    "nvim-treesitter/nvim-treesitter-context",
+    config = function()
+      require("treesitter-context").setup({
+        enable = true,
+        max_lines = 3
+      })
+    end
+  }, -- shows the context of the currently visible buffer contents
 
   {
     "hrsh7th/nvim-cmp",
