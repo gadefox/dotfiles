@@ -7,11 +7,11 @@ local util = require("util")
 local module = {}
 
 function module.browser()
-  menu.show("browser", { "󰇩", "󰈹", "󰊯" })
+  menu.show("browser", { "󰇩", "󰈹" })
 end
 
 function module.file()
-  menu.show("file", { "󱗁", "󰖔", "", "", "", "" })
+  menu.show("file", { "󱗁", "󰖔", "", "", "" })
 end
 
 function module.main()
@@ -55,10 +55,8 @@ function module.setup()
     elseif option == 3 then
       awful.spawn("pcmanfm --no-desktop", mods)
     elseif option == 4 then
-      awful.spawn("ghex")
-    elseif option == 5 then
       awful.spawn("xarchiver")
-    elseif option == 6 then
+    elseif option == 5 then
       awful.spawn("evince")
     end
   end)
@@ -200,15 +198,13 @@ function module.setup()
     end
   end)
 
-  awesome.connect_signal("menu::music", function(option, _)
+  awesome.connect_signal("menu::audio", function(option, _)
     if option == 1 then
       util.term("ncmpc")
     elseif option == 2 then
       util.term("cava")
     elseif option == 3 then
       util.term("pulsemixer")
-    elseif option == 4 then
-      awful.spawn("aud-dl")
     end
   end)
 
@@ -268,7 +264,7 @@ function module.setup()
     elseif option == 6 then
       menu.show("web", { "󰌀", "", "", "󰄠" })
     elseif option == 7 then
-      menu.show("music", { "󰝚", "󰺢", "󰋍", "" })
+      menu.show("audio", { "󰝚", "󰺢", "󰋍" })
     elseif option == 8 then
       menu.show("tool", { "󰹑", "󱊖", "󰖠", "", "󱚻" })
     elseif option == 9 then
