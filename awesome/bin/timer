@@ -23,5 +23,5 @@ sleep `{ bc <<< 60*$1$nl }
 notify_icon = alarm
 notify_title = 'Time is up!'
 notify_show $min' countdown is finished.'
-paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
+paplay --volume=49152 /usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga
 exit 0

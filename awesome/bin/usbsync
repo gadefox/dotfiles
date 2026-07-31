@@ -18,7 +18,7 @@ rsync -a /home/$USER/.local/share/evolution/tasks/system $usb(3)
 notify_sigexit-
 
 notify_show 'Personal files backup is complete.' $usb(2)
-paplay --volume=43690 /usr/share/sounds/freedesktop/stereo/complete.oga
+paplay --volume=49152 /usr/share/sounds/freedesktop/stereo/complete.oga
 
 usbmount 3 $usb(1)
 exit 0
