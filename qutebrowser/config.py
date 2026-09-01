@@ -118,18 +118,19 @@ c.tabs.close_mouse_button_on_bar = "close-current"
 c.tabs.favicons.show = "pinned"
 c.tabs.last_close = "close"
 c.tabs.title.format = "{current_title}"
-c.url.default_page = "https://www.google.com"
-c.url.start_pages = "https://www.google.com"
+c.url.default_page = "https://www.duckduckgo.com"
+c.url.start_pages = "https://www.duckduckgo.com"
 c.window.title_format = "_"
 c.zoom.default = "130%"
 c.zoom.levels = ["100%", "110%", "120%", "130%", "140%", "150%"]
 
 c.url.searchengines = {
-  "DEFAULT": "https://www.google.com/search?hl=en&q={}",
+  "DEFAULT": "https://duckduckgo.com/?q={}",
+  "g": "https://www.google.com/search?hl=en&q={}",
   "i": "https://www.imdb.com/find?q={}",
   "m": "https://www.google.com/maps/search/{}",
   "r": "https://reddit.com/search?q={}",
-  "w": "https://en.wikipedia.org/wiki/{}",
+  "w": "https://en.wikipedia.org/w/index.php?search={}",
   "y": "https://www.youtube.com/results?search_query={}"
 }
 
