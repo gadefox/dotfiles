@@ -1,0 +1,15 @@
+#!/bin/rc
+
+if (~ $1 1) {
+  rfkill unblock bluetooth
+  systemctl start bluetooth
+  exit 0
+}
+
+if (~ $1 2) {
+  rfkill block bluetooth
+  systemctl stop bluetooth
+  exit 0
+}
+
+exit 1

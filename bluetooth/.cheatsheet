@@ -1,0 +1,2 @@
+sudo systemctl disable bluetooth.service
+mkdir -p ~/downloads/obex
