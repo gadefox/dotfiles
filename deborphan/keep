@@ -2,6 +2,7 @@ linux-headers-6.11.10-amd64
 arandr
 arduino
 atool
+blueman
 bluez
 calc
 cava
@@ -34,6 +35,7 @@ gir1.2-gtk-3.0
 gir1.2-pango-1.0
 gir1.2-rsvg-2.0
 gnome-disk-utility
+golang-go
 gperf
 gpick
 grafana-enterprise
@@ -48,6 +50,8 @@ isc-dhcp-client
 iverilog
 iwd
 jq
+kitty-shell-integration
+kitty-terminfo
 lame
 libcurl4t64
 libfuse2t64

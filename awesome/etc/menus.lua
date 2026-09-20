@@ -15,7 +15,7 @@ function module.file()
 end
 
 function module.main()
-  menu.show("main", { "󰊲", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "" })
+  menu.show("main", { "󰊲", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "", "" })
 end
 
 function module.power()
@@ -126,10 +126,6 @@ function module.setup()
     end
   end)
 
-  awesome.connect_signal("menu::wifi", function(option, _)
-    awful.spawn.with_shell("wifi " .. option)
-  end)
-
   awesome.connect_signal("menu::settings", function(option, _)
     if option == 1 then
       module.light()
@@ -139,8 +135,32 @@ function module.setup()
       awful.spawn("arandr")
     elseif option == 4 then
       awful.spawn("gnome-disks")
-    elseif option == 5 then
-      menu.show("wifi", { "󰸋", "󱚼", "󱛄", "󱛃", "󱛂", "󱛆" })
+    end
+  end)
+
+  awesome.connect_signal("menu::wifi", function(option, _)
+    if option == 1 then
+      util.term("wavemon")
+    else
+      awful.spawn.with_shell("wifi " .. option - 1)
+    end
+  end)
+
+  awesome.connect_signal("menu::blue", function(option, _)
+    if option == 1 then
+      awful.spawn("blueman-sendto")
+    elseif option == 4 then
+      awful.spawn("blueman-manager")
+    else
+      awful.spawn.with_shell("bluetooth " .. option - 1)
+    end
+  end)
+
+  awesome.connect_signal("menu::conn", function(option, _)
+    if option == 1 then
+      menu.show("blue", { "󰂴", "󰂱", "󰂲", "󰂳" })
+    elseif option == 2 then
+      menu.show("wifi", { "󱚻", "󰸋", "󱚼", "󱛄", "󱛃", "󱛂", "󱛆" })
     end
   end)
 
@@ -171,8 +191,6 @@ function module.setup()
       module.webcam()
     elseif option == 4 then
       util.term("htop")
-    elseif option == 5 then
-      util.term("wavemon")
     end
   end)
 
@@ -181,8 +199,6 @@ function module.setup()
       awful.spawn("qutebrowser")
     elseif option == 2 then
       awful.spawn("firefox")
-    elseif option == 3 then
-      awful.spawn("chromium")
     end
   end)
 
@@ -266,14 +282,11 @@ function module.setup()
     elseif option == 7 then
       menu.show("audio", { "󰝚", "󰺢", "󰋍" })
     elseif option == 8 then
-      menu.show("tool", { "󰹑", "󱊖", "󰖠", "", "󱚻" })
+      menu.show("tool", { "󰹑", "󱊖", "󰖠", "" })
     elseif option == 9 then
-      awful.spawn.easy_async_with_shell("iwctl station wlan0 show | grep State | awk '{print $2}'", function(out)
-        local icon = out == "connected\n" and "󰖩" or
-                     out == "disconnected\n" and "󰖪" or "󱚵"
-
-        menu.show("settings", { "󰃟", "", "󰍺", "󱊟", icon })
-      end)
+      menu.show("settings", { "󰃟", "", "󰍺", "󱊟" })
+    elseif option == 10 then
+      menu.show("conn", { "󰂯", "󰖩" })
     end
   end)
 
