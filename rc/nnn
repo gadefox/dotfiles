@@ -23,18 +23,6 @@ fn nnn_key {
   key
 }
 
-fn nnn_handle {
-  key = $1; shift
-  switch ($key) {
-    case c
-      nnn_item $*
-    case s
-      shift
-      for (f in ``($nul) { cat $XDG_CONFIG_HOME/nnn/.selection })
-        nnn_item $f $*
-  }
-}
-
 fn nnn_dmenu {
   sel = `{ printf %s$nl $* | dmenu -p Select }
   ~ $sel () || index $sel $*
