@@ -162,7 +162,7 @@ end
 local function create_btns()
   local palette = util.get_rainbow()
 
-  for i = 1, 9 do
+  for i = 1, 10 do
     btns[i] = create_btn(i, palette[i % #palette + 1])
   end
 end

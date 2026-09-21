@@ -15,7 +15,7 @@ function module.file()
 end
 
 function module.main()
-  menu.show("main", { "󰊲", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "", "" })
+  menu.show("main", { "󰊲", "󰉕", "󰧭", "", "󰘦", "󰖟", "󰽴", "", "" })
 end
 
 function module.power()
@@ -126,18 +126,6 @@ function module.setup()
     end
   end)
 
-  awesome.connect_signal("menu::settings", function(option, _)
-    if option == 1 then
-      module.light()
-    elseif option == 2 then
-      awful.spawn("dconf-editor")
-    elseif option == 3 then
-      awful.spawn("arandr")
-    elseif option == 4 then
-      awful.spawn("gnome-disks")
-    end
-  end)
-
   awesome.connect_signal("menu::wifi", function(option, _)
     if option == 1 then
       util.term("wavemon")
@@ -161,6 +149,20 @@ function module.setup()
       menu.show("blue", { "󰂴", "󰂱", "󰂲", "󰂳" })
     elseif option == 2 then
       menu.show("wifi", { "󱚻", "󰸋", "󱚼", "󱛄", "󱛃", "󱛂", "󱛆" })
+    end
+  end)
+
+  awesome.connect_signal("menu::settings", function(option, _)
+    if option == 1 then
+      module.light()
+    elseif option == 2 then
+      awful.spawn("dconf-editor")
+    elseif option == 3 then
+      awful.spawn("arandr")
+    elseif option == 4 then
+      awful.spawn("gnome-disks")
+    elseif option == 5 then
+      menu.show("conn", { "󰂯", "󰖩" })
     end
   end)
 
@@ -228,18 +230,24 @@ function module.setup()
     notify.create("calendar", nil, option - 1, 15)
   end)
 
-  awesome.connect_signal("menu::misc", function(option, _)
+  awesome.connect_signal("menu::launch", function(option, _)
     if option < 3 then
       awful.spawn("dmenu-run " .. option)
     elseif option == 3 then
       util.term()
-    elseif option == 4 then
+    end
+  end)
+
+  awesome.connect_signal("menu::misc", function(option, _)
+    if option == 1 then
+      menu.show("launch", { "󰘔", "", "" })
+    elseif option == 2 then
       menu.show("calendar", { "󰸘", "󱁳" })
-    elseif option == 5 then
+    elseif option == 3 then
       awful.spawn("usbsync")
-    elseif option == 6 then
+    elseif option == 4 then
       module.timer()
-    elseif option == 7 then
+    elseif option == 5 then
       notify.create("clock", "Now:", os.date("%a %d %b, %H:%M"))
     end
   end)
@@ -268,7 +276,7 @@ function module.setup()
 
   awesome.connect_signal("menu::main", function(option, _)
     if option == 1 then
-      menu.show("misc", { "󰌧", "", "", "", "󱤛", "󰔛", "󱑒" })
+      menu.show("misc", { "󰌧", "", "󱤛", "󰔛", "󱑒" })
     elseif option == 2 then
       module.file()
     elseif option == 3 then
@@ -284,9 +292,7 @@ function module.setup()
     elseif option == 8 then
       menu.show("tool", { "󰹑", "󱊖", "󰖠", "" })
     elseif option == 9 then
-      menu.show("settings", { "󰃟", "", "󰍺", "󱊟" })
-    elseif option == 10 then
-      menu.show("conn", { "󰂯", "󰖩" })
+      menu.show("settings", { "󰃟", "", "󰍺", "󱊟", "" })
     end
   end)
 
