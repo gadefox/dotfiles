@@ -1,11 +1,15 @@
 local awful = require("awful")
-local filesystem = require("gears").filesystem
+local gears = require("gears")
 
 local module = {}
 
 module.tag_colors = { "#8ecb15", "#cb9a15", "#d75f00", "#ff0000", "#cb15c9", "#6f15cb", "#15b4cb", "#5edcb4" }
 module.sel_color = "#dc461d"
 module.alt_color = "#dc9c1d"
+
+function module.log(s)
+  gears.debug.print_error(s)
+end
 
 function module.bold(s)
   if s then
@@ -22,7 +26,7 @@ function module.get_day()
 end
 
 function module.get_icon_dir(icon)
-  local dir = filesystem.get_configuration_dir()
+  local dir = gears.filesystem.get_configuration_dir()
   return dir .. "icons/" .. icon .. ".png"
 end
 

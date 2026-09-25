@@ -1,5 +1,6 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
+local menubar = require("menubar")
 local naughty = require("naughty")
 local shape = require("gears").shape
 local util = require("util")
@@ -11,7 +12,7 @@ local layout = wibox.layout
 local widget = wibox.widget
 
 local module = {}
-local rainbow, volume, music, kblayout
+local volume, music, kblayout
 
 local function cal_embed(calw, flag)
   if flag == "focus" then
@@ -35,36 +36,8 @@ local function cal_embed(calw, flag)
   return calw
 end
 
-local function create_actions(n)
-  return widget({
-    notification = n,
-    base_layout = widget({
-      spacing = dpi(5),
-      layout = layout.flex.horizontal
-    }),
-    widget_template = {
-      {
-        {
-          id = "text_role",
-          align = "center",
-          font = beautiful.notification_font,
-          widget = widget.textbox
-        },
-        margins = dpi(2),
-        widget = container.margin
-      },
-      bg = "#384751",
-      shape = function(cr, width, height) shape.partially_rounded_rect(cr, width, height, true, false, true, false, dpi(5)) end,
-      widget = container.background
-    },
-    style = {
-      underline_normal = false
-    },
-    widget = naughty.list.actions
-  })
-end
-
-local function create_rainbow()
+function module.setup()
+  -- rainbow
   local lookup = { 5, 6, 7, 1, 2, 4 }
   local parts = {}
 
@@ -75,88 +48,125 @@ local function create_rainbow()
     }
   end
 
-  return widget({
+  local rainbow = widget({
     layout = layout.flex.horizontal,
     forced_height = dpi(5),
     table.unpack(parts)
   })
-end
 
-local function create(n)
-  naughty.layout.box({
-    notification = n,
-    position = "top_right",
-    border_width = 0,
-    shape = function(cr, width, height) shape.partially_rounded_rect(cr, width, height, true, false, true, false, dpi(20)) end,
-    widget_template = {
-      {
+  -- signals
+  naughty.connect_signal("request::display", function(n)
+    naughty.layout.box({
+      notification = n,
+      position = "top_right",
+      border_width = 0,
+      shape = function(cr, width, height) shape.partially_rounded_rect(cr, width, height, true, false, true, false, dpi(20)) end,
+      widget_template = {
         {
           {
             {
-              n.icon and {
-                forced_height = dpi(42),
-                widget = naughty.widget.icon
+              {
+                {
+                  n.icon and {
+                    forced_height = dpi(42),
+                    widget = naughty.widget.icon
+                  },
+                  halign = "center",
+                  valign = "center",
+                  widget = container.place
+                },
+                margins = dpi(8),
+                widget = container.margin
               },
-              margins = dpi(8),
-              widget = container.margin
+              bg = "#1a2026",
+              widget = container.background
             },
-            bg = "#1a2026",
-            widget = container.background
-          },
-          rainbow,
-          {
+            rainbow,
             {
               {
-                n.title and {
-                  align = "center",
-                  widget = naughty.widget.title
+                {
+                  n.title and {
+                    align = "center",
+                    widget = naughty.widget.title
+                  },
+                  type(n.message) == "string" and {
+                    align = "center",
+                    widget = naughty.widget.message
+                  } or {
+                    date = os.date("*t"),
+                    fn_embed = cal_embed,
+                    widget = n.message == 0 and widget.calendar.month or widget.calendar.year
+                  },
+                  layout = layout.fixed.vertical
                 },
-                type(n.message) == "string" and {
-                  align = "center",
-                  widget = naughty.widget.message
-                } or {
-                  date = os.date("*t"),
-                  fn_embed = cal_embed,
-                  widget = n.message == 0 and widget.calendar.month or widget.calendar.year
-                },
-                layout = layout.fixed.vertical
+                margins = dpi(8),
+                widget = container.margin
               },
-              margins = dpi(8),
-              widget = container.margin
+              bg = "#232d35",
+              widget = container.background
             },
-            bg = "#232d35",
-            widget = container.background
-          },
-          {
-            rainbow,
-            visible = #n.actions > 0,
-            widget = container.background
-          },
-          #n.actions > 0 and {
             {
-              create_actions(),
-              margins = dpi(10),
-              widget = container.margin
+              rainbow,
+              visible = #n.actions > 0,
+              widget = container.background
             },
-            bg = "#1a2026",
-            widget = container.background
+            #n.actions > 0 and {
+              {
+                {
+                  notification = n,
+                  base_layout = widget({
+                    spacing = dpi(5),
+                    layout = layout.flex.horizontal
+                  }),
+                  widget_template = {
+                    {
+                      {
+                        id = "text_role",
+                        align = "center",
+                        font = beautiful.notification_font,
+                        widget = widget.textbox
+                      },
+                      margins = dpi(2),
+                      widget = container.margin
+                    },
+                    bg = "#384751",
+                    shape = function(cr, width, height) shape.partially_rounded_rect(cr, width, height, true, false, true, false, dpi(5)) end,
+                    widget = container.background
+                  },
+                  style = {
+                    underline_normal = false
+                  },
+                  widget = naughty.list.actions
+                },
+                margins = dpi(10),
+                widget = container.margin
+              },
+              bg = "#1a2026",
+              widget = container.background
+            },
+            layout = layout.fixed.vertical
           },
-          layout = layout.fixed.vertical
+          strategy = "min",
+          width = dpi(220),
+          widget = container.constraint
         },
-        strategy = "min",
-        width = dpi(220),
+        strategy = "max",
+        height = beautiful.notification_maxwidth,
         widget = container.constraint
-      },
-      strategy = "max",
-      height = beautiful.notification_maxwidth,
-      widget = container.constraint
-    }
-  })
-end
+      }
+    })
+  end)
 
-function module.setup()
-  rainbow = create_rainbow()
-  naughty.connect_signal("request::display", create)
+  naughty.connect_signal("request::icon", function(n, context, hints)
+    if context == "app_icon" then
+      local path = menubar.utils.lookup_icon(hints.app_icon)
+      if path then
+        n.icon = path
+      else
+        util.log("Icon file not found; app_icon=" .. hints.app_icon)
+      end
+    end
+  end)
 
   local kl = awful.widget.keyboardlayout()
   kl:connect_signal("widget::redraw_needed", function()
