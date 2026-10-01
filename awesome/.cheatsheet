@@ -1,0 +1,5 @@
+/usr/share/lib/menubar/utils.lua
+fn get_icon_lookup_path - add:
+            table.insert(app_in_theme_paths,
+                         glib.build_filenamev({ icon_theme_directory,
+                                                size, 'devices' }))
