@@ -1,0 +1,8 @@
+# Check barcode
+zbarimg [img file]
+
+# Code 2 of 5 Interleaved
+zint --quietzones --barcode=C25INTER --height=30 --vwhitesp=30 --data=[XXX] --output=kaufland-poukaz.png
+
+# Code 128
+zint --quietzones --barcode=CODE128 --height=30 --vwhitesp=30 --data=[63400XXX->979XXX] --output=tesco.png

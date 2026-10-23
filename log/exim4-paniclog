@@ -1,0 +1,7 @@
+/var/log/exim4/paniclog {
+ compress
+ missingok
+ notifempty
+ rotate 1
+ weekly
+}

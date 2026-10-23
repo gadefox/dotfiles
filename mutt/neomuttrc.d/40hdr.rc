@@ -1,0 +1,4 @@
+ignore *
+unignore date from to cc bcc subject
+hdr_order date from to cc bcc subject
+mailto_allow = cc in-reply-to references

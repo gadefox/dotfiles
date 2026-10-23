@@ -1,0 +1,25 @@
+@import "launcher.rasi"
+
+configuration {
+	modi: "calc";
+  show-icons: false;
+  display-calc: "󱖦";
+}	
+
+window {
+  width: 600px;
+}
+
+mainbox {
+  children: [ "inputbar", "message", "listview" ];
+}
+
+entry {
+  placeholder: "Type";
+}
+
+listview {
+  columns: 1;
+  lines: 4;
+  scrollbar: true;
+}

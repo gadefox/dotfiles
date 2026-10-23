@@ -1,0 +1,90 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+. /usr/local/libexec/rc/util
+notify_icon = git
+notify_title = GitHub:
+
+user = `(git config --global user.name)
+~ $user () && exit 1
+
+name = `pwd
+name = ``( ) (lastpart $name /)
+
+fn is_rep {
+  ~ `{ git rev-parse --is-inside-work-tree >[2] /dev/null } () || return
+  notify_error `pwd' is not a git repository.'
+}
+
+if (~ $1 1) {
+  is_rep
+  stat = ``($nl) (git status --porcelain)
+  if (~ $stat ()) {
+    msg = 'nothing to commit, working tree clean.'
+  } else {
+    for (s in $stat)
+      ~ $s ' D'* && del = ($del +) || { ~ $s ' M'* && mod = ($mod +) }
+
+    add = `{ git ls-files --others --exclude-standard | wc -l }
+    del = ``( ) (plural $#del file)
+    mod = ``( ) (plural $#mod file)
+    msg = $mod' modified, '$add' added, '$del' deleted.'
+  }
+
+  notify_show 'Status: '$msg $name
+  exit 0
+}
+
+if (~ $1 2) {
+  is_rep
+
+  notify_sigexit+
+  git add -A
+  git commit -m 'Update all changes'
+  git push origin HEAD
+  notify_sigexit-
+
+  notify_show 'All changes committed and pushed.' $name
+  exit 0
+}
+
+if (~ $1 3) {
+  is_rep
+  msg = `(git pull -q)
+  notify_show 'Checked out locally. '$^msg $name
+  exit 0
+}
+
+if (~ $1 4) {
+  ~ `{ git rev-parse --is-inside-work-tree >[2] /dev/null } () || notify_error 'The repository has already been initialized.' $name
+  ~ `{ curl -Is https://github.com/$user/$name | head -n 1 | awk '{print $2}' } 404 && notify_error 'Please manually create the GitHub repository.' $name
+
+  notify_sigexit+
+  git init
+  git add .
+  git commit -m 'Initial commit'
+  git branch -M main
+  git remote add origin https://github.com/$user/$name.git
+  git push -u origin main
+  notify_sigexit-
+
+  notify_show 'Repository initialized.\nAll files uploaded.' $name
+  exit 0
+}
+
+
+if (~ $1 5) {
+  is_rep
+
+  notify_sigexit+
+  git checkout --orphan clean
+  git add --all
+  git commit -m 'Initial commit'
+  git branch -M main
+  git push --force origin main
+  notify_sigexit-
+
+  notify_show 'History cleared and new initial commit created.' $name
+  exit 0
+}
+
+exit 1

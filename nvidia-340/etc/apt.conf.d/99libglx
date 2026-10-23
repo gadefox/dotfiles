@@ -1,0 +1,3 @@
+DPkg::Post-Invoke {
+    "[ -L /usr/lib/xorg/modules/extensions/libglx.so ] || cp -f /usr/lib/xorg/modules/extensions/libglx.so.link /usr/lib/xorg/modules/extensions/libglx.so";
+};

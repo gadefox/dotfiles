@@ -1,0 +1,8 @@
+/var/log/cups/*log {
+ compress
+ create 0640 root adm
+ missingok
+ notifempty
+ rotate 1
+ weekly
+}

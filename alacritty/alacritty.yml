@@ -1,0 +1,42 @@
+draw_bold_text_with_bright_colors: false
+window:
+  decorations: false
+  dimensions:
+    columns: 0
+    lines: 0
+font:
+  size: 13
+  normal:
+    family: "CaskaydiaCove Nerd Font"
+  bold:
+    style: Regular
+cursor:
+  style:
+    shape: block
+window:
+  opacity: 0.7
+colors:
+  primary:
+    background: "#000000"
+    foreground: "#B8C0E0"
+  cursor:
+    custom_colors: true
+    cursor: "#6C6370"
+  normal:
+    black: "#24273A"
+    red: "#ED8796"
+    green: "#A1B56C"
+    yellow: "#F5A97F"
+    blue: "#8AADF4"
+    magenta: "#C6A0F6"
+    cyan: "#8BD5CA"
+    white: "#CAD3F5"
+  bright:
+    black: "#363A4F"
+    red: "#EE99A0"
+    green: "#F0C6C6"
+    yellow: "#EED49F"
+    blue: "#7DC4E4"
+    magenta: "#F5BDE6"
+    cyan: "#F4DBD6"
+    white: "#1E2030"

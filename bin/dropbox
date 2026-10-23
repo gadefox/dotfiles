@@ -1,0 +1,78 @@
+#!/usr/bin/rc
+. /usr/local/libexec/rc/notify
+. /usr/local/libexec/rc/util
+notify_icon = cloud
+notify_title = Dropbox:
+
+name = ``( ) (lastpart $2 /)
+
+fn check {
+  if (~ $1 Error*) {
+    msg = `{ echo $1 | cut -d: -f3- | sed 's/^ *//' }
+  } else {
+    ~ `{ jq -r .error <<< $1 } null && return
+    msg = `{ jq -r .error_$2 <<< $1 }
+  }
+  notify_error $3'\nError: '$^msg $name
+}
+
+fn trimdir { sed 's:/*$::' <<< $1 }
+
+token = `(pass dropbox/token)
+key = `(pass dropbox/key)
+secret = `(pass dropbox/secret)
+
+json = ``( ) (curl -s -X POST https://api.dropboxapi.com/oauth2/token -d grant_type=refresh_token -d refresh_token=$token -d client_id=$key -d client_secret=$secret)
+check $json description 'Failed to obtain access token.'
+token = `{ jq -r .access_token <<< $json }
+
+if (~ $1 cp || ~ $1 1) {
+  test -f $2 || notify_error 'File does not exist.' $name
+  dir = `(trimdir $3)
+
+  json = ``( ) (curl -s -X POST https://content.dropboxapi.com/2/files/upload -H 'Authorization: Bearer '$token --data-binary @$2 \
+                     -H 'Dropbox-API-Arg: {"path":"'$dir/$name'","mode":"overwrite"}' -H 'Content-Type: application/octet-stream')
+  check $json summary 'Failed to upload file.'
+  notify_show 'File uploaded.' $name
+
+  if (~ $dir /public) {
+    json = ``( ) (curl -s -X POST https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings -H 'Authorization: Bearer '$token \
+                       -H 'Content-Type: application/json' --data '{"path":"/public/'$name'","settings":{"requested_visibility":"public"}}')
+    check $json summary 'Failed to update public sharing settings.'
+    notify_show 'Public sharing settings updated successfully.' $name
+
+    jq -r .url <<< $json
+  } else {
+    lastpart `{ jq -r .id <<< $json } :
+  }
+  exit 0
+}
+
+if (~ $1 mkdir || ~$1 2) {
+  dir = `(trimdir $2)
+  json = ``( ) (curl -s -X POST https://api.dropboxapi.com/2/files/create_folder_v2 -H 'Authorization: Bearer '$token -H 'Content-Type: application/json' --data '{"path":"'$dir'","autorename":false}')
+  check $json summary 'Failed to create folder.'
+  notify_show 'Folder created.' $name
+
+  lastpart `{ jq -r .metadata.id <<< $json } :
+  exit 0
+}
+
+if (~ $1 rm || ~$1 3) {
+  file = `(trimdir $2)
+  json = ``( ) (curl -s -X POST https://api.dropboxapi.com/2/files/delete_v2 -H 'Authorization: Bearer '$token -H 'Content-Type: application/json' --data '{"path":"'$file'"}')
+  check $json summary 'Failed to delete file.'
+  notify_show 'File deleted.' $name
+  exit 0
+}
+
+if (~ $1 ls || ~$1 4) {
+  dir = `(trimdir $2)
+  json = ``( ) (curl -s -X POST https://api.dropboxapi.com/2/files/list_folder -H 'Authorization: Bearer '$token -H 'Content-Type: application/json' --data '{"path":"'$dir'"}')
+  check $json summary 'Could not fetch file list.'
+
+  jq -r .entries[].name <<< $json
+  exit 0
+}
+
+exit 1

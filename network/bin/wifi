@@ -1,0 +1,107 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+notify_icon = wifi
+notify_title = Wi-Fi:
+sta = wlan0
+
+fn getknown {
+  nets = `{ iwctl known-networks list | grep psk | awk '{print $2}' | sort -f }
+  ~ $nets () && notify_error 'No known networks found.'
+  echo $nets
+}
+
+fn disconnect {
+  net = `{ iwctl station $sta show | grep 'Connected network' | awk '{print $3}' }
+  ~ $net () && notify_error 'No connection found.'
+
+  iwctl station $sta disconnect
+  notify_show 'Disconnected from the network: ' $net
+
+  echo $net
+}
+
+fn connect {
+  if (~ $2 ()) {
+    iwctl station $sta connect $1
+    notify_show 'Connected to a known network.' $1
+  } else {
+    iwctl --passphrase $2 station $sta connect $1
+    notify_show 'Connected to a new network.' $1
+  }
+}
+
+~ `{ iwctl station list | grep $sta } () && notify_error 'The device is turned off.'
+
+if (~ $1 1) {
+  net = `getknown
+  ~ $net () && exit 1
+
+  if (!~ $#net 1) {
+    net = `{ printf %s$nl $net | dmenu -p 'Connect network' }
+    ~ $net () && exit 1
+  }
+
+  connect $net
+  exit 0
+}
+
+if (~ $1 2) {
+  disconnect
+  exit 0
+}
+
+if (~ $1 3) {
+  net = `disconnect
+  ~ $net () && exit 0
+
+  connect $net
+  exit 0
+}
+
+if (~ $1 4) {
+  set = `{ iwctl station $sta get-networks | grep psk | grep -v '>' | sort -f | awk '{print $1}' | dmenu -p 'Connect network' }
+  ~ $set () && exit 0
+
+  pass = `(dmenu -P -p Passphrase)
+  ~ $pass () && exit 0
+
+  connect $set $pass
+  exit 0
+}
+
+if (~ $1 5) {
+  nets = `getknown
+  ~ $nets () && exit 0
+
+  if (~ $#nets 1) {
+    set = $nets
+  } else {
+    set = `{ dmenu -p 'Forget network' <<< $nets }
+    ~ $set () && exit 0
+  }
+
+  iwctl known-networks $set forget
+  notify_show 'Removed network from known list.' $set
+
+  exit 0
+}
+
+if (~ $1 6) {
+  net = ``( ) (iwctl station $sta show)
+  ~ $net(14) connected || notify_error 'The network is disconnected.'
+
+#  for (i in `(seq $#net)) { echo $i' '$net($i) }; exit 0
+
+  msg = 'Channel: '$net(26)^', '$net(30)^' dBm, Rx('$net(38)^'): '$net(36)^', '
+  if (~ $net(39) RxBitrate) {
+    msg = $msg$net(40)^' '$net(41)
+  } else {
+    ~ $net(46) RxBitrate && msg = $msg$net(47)^' '$net(48)^', '
+    msg = $msg'Tx('$net(42)^'): '$net(40)^', '$net(44)^' '$net(45)
+  }
+
+  notify_show $msg $net(17)
+  exit 0
+}
+
+exit 1

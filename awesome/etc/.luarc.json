@@ -1,0 +1,11 @@
+{
+  "runtime": {
+    "version": "Lua 5.3"
+  },
+  "diagnostics": {
+    "globals": [
+      "require", "type", "os", "debug", "string", "table", "math", "pairs", "ipairs", "tonumber",
+      "awesome", "keygrabber", "screen", "mouse", "client", "tag", "root"
+    ]
+  }
+}

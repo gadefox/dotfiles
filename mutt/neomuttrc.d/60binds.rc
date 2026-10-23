@@ -1,0 +1,2 @@
+bind index <tab> sync-mailbox
+bind index,pager @ compose-to-sender

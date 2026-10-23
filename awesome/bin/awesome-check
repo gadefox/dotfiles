@@ -1,0 +1,4 @@
+#!/bin/rc
+
+cd /etc/xdg/awesome
+luacheck .

@@ -1,0 +1,7 @@
+[Match]
+Type=ether
+
+[Network]
+#Address=192.168.1.230/24
+#DHCP=no
+DHCP=yes

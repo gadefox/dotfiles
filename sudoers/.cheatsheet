@@ -1,0 +1,9 @@
+edit /etc/sudoers:
+sudo visudo
+
+create file:
+sudo visudo -f /etc/sudoers.d/file
+sudo chmod 440 /etc/sudoers.d/file
+
+check syntax:
+sudo visudo -c
