@@ -1,0 +1,11 @@
+systemctl --user stop mpd.service
+systemctl --user disable mpd.service
+systemctl --user status mpd.service
+
+systemctl --user enable mpd.socket
+systemctl --user start mpd.socket
+systemctl --user status mpd.socket
+
+mpc update
+ps ax | grep mpd
+ss -putan | grep 6600

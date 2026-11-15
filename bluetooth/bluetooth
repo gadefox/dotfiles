@@ -1,0 +1,20 @@
+#!/bin/rc
+. /usr/local/libexec/rc/notify
+notify_icon = bluetooth
+notify_title = Bluetooth:
+
+sudo rfkill-bt $1
+
+if (~ $1 1) {
+  systemctl --user start obex.service
+  notify_show 'The device is turned on.'
+  exit 0
+}
+
+if (~ $1 2) {
+  systemctl --user stop obex.service
+  notify_show 'The device is turned off.'
+  exit 0
+}
+
+exit 1

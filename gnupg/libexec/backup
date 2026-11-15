@@ -1,0 +1,16 @@
+#!/bin/rc
+
+dest = $HOME/documents/priv/gpg
+
+mkdir -p $dest/openpgp-revocs.d
+cp -f $GNUPGHOME/openpgp-revocs.d/*.rev $dest/openpgp-revocs.d
+chmod 400 $dest/openpgp-revocs.d/*.rev
+
+mkdir -p $dest/pass/dropbox
+cp -f $PASSWORD_STORE_DIR/dropbox/*.gpg $dest/pass/dropbox
+cp -f $PASSWORD_STORE_DIR/*.gpg $dest/pass
+
+gpg --yes --export --export-options backup -o $dest/public.gpg
+gpg --yes --export-secret-keys --export-options backup -o $dest/private.gpg
+gpg --export-ownertrust > $dest/trust.gpg
+chmod 600 $dest/private.gpg

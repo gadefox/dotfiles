@@ -1,0 +1,15 @@
+/var/log/apt/term.log {
+ compress
+ missingok
+ notifempty
+ rotate 1
+ weekly
+}
+
+/var/log/apt/history.log {
+ compress
+ missingok
+ notifempty
+ rotate 1
+ weekly
+}

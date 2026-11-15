@@ -1,0 +1,18 @@
+#!/bin/rc
+
+dir = `(dirname $0)
+opt = `{printf \n󱎒\n󱎏\n󱘲\n | rofi -theme $dir/../theme/applet4 -p Office -dmenu -theme-str 'textbox-prompt { str: "󰧭"; }'}
+
+switch ($opt) {
+  case 
+    kitty nvim &
+
+  case 󱎒
+    swrite &
+
+  case 󱎏
+    scals &
+
+  case 󱘲
+    sbase &
+}

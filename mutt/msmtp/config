@@ -1,0 +1,14 @@
+defaults
+auth on
+port 587
+tls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+logfile -
+
+account gmx
+host mail.gmx.com
+from gade@gmx.us
+user gade@gmx.us
+passwordeval "pass gmx/gade"
+
+account default : gmx

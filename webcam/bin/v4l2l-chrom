@@ -1,0 +1,3 @@
+#!/bin/rc
+
+exec firejail --noprofile --blacklist=/dev/video0 chromium

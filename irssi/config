@@ -1,0 +1,137 @@
+servers = (
+  {
+    address = "irc.libera.chat";
+    chatnet = "libera";
+    port = "6697";
+    use_tls = "yes";
+    tls_cert = "~/.irssi/nick.pem";
+    tls_verify = "yes";
+  },
+  {
+    address = "irc.oftc.net";
+    chatnet = "oftc";
+    port = "6697";
+    use_tls = "yes";
+    tls_cert = "~/.local/share/irssi/nick.pem";
+    tls_verify = "yes";
+  }
+);
+
+chatnets = {
+  libera = { type = "IRC"; };
+  oftc = { type = "IRC"; };
+};
+
+channels = (
+  { name = "#awesome"; chatnet = "oftc"; autojoin = "No"; },
+  { name = "#debian"; chatnet = "libera"; autojoin = "No"; },
+  { name = "#gnome"; chatnet = "libera"; autojoin = "No"; },
+  { name = "#irssi"; chatnet = "libera"; autojoin = "No"; },
+  { name = "#linux"; chatnet = "libera"; autojoin = "No"; },
+  { name = "#neomutt"; chatnet = "libera"; autojoin = "No"; },
+  { name = "#openwrt"; chatnet = "oftc"; autojoin = "No"; },
+  { name = "#qt"; chatnet = "libera"; autojoin = "No"; },
+  { name = "#qutebrowser"; chatnet = "libera"; autojoin = "No"; },
+  { name = "#suckless"; chatnet = "oftc"; autojoin = "No"; },
+  { name = "#xorg"; chatnet = "oftc"; autojoin = "No"; }
+);
+
+aliases = { C = "CONNECT"; J = "JOIN"; Q = "QUIT"; };
+
+statusbar = {
+  items = {
+    barstart = "{sbstart}";
+    barend = "{sbend}";
+    topicbarstart = "{topicsbstart}";
+    topicbarend = "{topicsbend}";
+    time = "";
+    user = "{sb {sbnickmode $cumode}$N{sbmode $usermode}{sbaway $A}}";
+    window = "{sb $winref:$tag/$itemname{sbmode $M}}";
+    window_empty = "{sb $winref{sbservertag $tag}}";
+    prompt = "{prompt $[.15]itemname}";
+    prompt_empty = "{prompt $winname}";
+    topic = " $topic";
+    topic_empty = "Irssi";
+    lag = "{sb Lag: $0-}";
+    act = "{sb Act: $0-}";
+    more = "-- more --";
+  };
+
+  default = {
+    window = {
+      disabled = "no";
+      type = "window";
+      placement = "bottom";
+      position = "1";
+      visible = "active";
+      items = {
+        barstart = { priority = "100"; };
+        time = { };
+        user = { };
+        window = { };
+        window_empty = { };
+        lag = { priority = "-1"; };
+        chanact = { };
+        more = { priority = "-1"; alignment = "right"; };
+        barend = { priority = "100"; alignment = "right"; };
+        act = { };
+      };
+    };
+
+    window_inact = {
+      type = "window";
+      placement = "bottom";
+      position = "1";
+      visible = "inactive";
+      items = {
+        barstart = { priority = "100"; };
+        window = { };
+        window_empty = { };
+        more = { priority = "-1"; alignment = "right"; };
+        barend = { priority = "100"; alignment = "right"; };
+      };
+    };
+
+    prompt = {
+      type = "root";
+      placement = "bottom";
+      position = "100";
+      visible = "always";
+      items = {
+        prompt = { priority = "-1"; };
+        prompt_empty = { priority = "-1"; };
+        input = { priority = "10"; };
+      };
+    };
+
+    topic = {
+      type = "root";
+      placement = "top";
+      position = "1";
+      visible = "always";
+      items = {
+        topicbarstart = { priority = "100"; };
+        topic = { };
+        topic_empty = { };
+        topicbarend = { priority = "100"; alignment = "right"; };
+      };
+    };
+  };
+};
+
+settings = {
+  core = {
+    real_name = "GadeFox";
+    user_name = "gadefox";
+    nick = "gadefox";
+    settings_autosave = "no";
+  };
+  "fe-common/core" = { timestamps = "no"; emphasis_multiword = "yes"; };
+};
+
+windows = {
+  1 = { immortal = "yes"; name = "(status)"; level = "ALL"; };
+  99 = { name = "(aspell)"; };
+};
+
+ignores = ( { level = "JOINS PARTS QUITS MODES NICKS"; } );

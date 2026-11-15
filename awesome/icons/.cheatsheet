@@ -1,0 +1,2 @@
+magick file.png -trim +repage file.png
+magick file.png -resize x42 file.png

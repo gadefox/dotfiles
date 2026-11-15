@@ -1,0 +1,15 @@
+# save all videos here
+--paths $HOME/downloads/youtube
+
+# file name format
+--output %(title)s.%(ext)s
+--restrict-filenames
+
+# do not overwrite existing output files
+--no-overwrites
+
+# download only the video, if the URL refers to a video AND a playlist
+--no-playlist
+
+# ignore warnings
+--no-warnings

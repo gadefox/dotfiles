@@ -1,0 +1,7 @@
+text/plain; nvim %s; needsterminal
+text/html; qutebrowser %s; nametemplate=%s.html; copiousoutput
+application/pdf; mupdf %s; test=test -n "$DISPLAY" ; nametemplate=%s.pdf
+image/gif; sxiv %s; test=test -n "$DISPLAY"
+image/jpeg; sxiv %s; test=test -n "$DISPLAY"
+image/png; sxiv %s; test=test -n "$DISPLAY"
+image/tiff; sxiv %s; test=test -n "$DISPLAY"

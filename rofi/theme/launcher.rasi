@@ -1,0 +1,81 @@
+* {
+  background: #1E2127;
+  background-alt: #282B31;
+  foreground: #FFFFFF;
+  selected: #DC461D;
+}
+
+window {
+  location: center;
+  border: 0px;
+}
+
+mainbox {
+  spacing: 15px;
+  padding: 20px;
+  children: [ "inputbar", "listview" ];
+  background-color: @background;
+}
+
+inputbar {
+  spacing: 20px;
+  border: 0px 0px 0px 5px;
+  border-color: @selected;
+  background-color: @background;
+  padding: 12px;
+  children: [ "prompt", "entry" ];
+}
+
+prompt {
+  background-color: @background;
+  text-color: @foreground;
+}
+
+entry {
+  background-color: @background;
+  text-color: @foreground;
+  placeholder-color: @foreground;
+  font: "Ubuntu 12";
+}
+
+textbox {
+  background-color: @background;
+  text-color: @foreground;
+  vertical-align: 0.5;
+  font: "Ubuntu 14";
+}
+
+listview {
+  border: 0px;
+  background-color: @background;
+}
+
+scrollbar {
+  handle-width: 5px ;
+  handle-color: @selected;
+  background-color: @background-alt;
+}
+
+element {
+  spacing: 10px;
+  padding: 15px 10px;
+}
+
+element normal.normal,
+element alternate.normal {
+  background-color: @background;
+}
+
+element selected.normal {
+  border: 0px 0px 0px 5px;
+  border-color: @selected;
+  background-color: @background-alt;
+  text-color: @foreground;
+}
+
+element-text {
+  vertical-align: 0.5;
+  font: "Ubuntu 11";
+  background-color: inherit;
+  text-color: @foreground;
+} 

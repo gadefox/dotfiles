@@ -1,0 +1,13 @@
+set imap_pass = `gpg --no-tty -q -d ~/.config/msmtp/$imap_user.gpg`
+set folder = "imaps://imap.gmx.com:993"
+set spoolfile = "+Inbox"
+set postponed = "+Drafts"
+set record = "+Sent"
+set trash = "+Trash"
+
+named-mailboxes "Inbox" $spoolfile
+named-mailboxes "Drafts" $postponed
+named-mailboxes "Sent" $record
+named-mailboxes "Trash" $trash
+
+named-mailboxes "Spam" "+Spam"
