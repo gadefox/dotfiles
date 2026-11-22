@@ -60,6 +60,7 @@ liblua5.3-0
 libnatpmp1t64
 libnotify-bin
 libpcre3
+librepcb
 libssl1.1
 libsnmp40t64
 libstartup-notification0
@@ -99,6 +100,7 @@ python3-colorama
 python3-gi
 python3-jinja2
 python3-mutagen
+python3-pil
 python3-pip
 python3-pycryptodome
 python3-pygments
