@@ -100,6 +100,7 @@ python3-colorama
 python3-gi
 python3-jinja2
 python3-mutagen
+python3-pandas
 python3-pil
 python3-pip
 python3-pycryptodome
