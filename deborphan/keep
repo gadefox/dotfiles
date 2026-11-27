@@ -85,7 +85,7 @@ ngspice
 node-fancy-log
 nsxiv
 openfpgaloader
-openjdk-21-jdk
+openjdk-25-jdk
 openocd
 parallel
 pass
@@ -130,6 +130,7 @@ slop
 stm32flash
 subliminal
 sudo
+telnet
 tftp-hpa
 tftpd-hpa
 tio
